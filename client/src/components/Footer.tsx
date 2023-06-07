@@ -7,7 +7,7 @@ const FooterContainer = styled.div`
   display: flex;
   justify-content: center;
   border: 1px solid gray;
-  /* background-color: gray; */
+  background-color: gray;
 `;
 const FooterContent = styled.div`
   width: 100%;

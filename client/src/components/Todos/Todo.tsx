@@ -5,6 +5,7 @@ import styled from 'styled-components';
 const TodoContainer = styled.div`
   width: 94%;
   height: 50px;
+  flex-shrink: 0;
   background-color: var(--gray-blue-200);
   box-shadow: 1px 1px 5px 0px var(--gray-blue-300);
   display: flex;

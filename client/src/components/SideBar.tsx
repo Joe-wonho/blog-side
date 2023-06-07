@@ -20,7 +20,7 @@ const SideBarBox = styled.div`
   border: 1px solid gray;
   background-color: var(--white-100);
   &.latest-info {
-    flex-grow: 1;
+    height: 350px;
   }
 `;
 

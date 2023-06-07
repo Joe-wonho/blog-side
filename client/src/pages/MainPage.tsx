@@ -5,7 +5,7 @@ import Main from '../components/Main';
 
 const MainPageContainer = styled.div`
   padding: 80px 0 50px;
-  min-height: 750px;
+  min-height: 900px;
   display: flex;
   justify-content: center;
   background-color: var(--light-gray-150);

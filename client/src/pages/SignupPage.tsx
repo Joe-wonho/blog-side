@@ -1,11 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import Login from '../components/Login/Login';
-// import { useParams, useLocation } from 'react-router';
-// interface LoginPageProps {
-// }
 
-const LoginPageContainer = styled.div`
+const SignupPageContainer = styled.div`
   padding: 100px 0 20px;
   background-color: var(--light-gray-100);
   height: 100vh;
@@ -19,7 +15,7 @@ const LoginPageContainer = styled.div`
   }
 `;
 
-const LoginPageBox = styled.div`
+const SignupPageBox = styled.div`
   background-color: var(--white-100);
   display: flex;
   flex-direction: column;
@@ -59,18 +55,17 @@ const Logo = styled.div`
     padding-left: 48px;
   }
 `;
-
-const LoginPage = () => {
+const SignupPage = () => {
   return (
-    <LoginPageContainer>
-      <LoginPageBox>
+    <SignupPageContainer>
+      <SignupPageBox>
         <LogoBox>
-          <Logo>LOGIN</Logo>
+          <Logo>SIGN UP</Logo>
         </LogoBox>
-        <Login></Login>
-      </LoginPageBox>
-    </LoginPageContainer>
+        {/* <Login></Login> */}
+      </SignupPageBox>
+    </SignupPageContainer>
   );
 };
 
-export default LoginPage;
+export default SignupPage;

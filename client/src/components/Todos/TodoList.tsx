@@ -13,6 +13,8 @@ const TodoListContainer = styled.div`
   align-items: center;
   gap: 15px;
   padding: 15px 0;
+  max-height: 730px;
+  overflow-y: scroll;
 `;
 
 const TodoList = () => {
@@ -20,6 +22,16 @@ const TodoList = () => {
     <TodoListContainer>
       <Todo></Todo>
       <Todo></Todo>
+      <Todo></Todo>
+      <Todo></Todo>
+      <Todo></Todo>
+      <Todo></Todo>
+      <Todo></Todo>
+      <Todo></Todo>
+      <Todo></Todo> <Todo></Todo>
+      <Todo></Todo> <Todo></Todo>
+      <Todo></Todo>
+      <Todo></Todo> <Todo></Todo>
       <Todo></Todo>
     </TodoListContainer>
   );

@@ -11,11 +11,9 @@ const MainContainer = styled.div`
 `;
 
 const ListView = styled.div`
-  /* border: 1px solid blue; */
   flex-grow: 1;
   min-width: 792px;
   display: flex;
-  /* justify-content: space-between; */
   gap: 40px;
 `;
 // interface MainProps {}
