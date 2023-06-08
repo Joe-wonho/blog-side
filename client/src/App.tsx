@@ -32,14 +32,12 @@ const App: React.FC = () => {
   return (
     <>
       <BrowserRouter>
-        <Header></Header>
         <Routes>
           <Route path='/' element={<MainPage />}></Route>
           <Route path='/login' element={<LoginPage />}></Route>
           <Route path='/signup' element={<SignupPage />}></Route>
         </Routes>
       </BrowserRouter>
-      {/* <Footer></Footer> */}
     </>
   );
 };

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Signup from '../components/Signup/Signup';
 
 const SignupPageContainer = styled.div`
-  padding: 100px 0 30px;
+  padding: 30px 0 20px;
   background-color: var(--light-gray-100);
   @media screen and (min-width: 768px) {
     height: auto;

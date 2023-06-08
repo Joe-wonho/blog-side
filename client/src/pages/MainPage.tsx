@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import SideBar from '../components/SideBar';
 import Main from '../components/Main';
+import Header from '../components/Header/Header';
 
 const MainPageContainer = styled.div`
-  padding: 80px 0 50px;
   min-height: 900px;
   display: flex;
   justify-content: center;
@@ -21,13 +21,16 @@ const MainWrapper = styled.div`
 
 const MainPage = () => {
   return (
-    <MainPageContainer>
-      <MainWrapper>
-        <SideBar></SideBar>
-        {/* 여기에 메인 컴포넌트 추가 */}
-        <Main></Main>
-      </MainWrapper>
-    </MainPageContainer>
+    <>
+      <Header></Header>
+      <MainPageContainer>
+        <MainWrapper>
+          <SideBar></SideBar>
+          {/* 여기에 메인 컴포넌트 추가 */}
+          <Main></Main>
+        </MainWrapper>
+      </MainPageContainer>
+    </>
   );
 };
 
