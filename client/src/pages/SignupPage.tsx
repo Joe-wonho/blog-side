@@ -1,16 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
+import Signup from '../components/Signup/Signup';
 
 const SignupPageContainer = styled.div`
-  padding: 100px 0 20px;
+  padding: 100px 0 30px;
   background-color: var(--light-gray-100);
-  height: 100vh;
   @media screen and (min-width: 768px) {
-    height: 100vh;
+    height: auto;
   }
   @media screen and (max-width: 767px) {
     padding: 60px 0 0;
-    /* height: 100vh; */
     background-color: var(--white-100);
   }
 `;
@@ -21,7 +20,7 @@ const SignupPageBox = styled.div`
   flex-direction: column;
   @media screen and (min-width: 768px) {
     width: 494px;
-    height: 756px;
+    /* height: 100%; */
     margin: 0 auto;
     border: 1px solid var(--light-gray-100);
     border-radius: 1rem;
@@ -62,7 +61,7 @@ const SignupPage = () => {
         <LogoBox>
           <Logo>SIGN UP</Logo>
         </LogoBox>
-        {/* <Login></Login> */}
+        <Signup></Signup>
       </SignupPageBox>
     </SignupPageContainer>
   );
