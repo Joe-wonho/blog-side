@@ -2,19 +2,35 @@ package server.blog.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import server.blog.auth.jwt.JwtTokenizer;
+import server.blog.auth.utils.UserAuthorityUtils;
 import server.blog.exception.BusinessLogicException;
 import server.blog.exception.ExceptionCode;
 import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Service
-@RequiredArgsConstructor
 public class UserService {
-
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserAuthorityUtils authorityUtils;
+    private final JwtTokenizer jwtTokenizer;
+
+    public UserService(UserRepository userRepository,
+                         PasswordEncoder passwordEncoder,
+                         UserAuthorityUtils authorityUtils,
+                         JwtTokenizer jwtTokenizer) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authorityUtils = authorityUtils;
+        this.jwtTokenizer = jwtTokenizer;
+    }
 
     /*
     <회원 등록>
@@ -29,6 +45,11 @@ public class UserService {
 
         // 중복 닉네임 검증
         verifyExistsNickname(users.getNickname());
+
+        // 패스워드 암호화
+        String encryptedPassword = passwordEncoder.encode(users.getPassword());
+        users.setPassword(encryptedPassword);
+
 
         return userRepository.save(users);
     }
