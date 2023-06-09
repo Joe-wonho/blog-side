@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BsFillMoonFill, BsSunFill } from 'react-icons/bs';
+// BsSunFill
+import { BsFillMoonFill } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
-import { IoMdArrowDropdown } from 'react-icons/io';
-import profile from '../../assets/profile.png';
+import Dropdown from './Dropdown';
 // interface HeaderProps {}
 
 //1024 이상이면 새글작성 버튼 나오게 하기, 글씨크기 살짝작게하기
@@ -25,18 +25,28 @@ const HeaderMenu = styled.div`
 const LSide = styled.div`
   text-shadow: 0.5px 0.5px;
   font-size: 1.3rem;
-  margin-left: 15px;
   @media screen and (min-width: 1024px) {
     font-size: 1.5rem;
-    margin-left: 0;
   }
 `;
 const RSide = styled.div`
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
+  position: relative;
+  .hover-menu {
+    cursor: pointer;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .hover-menu:hover {
+    background-color: var(--dark-blue-700);
+    border-radius: 50%;
+  }
   @media screen and (max-width: 1023px) {
-    margin-right: 15px;
   }
 `;
 
@@ -49,32 +59,27 @@ const PostBtn = styled.div`
     border-radius: 1rem;
     font-weight: 700;
     font-size: 18px;
+    cursor: pointer;
+    :hover {
+      color: var(--white-100);
+    }
   }
 `;
 
-const PeopleIcon = styled.div`
-  display: flex;
-  align-items: center;
-  .people-icon {
-    background-color: var(--gray-600);
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-  }
-`;
 const Header = () => {
   return (
     <HeaderContainer>
       <HeaderMenu>
         <LSide>MY TODO</LSide>
         <RSide>
-          <BsFillMoonFill size='25'></BsFillMoonFill>
-          <FiSearch size='30'></FiSearch>
+          <div className='hover-menu'>
+            <BsFillMoonFill size='26'></BsFillMoonFill>
+          </div>
+          <div className='hover-menu'>
+            <FiSearch size='30'></FiSearch>
+          </div>
           <PostBtn>새 글 작성</PostBtn>
-          <PeopleIcon>
-            <img src={profile} alt='profile-icon' className='people-icon'></img>
-            <IoMdArrowDropdown className='down-icon' size='24'></IoMdArrowDropdown>
-          </PeopleIcon>
+          <Dropdown></Dropdown>
         </RSide>
       </HeaderMenu>
     </HeaderContainer>
