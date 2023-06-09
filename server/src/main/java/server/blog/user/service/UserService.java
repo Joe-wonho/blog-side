@@ -15,10 +15,22 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    /*
+    <회원 등록>
+    1. 중복 이메일 검증
+    2. 패스워드 암호화
+    3. Role -> db에 저장
+    4. 등록
+     */
     public Users createUser(Users users){
         if(userRepository.findByUserId(users.getUserId()).getEmail().equals(users.getEmail())) {
             throw new BusinessLogicException(ExceptionCode.EMAIL_EXIST);
         }
+
+        // 중복 닉네임 검증
+        verifyExistsNickname(users.getNickname());
+
         return userRepository.save(users);
     }
 
@@ -44,5 +56,14 @@ public class UserService {
 
     public void deleteUser(long userId){
         userRepository.deleteById(userId);
+    }
+
+
+    // 중복 닉네임 검증 메서드
+    private void verifyExistsNickname(String nickname) {
+        Optional<Users> optionalMember = userRepository.findByNickname(nickname);
+        if (optionalMember.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.NICKNAME_EXISTS);
+        }
     }
 }

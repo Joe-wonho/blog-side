@@ -8,6 +8,7 @@ public enum ExceptionCode {
     UNAUTHORIZED_MEMBER(401, "접근 권한이 없습니다."),
     UNAUTHORIZED_ACCESSTOKEN(401, "액세스토큰이 만료되었습니다."),
     EMAIL_EXIST(404,"이메일이 이미 존재합니다."),
+    NICKNAME_EXISTS(409, "Nickname exists"),
     MAILKEY_MISMATCH(409, "메일키가 다릅니다."),
     PASSWORD_NOT_CORRECT(409, "잘못된 비밀번호입니다."),
     POST_NOT_FOUND(404, "게시글이 존재하지 않습니다."),
