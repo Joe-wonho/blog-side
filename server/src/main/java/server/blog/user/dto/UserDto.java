@@ -35,7 +35,7 @@ public class UserDto {
     @Getter
     @AllArgsConstructor
     public static class LoginResponse{
-        private String userId;
+        private Long userId;
         private String nickName;
 
     }
