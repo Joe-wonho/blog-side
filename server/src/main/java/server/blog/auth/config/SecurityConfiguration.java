@@ -5,10 +5,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import server.blog.auth.filter.JwtAuthenticationFilter;
+import server.blog.auth.filter.JwtVerificationFilter;
+import server.blog.auth.handler.UserAuthenticationFailureHandler;
+import server.blog.auth.handler.UserAuthenticationSuccessHandler;
 import server.blog.auth.jwt.JwtTokenizer;
 import server.blog.auth.utils.UserAuthorityUtils;
 
@@ -36,6 +40,8 @@ public class SecurityConfiguration {
                 .and()
                 .csrf().disable() // CSRF 비활성화
                 .cors(withDefaults()) // corsConfigurationSource라는 이름의 Bean 사용
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 생성하지 않음
+                .and()
                 .formLogin().disable() // 폼 기반 로그인 비활성화
                 .httpBasic().disable() // HTTP Basic 인증 비활성화
                 .apply(new CustomFilterConfigurer()) // CustomFilterConfigurer() 추가
@@ -70,11 +76,16 @@ public class SecurityConfiguration {
         public void configure(HttpSecurity builder) throws Exception {
             // getSharedObject()로 SecurityConfigurer 간 공유되는 객체 획득
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
             jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+            jwtAuthenticationFilter.setAuthenticationSuccessHandler(new UserAuthenticationSuccessHandler()); // 로그인 인증 성공 시 처리
+            jwtAuthenticationFilter.setAuthenticationFailureHandler(new UserAuthenticationFailureHandler()); // 로그인 인증 실패 시 처리
 
-            builder.addFilter(jwtAuthenticationFilter); // JwtAuthenticationFilter를 Spring Security Filter Chain에 추가
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
+
+            builder
+                    .addFilter(jwtAuthenticationFilter) // JwtAuthenticationFilter를 Spring Security Filter Chain에 추가
+                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
         }
     }
 
