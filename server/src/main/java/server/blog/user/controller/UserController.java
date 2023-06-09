@@ -27,7 +27,7 @@ public class UserController {
 
     // 회원 가입
     @PostMapping("/signup")
-    public ResponseEntity postUser(@Valid @RequestBody UserDto.Post requestBody) {
+    public ResponseEntity postUser(@Valid @RequestBody UserDto.Post requestBody) throws Exception {
         Users users = mapper.userPostDtoToUser(requestBody);
         Users createdUsers = userService.createUser(users);
 
