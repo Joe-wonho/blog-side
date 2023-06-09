@@ -13,7 +13,10 @@ public interface UserMapper {
 
     Users userPatchDtoToUser(UserDto.Patch requestBody);
 
-    UserDto.LoginResponse userToLoginResponseDto(Users users);
+    default UserDto.LoginResponse userToLoginResponseDto(Users users){
+        UserDto.LoginResponse userResponse = new UserDto.LoginResponse(users.getUserId(), users.getNickname());
+        return userResponse;
+    }
 
     UserDto.UserResponse userToUserResponseDto(Users users);
 
