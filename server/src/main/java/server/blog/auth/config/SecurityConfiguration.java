@@ -2,10 +2,14 @@ package server.blog.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import server.blog.auth.filter.JwtAuthenticationFilter;
+import server.blog.auth.jwt.JwtTokenizer;
 import server.blog.auth.utils.UserAuthorityUtils;
 
 import org.springframework.web.cors.CorsConfiguration;
@@ -19,9 +23,11 @@ import static org.springframework.security.config.Customizer.*;
 @Configuration
 public class SecurityConfiguration {
     private final UserAuthorityUtils authorityUtils;
+    private final JwtTokenizer jwtTokenizer;
 
-    public SecurityConfiguration(UserAuthorityUtils authorityUtils) {
+    public SecurityConfiguration(UserAuthorityUtils authorityUtils,  JwtTokenizer jwtTokenizer) {
         this.authorityUtils = authorityUtils;
+        this.jwtTokenizer = jwtTokenizer;
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,6 +38,8 @@ public class SecurityConfiguration {
                 .cors(withDefaults()) // corsConfigurationSource라는 이름의 Bean 사용
                 .formLogin().disable() // 폼 기반 로그인 비활성화
                 .httpBasic().disable() // HTTP Basic 인증 비활성화
+                .apply(new CustomFilterConfigurer()) // CustomFilterConfigurer() 추가
+                .and()
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll()); // 모든 사용자에게 접근 권한 부여
         return http.build();
@@ -54,6 +62,20 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration); // 모든 URL에 CORS 정책 적용
 
         return source;
+    }
+
+    // Spring Security의 필터 체인에 JwtAuthenticationFilter를 추가하여 JWT 인증을 처리하도록 구성하는 역할
+    public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
+        @Override
+        public void configure(HttpSecurity builder) throws Exception {
+            // getSharedObject()로 SecurityConfigurer 간 공유되는 객체 획득
+            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
+            jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+
+            builder.addFilter(jwtAuthenticationFilter); // JwtAuthenticationFilter를 Spring Security Filter Chain에 추가
+        }
     }
 
 }
