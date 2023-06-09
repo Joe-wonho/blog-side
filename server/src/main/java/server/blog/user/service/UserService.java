@@ -57,13 +57,39 @@ public class UserService {
         return userRepository.save(users);
     }
 
+
+    /*
+      <회원 정보 수정>
+      회원 정보는 닉네임, 비밀번호만 변경 가능
+      1. 회원 검증(존재O or 존재X)
+      2. 수정
+     */
     public Users updateUser(Users users){
-        Users findUsers = userRepository.findByUserId(users.getUserId());
+// 회원 검증
+        Users findUser = checkUser(users.getUserId());
 
-        Optional.ofNullable(users.getNickname()).ifPresent(findUsers::setNickname);
-        Optional.ofNullable(users.getProfile()).ifPresent(findUsers::setProfile);
+        if (users.getUserId() != findUser.getUserId()) {
+            throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        }
 
-        return userRepository.save(findUsers);
+        verifyExistsNickname(users.getNickname());
+
+        // 닉네임 수정
+        Optional.ofNullable(users.getNickname())
+                .ifPresent(nickname -> findUser.setNickname(nickname));
+        // 프로필 수정
+        Optional.ofNullable(users.getProfile())
+                .ifPresent(profile -> findUser.setProfile(profile));
+
+
+        System.out.println("userId : " + findUser.getUserId());
+        System.out.println("nickname : " + findUser.getNickname());
+        System.out.println("name : " + findUser.getName());
+        System.out.println("email : " + findUser.getEmail());
+        System.out.println("profile : " + findUser.getProfile());
+
+        // 저장
+        return userRepository.save(findUser);
     }
 
 
@@ -86,6 +112,13 @@ public class UserService {
         if (optionalMember.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.EMAIL_EXIST);
         }
+    }
+
+
+    // 회원 검증 메서드
+    private Users checkUser(long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
 
