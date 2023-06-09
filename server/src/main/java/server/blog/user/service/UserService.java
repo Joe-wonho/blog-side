@@ -23,10 +23,9 @@ public class UserService {
     3. Role -> db에 저장
     4. 등록
      */
-    public Users createUser(Users users){
-        if(userRepository.findByUserId(users.getUserId()).getEmail().equals(users.getEmail())) {
-            throw new BusinessLogicException(ExceptionCode.EMAIL_EXIST);
-        }
+    public Users createUser(Users users) throws Exception {
+        // 중복 이메일 검증
+        verifyExistsEmail(users.getEmail());
 
         // 중복 닉네임 검증
         verifyExistsNickname(users.getNickname());
@@ -56,6 +55,13 @@ public class UserService {
 
     public void deleteUser(long userId){
         userRepository.deleteById(userId);
+    }
+
+    private void verifyExistsEmail(String email) throws Exception {
+        Optional<Users> optionalMember = userRepository.findByEmail(email);
+        if (optionalMember.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.EMAIL_EXIST);
+        }
     }
 
 
