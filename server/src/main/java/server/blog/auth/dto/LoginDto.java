@@ -1,4 +1,4 @@
-package server.blog.auth;
+package server.blog.auth.dto;
 
 import lombok.Getter;
 
