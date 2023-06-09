@@ -1,12 +1,12 @@
 package server.blog.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import server.blog.user.entity.User;
+import server.blog.user.entity.Users;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUserId(Long userId);
-    Optional<User> findByEmail(String email);
+public interface UserRepository extends JpaRepository<Users, Long> {
+    Users findByUserId(Long userId);
+    Optional<Users> findByEmail(String email);
     boolean existsByEmail(String email);
 }

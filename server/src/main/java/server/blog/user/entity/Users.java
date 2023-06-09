@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
-public class User extends Auditable {
+public class Users extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

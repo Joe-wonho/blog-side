@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import server.blog.response.SingleResponse;
 import server.blog.user.dto.UserDto;
-import server.blog.user.entity.User;
+import server.blog.user.entity.Users;
 import server.blog.user.mapper.UserMapper;
 import server.blog.user.service.UserService;
 
@@ -29,24 +28,24 @@ public class UserController {
     // 회원 가입
     @PostMapping("/signup")
     public ResponseEntity postUser(@Valid @RequestBody UserDto.Post requestBody) {
-        User user = mapper.userPostDtoToUser(requestBody);
-        User createdUser = userService.createUser(user);
+        Users users = mapper.userPostDtoToUser(requestBody);
+        Users createdUsers = userService.createUser(users);
 
         return new ResponseEntity<>(
-                new SingleResponse<>(mapper.userToLoginResponseDto(createdUser)), HttpStatus.CREATED);
+                new SingleResponse<>(mapper.userToLoginResponseDto(createdUsers)), HttpStatus.CREATED);
     }
 
     // 회원 정보 수정
     @PatchMapping("/user/{userId}")
     public ResponseEntity patchUser(@Valid @RequestBody UserDto.Patch requestBody,
                                     @PathVariable("userId") Long userId) {
-        User user = mapper.userPatchDtoToUser(requestBody);
-        user.setUserId(userId);
+        Users users = mapper.userPatchDtoToUser(requestBody);
+        users.setUserId(userId);
 
-        User findedUser = userService.updateUser(user);
+        Users findedUsers = userService.updateUser(users);
 
         return new ResponseEntity<>(
-                new SingleResponse<>(mapper.userToUserResponseDto(findedUser)),HttpStatus.OK);
+                new SingleResponse<>(mapper.userToUserResponseDto(findedUsers)),HttpStatus.OK);
     }
 
     // 회원 확인 (토큰 이용 확인 -> 일단 보류)
