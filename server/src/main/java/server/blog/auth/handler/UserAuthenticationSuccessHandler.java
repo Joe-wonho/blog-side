@@ -29,7 +29,6 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         System.out.println("User " + email + " successfully authenticated");
         try(PrintWriter writer = response.getWriter()){
             JsonObject json = new JsonObject();
-            json.addProperty("email", email);
             json.addProperty("AccessToken", accessToken);
 
             response.setStatus(HttpStatus.ACCEPTED.value());
