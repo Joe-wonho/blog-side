@@ -50,6 +50,9 @@ public class UserService {
         String encryptedPassword = passwordEncoder.encode(users.getPassword());
         users.setPassword(encryptedPassword);
 
+        // Role -> db에 저장
+        List<String> roles = authorityUtils.createRoles(users.getEmail());
+        users.setRoles(roles);
 
         return userRepository.save(users);
     }
