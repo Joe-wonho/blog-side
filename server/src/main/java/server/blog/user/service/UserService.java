@@ -92,20 +92,19 @@ public class UserService {
         return userRepository.save(findUser);
     }
 
+        /*
+       <회원 정보 삭제>
+       1. 회원 검증(존재O or 존재X)
+       2. 삭제
+        */
+    public void deleteUser(long userId) {
+            // 회원 검증(존재O or 존재X)
+        Users findUser = checkUser(userId);
 
-    public Users findUser(long userId){
-        Users findUsers = userRepository.findByUserId(userId);
-
-        return findUsers;
+        userRepository.delete(findUser);
     }
 
-    public List<Users> findUsers() {
-        return userRepository.findAll();
-    }
 
-    public void deleteUser(long userId){
-        userRepository.deleteById(userId);
-    }
 
     private void verifyExistsEmail(String email) throws Exception {
         Optional<Users> optionalMember = userRepository.findByEmail(email);
