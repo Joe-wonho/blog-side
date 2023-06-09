@@ -31,8 +31,7 @@ public class UserController {
         Users users = mapper.userPostDtoToUser(requestBody);
         Users createdUsers = userService.createUser(users);
 
-        return new ResponseEntity<>(
-                new SingleResponse<>(mapper.userToLoginResponseDto(createdUsers)), HttpStatus.CREATED);
+        return new ResponseEntity<>((mapper.userToLoginResponseDto(createdUsers)), HttpStatus.CREATED);
     }
 
     // 회원 정보 수정
@@ -44,8 +43,7 @@ public class UserController {
 
         Users findedUsers = userService.updateUser(users);
 
-        return new ResponseEntity<>(
-                new SingleResponse<>(mapper.userToUserResponseDto(findedUsers)),HttpStatus.OK);
+        return new ResponseEntity<>((mapper.userToUserResponseDto(findedUsers)),HttpStatus.OK);
     }
 
     // 회원 확인 (토큰 이용 확인 -> 일단 보류)
