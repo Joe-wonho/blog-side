@@ -4,15 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import server.blog.response.SingleResponse;
+import server.blog.auth.userdetails.PrincipalDetails;
 import server.blog.user.dto.UserDto;
 import server.blog.user.entity.Users;
 import server.blog.user.mapper.UserMapper;
+import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
 
 import javax.validation.Valid;
+import java.util.Collection;
 
 @RestController
 @RequestMapping
@@ -23,6 +28,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper mapper;
+    private final UserRepository userRepository;
 
 
     // 회원 가입
@@ -46,13 +52,34 @@ public class UserController {
         return new ResponseEntity<>((mapper.userToUserResponseDto(findedUsers)),HttpStatus.OK);
     }
 
-    // 회원 확인 (토큰 이용 확인 -> 일단 보류)
-//    @GetMapping("/user")
-//    public ResponseEntity getUser(){
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
-//
-//    }
+
+    //     회원 확인 (토큰 이용 확인 -> 일단 보류)
+    @GetMapping("/user")
+    public ResponseEntity getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal(); // 인증된 사용자 주체
+
+        if (principal instanceof String) {
+            String email = (String) principal;
+            Users users = userRepository.findByEmail(email).orElse(null);
+
+            if (users != null) {
+                PrincipalDetails principalDetails = new PrincipalDetails(users);
+                Collection<? extends GrantedAuthority> authorities = principalDetails.getAuthorities();
+
+                // authorities를 활용하여 역할 확인
+                boolean hasUserRole = authorities.stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .anyMatch(authority -> authority.equals("ROLE_USER"));
+
+                if (hasUserRole) {
+                    return new ResponseEntity<>((mapper.userToUserCheckResponseDto(users)), HttpStatus.OK);
+                }
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
 
     // 회원 탈퇴 (토큰 이용 -> 일단 보류)
