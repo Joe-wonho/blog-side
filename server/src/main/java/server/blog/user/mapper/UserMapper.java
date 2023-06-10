@@ -20,5 +20,10 @@ public interface UserMapper {
 
     UserDto.UserResponse userToUserResponseDto(Users users);
 
+    default UserDto.UserCheckResponse userToUserCheckResponseDto(Users users){
+        UserDto.UserCheckResponse userCheckResponse = new UserDto.UserCheckResponse(users.getUserId(), users.getNickname(), users.getName(), users.getProfile());
+        return userCheckResponse;
+    }
+
     List<Users> usersToUserResponseDtos(List<Users> users);
 }
