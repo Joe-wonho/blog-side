@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import server.blog.auth.filter.JwtAuthenticationFilter;
 import server.blog.auth.filter.JwtVerificationFilter;
+import server.blog.auth.handler.UserAuthenticationEntryPoint;
 import server.blog.auth.handler.UserAuthenticationFailureHandler;
 import server.blog.auth.handler.UserAuthenticationSuccessHandler;
 import server.blog.auth.jwt.JwtTokenizer;
@@ -44,6 +45,9 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable() // 폼 기반 로그인 비활성화
                 .httpBasic().disable() // HTTP Basic 인증 비활성화
+                .exceptionHandling()
+                .authenticationEntryPoint(new UserAuthenticationEntryPoint()) // MemberAuthenticationEntryPoint 추가
+                .and()
                 .apply(new CustomFilterConfigurer()) // CustomFilterConfigurer() 추가
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
@@ -61,8 +65,13 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*")); // 모든 출처에 대해 HTTP 통신 허용
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH","DELETE")); // 해당 HTTP 메서드에 대한 통신 허용
+//        configuration.setAllowedOrigins(Arrays.asList("*")); // 모든 출처에 대해 HTTP 통신 허용
+//        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH","DELETE")); // 해당 HTTP 메서드에 대한 통신 허용
+
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // 모든 URL에 CORS 정책 적용
