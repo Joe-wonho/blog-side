@@ -1,5 +1,6 @@
 package server.blog.auth.filter;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import server.blog.auth.jwt.JwtTokenizer;
 import server.blog.auth.utils.UserAuthorityUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,8 +29,14 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     // 실제 필터링 작업 수행
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Map<String, Object> claims = verifyJws(request); // HTTP 요청 받아 JWT 검증 후 검증된 클래임 정보-> 인증 객체 생성
-        setAuthenticationToContext(claims);
+        try {
+            Map<String, Object> claims = verifyJws(request); // 검증된 토큰에서 클레임 추출
+            setAuthenticationToContext(claims);
+        } catch (ExpiredJwtException ee) { // JWT 만료되었을 경우
+            request.setAttribute("exception", ee);
+        } catch (Exception e) {
+            request.setAttribute("exception", e);
+        }
 
         filterChain.doFilter(request, response);
     }
