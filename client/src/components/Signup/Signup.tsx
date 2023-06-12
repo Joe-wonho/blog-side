@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import SignupForm from './SignupForm';
-
+import { useNavigate } from 'react-router';
+import { useState } from 'react';
 const SignupContainer = styled.div`
   padding: 0 24px;
   height: 100%;
@@ -50,15 +51,27 @@ const SignupBtn = styled.button`
   &:hover {
   }
 `;
+export interface FileUpload {
+  file: FileList | null;
+  setFile(file: FileList | null): void;
+}
+
 const Signup = () => {
+  const navigate = useNavigate();
+  const onClickCancle = () => {
+    navigate('/login');
+  };
+  const [file, setFile] = useState<FileList | null>(null);
+
+  const onSubmit = () => {};
   return (
     <SignupContainer>
       <InputBox>
-        <SignupForm></SignupForm>
+        <SignupForm file={file} setFile={setFile}></SignupForm>
       </InputBox>
       <BtnBox>
         <SignupBtn>확인</SignupBtn>
-        <SignupBtn>취소</SignupBtn>
+        <SignupBtn onClick={onClickCancle}>취소</SignupBtn>
       </BtnBox>
     </SignupContainer>
   );

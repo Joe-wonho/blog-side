@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import ImgInput from './ImgInput';
-// interface SignupFormProps {
-// }
+import { inputsState } from '../../recoil/signup';
+import { useRecoilState } from 'recoil';
+import { useState } from 'react';
+import { FileUpload } from './Signup';
 
 const SignupFormContainer = styled.form`
   hr {
@@ -63,12 +65,29 @@ const EmailCheck = styled.div`
   }
 `;
 
-const SignupForm = () => {
+const SignupForm = ({ file, setFile }: FileUpload) => {
+  const [form, setForm] = useRecoilState(inputsState);
+
+  const [pwdCheck, setPwdCheck] = useState<string>('');
+
+  const { name, nickname, email, password } = form;
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
+  const onChangePwdCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPwdCheck(e.target.value);
+  };
   return (
     <SignupFormContainer>
       <label htmlFor='email'>이메일</label>
       <div className='input-box'>
-        <input type='email' id='email' name='email' placeholder='your@email.com'></input>
+        <input type='email' id='email' name='email' value={email} onChange={onChange} placeholder='your@email.com'></input>
         <HrTag className='hrtag' />
         <EmailCheck>중복확인</EmailCheck>
       </div>
@@ -76,33 +95,40 @@ const SignupForm = () => {
 
       <label htmlFor='password'>비밀번호</label>
       <div className='input-box'>
-        <input type='password' id='password' name='password' placeholder='영문+숫자+특수문자 최소 8자리'></input>
+        <input type='password' id='password' name='password' value={password} onChange={onChange} placeholder='영문+숫자+특수문자 최소 8자리'></input>
         <HrTag className='hrtag' />
       </div>
       <hr />
 
       <label htmlFor='password-check'>비밀번호 확인</label>
       <div className='input-box'>
-        <input type='password' id='password-check' name='passwordCheck' placeholder='비밀번호 확인'></input>
+        <input
+          type='password'
+          id='password-check'
+          name='passwordCheck'
+          placeholder='비밀번호 확인'
+          value={pwdCheck}
+          onChange={onChangePwdCheck}
+        ></input>
         <HrTag className='hrtag' />
       </div>
       <hr />
 
       <label htmlFor='name'>이름</label>
       <div className='input-box'>
-        <input type='text' id='password-check' name='name' placeholder='이름'></input>
+        <input type='text' id='name' name='name' value={name} onChange={onChange} placeholder='이름'></input>
         <HrTag className='hrtag' />
       </div>
       <hr />
 
       <label htmlFor='nickname'>닉네임</label>
       <div className='input-box'>
-        <input type='text' id='nickname' name='nickname' placeholder='닉네임'></input>
+        <input type='text' id='nickname' name='nickname' value={nickname} onChange={onChange} placeholder='닉네임'></input>
         <HrTag className='hrtag' />
       </div>
       <hr />
 
-      <ImgInput></ImgInput>
+      <ImgInput file={file} setFile={setFile}></ImgInput>
     </SignupFormContainer>
   );
 };

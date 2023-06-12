@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import LoginForm from './LoginForm';
-
+import { useNavigate } from 'react-router';
 // interface LoginProps {}
 
 const LoginContainer = styled.div`
@@ -108,6 +108,10 @@ const CustomLink = styled.div`
   }
 `;
 const Login = () => {
+  const navigate = useNavigate();
+  const onClickSignup = () => {
+    navigate('/signup');
+  };
   return (
     <LoginContainer>
       <Title>로그인이나 회원가입 해주세요</Title>
@@ -117,7 +121,7 @@ const Login = () => {
         <CustomLink>
           <span className='forgot-password'>비밀번호를 잊어버리셨나요?</span>
         </CustomLink>
-        <SignupBtn>회원가입</SignupBtn>
+        <SignupBtn onClick={onClickSignup}>회원가입</SignupBtn>
         <div className='or-tag'>혹은</div>
         <SignupBtn>카카오 로그인</SignupBtn>
       </BtnBox>
