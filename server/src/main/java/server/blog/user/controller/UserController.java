@@ -41,7 +41,7 @@ public class UserController {
     }
 
 
-    // 회원 정보 수정 (토큰 이용)
+    // 회원 정보 수정 (토큰 이용 -> 회원 확인)
     @PatchMapping("/user/{userId}")
     public ResponseEntity patchUser(@Valid @RequestBody UserDto.Patch requestBody,
                                     @PathVariable("userId") Long userId) {
@@ -93,11 +93,23 @@ public class UserController {
     }
 
 
-    // 회원 탈퇴 (토큰 이용 -> 일단 보류)
+    // 회원 탈퇴 (토큰 이용 -> 회원 확인)
     @DeleteMapping("/user/{userId}")
     public ResponseEntity deleteUsers(@PathVariable("userId") Long userId) {
-        userService.deleteUser(userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal(); // 인증된 사용자 주체
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (principal instanceof String) {
+            String email = (String) principal;
+            Users currentUser = userRepository.findByEmail(email).orElse(null);
+
+            if (currentUser != null && currentUser.getUserId().equals(userId)) {
+                userService.deleteUser(userId);
+                return ResponseEntity.ok("회원 탈퇴 성공");
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
 }
