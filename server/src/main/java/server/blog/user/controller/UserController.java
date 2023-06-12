@@ -53,7 +53,7 @@ public class UserController {
     }
 
 
-    //     회원 확인 (토큰 이용 확인 -> 일단 보류)
+    // 회원 확인 (토큰 이용 확인)
     @GetMapping("/user")
     public ResponseEntity getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
