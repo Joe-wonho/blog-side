@@ -40,16 +40,27 @@ public class UserController {
         return new ResponseEntity<>((mapper.userToLoginResponseDto(createdUsers)), HttpStatus.CREATED);
     }
 
-    // 회원 정보 수정
+
+    // 회원 정보 수정 (토큰 이용)
     @PatchMapping("/user/{userId}")
     public ResponseEntity patchUser(@Valid @RequestBody UserDto.Patch requestBody,
                                     @PathVariable("userId") Long userId) {
-        Users users = mapper.userPatchDtoToUser(requestBody);
-        users.setUserId(userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal(); // 인증된 사용자 주체
 
-        Users findedUsers = userService.updateUser(users);
+        if (principal instanceof String) {
+            String email = (String) principal;
+            Users currentUser = userRepository.findByEmail(email).orElse(null);
 
-        return new ResponseEntity<>((mapper.userToUserResponseDto(findedUsers)),HttpStatus.OK);
+            if (currentUser != null && currentUser.getUserId().equals(userId)) {
+                Users updatedUser = mapper.userPatchDtoToUser(requestBody);
+                updatedUser.setUserId(userId);
+                Users savedUser = userService.updateUser(updatedUser);
+                return new ResponseEntity<>(mapper.userToUserResponseDto(savedUser), HttpStatus.OK);
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
 
