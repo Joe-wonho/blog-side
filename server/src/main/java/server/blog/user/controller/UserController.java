@@ -13,13 +13,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import server.blog.auth.userdetails.PrincipalDetails;
-import server.blog.user.dto.UserDto;
 import server.blog.user.entity.Users;
 import server.blog.user.mapper.UserMapper;
 import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -69,22 +67,12 @@ public class UserController {
         return new ResponseEntity<>(mapper.userToLoginResponseDto(createdUsers), HttpStatus.CREATED);
     }
 
-    private String saveProfileImage(MultipartFile profileFile) throws IOException {
-        String fileName = StringUtils.cleanPath(profileFile.getOriginalFilename());
-        String fileExtension = FilenameUtils.getExtension(fileName);
-        String filePath = "/path/to/save/directory/" + fileName;
-
-        // 프로필 이미지 파일을 저장
-        Files.copy(profileFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-
-        return filePath;
-    }
-
 
 
     // 회원 정보 수정 (토큰 이용 -> 회원 확인)
     @PatchMapping("/user/{userId}")
-    public ResponseEntity patchUser(@Valid @RequestBody UserDto.Patch requestBody,
+    public ResponseEntity patchUser(@RequestParam(value = "nickname", required = false) String nickname,
+                                    @RequestParam(value = "profile", required = false) MultipartFile profileFile,
                                     @PathVariable("userId") Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal(); // 인증된 사용자 주체
@@ -94,10 +82,26 @@ public class UserController {
             Users currentUser = userRepository.findByEmail(email).orElse(null);
 
             if (currentUser != null && currentUser.getUserId().equals(userId)) {
-                Users updatedUser = mapper.userPatchDtoToUser(requestBody);
-                updatedUser.setUserId(userId);
-                Users savedUser = userService.updateUser(updatedUser);
-                return new ResponseEntity<>(mapper.userToUserResponseDto(savedUser), HttpStatus.OK);
+                try {
+                    Users updatedUser = new Users();
+                    if (nickname != null) {
+                        updatedUser.setNickname(nickname);
+                    }
+                    if (profileFile != null && !profileFile.isEmpty()) {
+                        // 프로필 파일 저장 및 파일 경로 설정
+                        String filePath = saveProfileImage(profileFile);
+                        updatedUser.setProfile(filePath);
+                    } else if (profileFile == null && nickname == null) {
+                        // nickname과 profile 모두 수정할 값이 없는 경우, BadRequest 응답
+                        return new ResponseEntity<>("수정할 내용이 없습니다.", HttpStatus.BAD_REQUEST);
+                    }
+                    updatedUser.setUserId(userId);
+                    Users savedUser = userService.updateUser(updatedUser);
+                    return new ResponseEntity<>(mapper.userToUserResponseDto(savedUser), HttpStatus.OK);
+                } catch (IOException e) {
+                    // 파일 저장 오류 처리
+                    return new ResponseEntity<>("프로필 이미지 저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
         }
 
@@ -151,6 +155,18 @@ public class UserController {
         }
 
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+
+    private String saveProfileImage(MultipartFile profileFile) throws IOException {
+        String fileName = StringUtils.cleanPath(profileFile.getOriginalFilename());
+        String fileExtension = FilenameUtils.getExtension(fileName);
+        String filePath = "/path/to/save/directory/" + fileName; // 경로 수정 하기
+
+        // 프로필 이미지 파일을 저장
+        Files.copy(profileFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+
+        return filePath;
     }
 
 }
