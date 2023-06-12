@@ -1,6 +1,8 @@
 package server.blog.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import server.blog.auth.userdetails.PrincipalDetails;
 import server.blog.user.dto.UserDto;
 import server.blog.user.entity.Users;
@@ -17,6 +20,10 @@ import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 
 @RestController
@@ -31,14 +38,48 @@ public class UserController {
     private final UserRepository userRepository;
 
 
-    // 회원 가입
+    // 회원 가입 (폼 데이터 형식)
     @PostMapping("/signup")
-    public ResponseEntity postUser(@Valid @RequestBody UserDto.Post requestBody) throws Exception {
-        Users users = mapper.userPostDtoToUser(requestBody);
+    public ResponseEntity postUser(
+            @RequestParam("name") String name,
+            @RequestParam("nickname") String nickname,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam(value = "profile", required = false) MultipartFile profileFile
+    ) throws Exception {
+        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(nickname) || StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
+            // 필수 필드가 누락된 경우, 적절한 응답 처리
+            return new ResponseEntity<>("필수 필드를 입력하세요.", HttpStatus.BAD_REQUEST);
+        }
+
+        Users users = new Users();
+        users.setName(name);
+        users.setNickname(nickname);
+        users.setEmail(email);
+        users.setPassword(password);
+
+        if (profileFile != null && !profileFile.isEmpty()) {
+            // 프로필 이미지 파일이 전송되었을 경우, 파일을 저장하고 파일 경로를 사용자 객체에 설정합니다.
+            String filePath = saveProfileImage(profileFile);
+            users.setProfile(filePath);
+        }
+
         Users createdUsers = userService.createUser(users);
 
-        return new ResponseEntity<>((mapper.userToLoginResponseDto(createdUsers)), HttpStatus.CREATED);
+        return new ResponseEntity<>(mapper.userToLoginResponseDto(createdUsers), HttpStatus.CREATED);
     }
+
+    private String saveProfileImage(MultipartFile profileFile) throws IOException {
+        String fileName = StringUtils.cleanPath(profileFile.getOriginalFilename());
+        String fileExtension = FilenameUtils.getExtension(fileName);
+        String filePath = "/path/to/save/directory/" + fileName;
+
+        // 프로필 이미지 파일을 저장
+        Files.copy(profileFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+
+        return filePath;
+    }
+
 
 
     // 회원 정보 수정 (토큰 이용 -> 회원 확인)
