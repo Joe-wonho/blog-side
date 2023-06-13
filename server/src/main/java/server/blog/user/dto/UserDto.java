@@ -2,6 +2,8 @@ package server.blog.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.Valid;
 
 import javax.validation.constraints.Email;
@@ -43,11 +45,12 @@ public class UserDto {
     @AllArgsConstructor
     public static class LoginResponse{
         private Long userId;
-        private String nickName;
+        private String nickname;
 
     }
 
     @Getter
+    @Setter
     @AllArgsConstructor
     public static class UserResponse{
         private Long userId;
