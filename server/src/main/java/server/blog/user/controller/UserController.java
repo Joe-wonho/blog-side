@@ -122,7 +122,7 @@ public class UserController {
                         .anyMatch(authority -> authority.equals("ROLE_USER"));
 
                 if (hasUserRole) {
-                    return new ResponseEntity<>((mapper.userToUserCheckResponseDto(users)), HttpStatus.OK);
+                    return new ResponseEntity<>((mapper.userToUserResponseDto(users)), HttpStatus.OK);
                 }
             }
         }

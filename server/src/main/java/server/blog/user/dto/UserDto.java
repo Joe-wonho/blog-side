@@ -2,6 +2,7 @@ package server.blog.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.Valid;
@@ -42,7 +43,8 @@ public class UserDto {
     }
 
     @Getter
-    @AllArgsConstructor
+    @Setter
+    @NoArgsConstructor
     public static class LoginResponse{
         private Long userId;
         private String nickname;
@@ -51,7 +53,7 @@ public class UserDto {
 
     @Getter
     @Setter
-    @AllArgsConstructor
+    @NoArgsConstructor
     public static class UserResponse{
         private Long userId;
         private String nickname;
@@ -60,12 +62,13 @@ public class UserDto {
         private String profile;
     }
 
-    @Getter
-    @AllArgsConstructor
-    public static class UserCheckResponse{
-        private Long userId;
-        private String nickname;
-        private String name;
-        private String profile;
-    }
+//    @Getter
+//    @AllArgsConstructor
+//    public static class UserCheckResponse{
+//        private Long userId;
+//        private String email;
+//        private String nickname;
+//        private String name;
+//        private String profile;
+//    }
 }
