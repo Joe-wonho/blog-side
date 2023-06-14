@@ -62,13 +62,4 @@ public class UserDto {
         private String profile;
     }
 
-//    @Getter
-//    @AllArgsConstructor
-//    public static class UserCheckResponse{
-//        private Long userId;
-//        private String email;
-//        private String nickname;
-//        private String name;
-//        private String profile;
-//    }
 }
