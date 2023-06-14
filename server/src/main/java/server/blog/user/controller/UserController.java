@@ -12,11 +12,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import server.blog.auth.userdetails.PrincipalDetails;
+import server.blog.user.dto.UserDto;
 import server.blog.user.entity.Users;
 import server.blog.user.mapper.UserMapper;
 import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -148,6 +150,13 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
+    // 이메일 중복 확인
+    @PostMapping("/email")
+    public ResponseEntity postEmail(@Valid @RequestBody UserDto.Post requestBody) {
+        if(userRepository.existsByEmail(requestBody.getEmail())){
+            return ResponseEntity.badRequest().body("이미 존재하는 이메일 입니다.");
+        }
 
-
+        return ResponseEntity.ok("사용할 수 있는 이메일 입니다.");
+    }
 }
