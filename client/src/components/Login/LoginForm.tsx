@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+import { emailValidation, pwdValidation } from '../Signup/validation';
 
 const LoginFormContainer = styled.form``;
-//Inputform Box
+
 const InputBox = styled.div`
   height: 200px;
   font-weight: 500;
@@ -55,22 +56,38 @@ const ValidDesc = styled.p`
   font-size: 11px;
   color: rgb(253, 91, 21);
 `;
-const LoginForm = () => {
+
+interface LoginFormProps {
+  loginForm: { email: string; password: string };
+  setLoginForm(loginForm: { email: string; password: string }): void;
+}
+
+const LoginForm = ({ loginForm, setLoginForm }: LoginFormProps) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginForm({
+      ...loginForm,
+      [name]: value,
+    });
+  };
   return (
     <LoginFormContainer>
       <InputBox>
         <label htmlFor='email'>이메일</label>
         <div className='input-box'>
-          <input type='email' id='email' name='email' placeholder='your@email.com'></input>
+          <input type='email' id='email' name='email' placeholder='your@email.com' onChange={onChange}></input>
           <HrTag className='hrtag' />
         </div>
-        <hr></hr>
+        {emailValidation(loginForm.email)[0] ? null : <ValidDesc>{emailValidation(loginForm.email)[1]}</ValidDesc>}
+        <hr />
+
         <label htmlFor='password'>비밀번호</label>
         <div className='input-box'>
-          <input type='password' id='password' name='password' placeholder='영문+숫자+특수문자 최소 8자리'></input>
+          <input type='password' id='password' name='password' placeholder='영문+숫자+특수문자 최소 8자리' onChange={onChange}></input>
           <HrTag className='hrtag' />
         </div>
-        <hr></hr>
+        {pwdValidation(loginForm.password)[0] ? null : <ValidDesc>{pwdValidation(loginForm.password)[1]}</ValidDesc>}
+        <hr />
       </InputBox>
     </LoginFormContainer>
   );

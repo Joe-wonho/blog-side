@@ -5,11 +5,8 @@ export interface ISignupForm {
   nickname: string;
   email: string;
   password: string;
+  pwdCheck: string;
 }
-
-// export interface ProfileImg {
-//   profile: FileList | null;
-// }
 
 export const inputsState = atom<ISignupForm>({
   key: 'inputsState',
@@ -18,10 +15,6 @@ export const inputsState = atom<ISignupForm>({
     nickname: '',
     email: '',
     password: '',
+    pwdCheck: '',
   },
 });
-
-// export const profileImg = atom<ProfileImg>({
-//   key: 'profileImg',
-//   default: null,
-// });

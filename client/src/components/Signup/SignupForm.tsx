@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import ImgInput from './ImgInput';
 import { inputsState } from '../../recoil/signup';
 import { useRecoilState } from 'recoil';
-import { useState } from 'react';
 import { FileUpload } from './Signup';
+import { emailValidation, pwdValidation, checkPwdValidation } from './validation';
 
 const SignupFormContainer = styled.form`
   hr {
@@ -64,13 +64,19 @@ const EmailCheck = styled.div`
     font-weight: 600;
   }
 `;
+const ValidDesc = styled.p`
+  margin: 10px 0 20px;
+  font-size: 11px;
+  color: rgb(109, 109, 109);
+  &.false-input {
+    color: rgb(253, 91, 21);
+  }
+`;
 
 const SignupForm = ({ file, setFile }: FileUpload) => {
   const [form, setForm] = useRecoilState(inputsState);
 
-  const [pwdCheck, setPwdCheck] = useState<string>('');
-
-  const { name, nickname, email, password } = form;
+  const { name, nickname, email, password, pwdCheck } = form;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -80,9 +86,6 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
     });
   };
 
-  const onChangePwdCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPwdCheck(e.target.value);
-  };
   return (
     <SignupFormContainer>
       <label htmlFor='email'>이메일</label>
@@ -91,6 +94,7 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
         <HrTag className='hrtag' />
         <EmailCheck>중복확인</EmailCheck>
       </div>
+      {emailValidation(email)[0] ? null : <ValidDesc className='false-input'>{emailValidation(email)[1]}</ValidDesc>}
       <hr />
 
       <label htmlFor='password'>비밀번호</label>
@@ -98,20 +102,15 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
         <input type='password' id='password' name='password' value={password} onChange={onChange} placeholder='영문+숫자+특수문자 최소 8자리'></input>
         <HrTag className='hrtag' />
       </div>
+      {pwdValidation(password)[0] ? null : <ValidDesc className='false-input'>{pwdValidation(password)[1]}</ValidDesc>}
       <hr />
 
       <label htmlFor='password-check'>비밀번호 확인</label>
       <div className='input-box'>
-        <input
-          type='password'
-          id='password-check'
-          name='passwordCheck'
-          placeholder='비밀번호 확인'
-          value={pwdCheck}
-          onChange={onChangePwdCheck}
-        ></input>
+        <input type='password' id='password-check' name='pwdCheck' placeholder='비밀번호 확인' value={pwdCheck} onChange={onChange}></input>
         <HrTag className='hrtag' />
       </div>
+      {checkPwdValidation(password, pwdCheck)[0] ? null : <ValidDesc className='false-input'>{checkPwdValidation(password, pwdCheck)[1]}</ValidDesc>}
       <hr />
 
       <label htmlFor='name'>이름</label>
@@ -119,6 +118,7 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
         <input type='text' id='name' name='name' value={name} onChange={onChange} placeholder='이름'></input>
         <HrTag className='hrtag' />
       </div>
+      {/* {commonValidation(name)[0] ? null : <ValidDesc className='false-input'>{commonValidation(name)[1]}</ValidDesc>} */}
       <hr />
 
       <label htmlFor='nickname'>닉네임</label>

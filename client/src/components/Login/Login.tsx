@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import LoginForm from './LoginForm';
 import { useNavigate } from 'react-router';
-// interface LoginProps {}
-
+import { useState } from 'react';
+import axios from 'axios';
+import { emailValidation, pwdValidation } from '../Signup/validation';
 const LoginContainer = styled.div`
   padding: 0 24px;
   height: 100%;
@@ -107,17 +108,38 @@ const CustomLink = styled.div`
     }
   }
 `;
+
 const Login = () => {
+  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+
   const navigate = useNavigate();
+
   const onClickSignup = () => {
     navigate('/signup');
   };
+
+  const onClickLogin = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (emailValidation(loginForm.email)[0] === false || pwdValidation(loginForm.password)[0] === false) {
+      alert('올바른 정보를 입력해주세요');
+    } else {
+      console.log(loginForm);
+      //  이부분에서 서버와 통신하면 된다.
+      // try {
+      //   await axios.post('http://localhost:8080/login', loginForm);
+      // } catch (err: any) {
+      //   console.log('axios 에러');
+      //   throw new Error(err);
+      // }
+    }
+  };
+
   return (
     <LoginContainer>
       <Title>로그인이나 회원가입 해주세요</Title>
-      <LoginForm />
+      <LoginForm loginForm={loginForm} setLoginForm={setLoginForm} />
       <BtnBox>
-        <LoginBtn>로그인</LoginBtn>
+        <LoginBtn onClick={onClickLogin}>로그인</LoginBtn>
         <CustomLink>
           <span className='forgot-password'>비밀번호를 잊어버리셨나요?</span>
         </CustomLink>

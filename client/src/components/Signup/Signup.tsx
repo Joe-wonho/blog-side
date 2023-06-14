@@ -2,6 +2,11 @@ import styled from 'styled-components';
 import SignupForm from './SignupForm';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
+import { inputsState } from '../../recoil/signup';
+import { useRecoilState } from 'recoil';
+import axios from 'axios';
+import defaultProfile from '../../assets/profile.jpg';
+import { emailValidation, pwdValidation, checkPwdValidation } from './validation';
 const SignupContainer = styled.div`
   padding: 0 24px;
   height: 100%;
@@ -57,20 +62,55 @@ export interface FileUpload {
 }
 
 const Signup = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [form, setForm] = useRecoilState(inputsState);
+  const [file, setFile] = useState<FileList | null>(null);
+  const defaultImg = new File([defaultProfile], 'default.jpg', { type: 'image/jpg' });
+
   const navigate = useNavigate();
+
   const onClickCancle = () => {
     navigate('/login');
   };
-  const [file, setFile] = useState<FileList | null>(null);
 
-  const onSubmit = () => {};
+  const onSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append('email', form.email);
+    formData.append('password', form.password);
+    formData.append('name', form.name);
+    formData.append('nickname', form.nickname);
+    if (file) {
+      formData.append('profile', file[0]);
+    } else {
+      formData.append('profile', defaultImg);
+    }
+    if (
+      emailValidation(form.email)[0] === false ||
+      pwdValidation(form.password)[0] === false ||
+      checkPwdValidation(form.password, form.pwdCheck)[0] === false
+    ) {
+      alert('올바른 정보를 입력해주세요');
+    } else {
+      //이부분에서 서버와 통신하면 된다.
+      // try {
+      //   await axios.post('http://localhost:8080/signup', formData, {
+      //     headers: { 'content-type': 'multipart/form-data' },
+      //   });
+      // } catch (err: any) {
+      //   console.log('axios 에러');
+      //   throw new Error(err);
+      // }
+    }
+  };
   return (
     <SignupContainer>
       <InputBox>
         <SignupForm file={file} setFile={setFile}></SignupForm>
       </InputBox>
       <BtnBox>
-        <SignupBtn>확인</SignupBtn>
+        <SignupBtn onClick={onSubmit}>확인</SignupBtn>
         <SignupBtn onClick={onClickCancle}>취소</SignupBtn>
       </BtnBox>
     </SignupContainer>
