@@ -1,7 +1,9 @@
 package server.blog.user.controller;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,14 +38,15 @@ public class UserController {
     private final UserRepository userRepository;
 
 
+
     // 회원 가입 (폼 데이터 형식)
     @PostMapping("/signup")
-    public ResponseEntity postUser(
+    public ResponseEntity<?> postUser(
             @RequestParam("name") String name,
             @RequestParam("nickname") String nickname,
             @RequestParam("email") String email,
             @RequestParam("password") String password,
-            @RequestParam(value = "profile", required = false) MultipartFile profileFile
+            @RequestParam(value = "profile", required = false) MultipartFile file
     ) throws Exception {
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(nickname) || StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
             // 필수 필드가 누락된 경우, 적절한 응답 처리
@@ -56,56 +59,50 @@ public class UserController {
         users.setEmail(email);
         users.setPassword(password);
 
-        if (profileFile != null && !profileFile.isEmpty()) {
-            // 프로필 이미지 파일이 전송되었을 경우, 파일을 저장하고 파일 경로를 사용자 객체에 설정합니다.
-            String filePath = saveProfileImage(profileFile);
-            users.setProfile(filePath);
-        }
 
-        Users createdUsers = userService.createUser(users);
+        Users createdUsers = userService.createUser(users, file);
 
         return new ResponseEntity<>(mapper.userToLoginResponseDto(createdUsers), HttpStatus.CREATED);
     }
 
 
 
-    // 회원 정보 수정 (토큰 이용 -> 회원 확인)
+    // 회원 정보 수정 (폼 데이터 형식 / 토큰 이용 -> 회원 확인)
     @PatchMapping("/user/{userId}")
     public ResponseEntity patchUser(@RequestParam(value = "nickname", required = false) String nickname,
-                                    @RequestParam(value = "profile", required = false) MultipartFile profileFile,
+                                    @RequestParam(value = "profile", required = false) MultipartFile file,
                                     @PathVariable("userId") Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal(); // 인증된 사용자 주체
+        String email = authentication.getName(); // 현재 사용자의 이메일
 
-        if (principal instanceof String) {
-            String email = (String) principal;
-            Users currentUser = userRepository.findByEmail(email).orElse(null);
-
-            if (currentUser != null && currentUser.getUserId().equals(userId)) {
-                try {
-                    Users updatedUser = new Users();
-                    if (nickname != null) {
-                        updatedUser.setNickname(nickname);
-                    }
-                    if (profileFile != null && !profileFile.isEmpty()) {
-                        // 프로필 파일 저장 및 파일 경로 설정
-                        String filePath = saveProfileImage(profileFile);
-                        updatedUser.setProfile(filePath);
-                    } else if (profileFile == null && nickname == null) {
-                        // nickname과 profile 모두 수정할 값이 없는 경우, BadRequest 응답
-                        return new ResponseEntity<>("수정할 내용이 없습니다.", HttpStatus.BAD_REQUEST);
-                    }
-                    updatedUser.setUserId(userId);
-                    Users savedUser = userService.updateUser(updatedUser);
-                    return new ResponseEntity<>(mapper.userToUserResponseDto(savedUser), HttpStatus.OK);
-                } catch (IOException e) {
-                    // 파일 저장 오류 처리
-                    return new ResponseEntity<>("프로필 이미지 저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
+        Users currentUser = userRepository.findByEmail(email).orElse(null);
+        if (currentUser == null || !currentUser.getUserId().equals(userId)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        try {
+            Users updatedUser = new Users();
+            if (nickname != null) {
+                updatedUser.setNickname(nickname);
+                updatedUser.setProfile(currentUser.getProfile());
+                updatedUser.setUserId(userId);
+                updatedUser.setEmail(currentUser.getEmail());
+                updatedUser.setName(currentUser.getName());
+                updatedUser.setPassword(currentUser.getPassword());
+            }
+            if (file != null && !file.isEmpty()) {
+                // 프로필 파일 저장 및 파일 경로 설정
+                Users savedUser = userService.updateUser(updatedUser, file);
+            } else if (file == null && nickname == null) {
+                // nickname과 profile 모두 수정할 값이 없는 경우, BadRequest 응답
+                return new ResponseEntity<>("수정할 내용이 없습니다.", HttpStatus.BAD_REQUEST);
+            }
+//            updatedUser.setUserId(currentUser.getUserId());
+            return new ResponseEntity<>(mapper.userToUserResponseDto(updatedUser), HttpStatus.OK);
+        } catch (IOException e) {
+            // 파일 저장 오류 처리
+            return new ResponseEntity<>("프로필 이미지 저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
@@ -158,15 +155,15 @@ public class UserController {
     }
 
 
-    private String saveProfileImage(MultipartFile profileFile) throws IOException {
-        String fileName = StringUtils.cleanPath(profileFile.getOriginalFilename());
-        String fileExtension = FilenameUtils.getExtension(fileName);
-        String filePath = "/path/to/save/directory/" + fileName; // 경로 수정 하기
-
-        // 프로필 이미지 파일을 저장
-        Files.copy(profileFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-
-        return filePath;
-    }
+//    private String saveProfileImage(MultipartFile profileFile) throws IOException {
+//        String fileName = StringUtils.cleanPath(profileFile.getOriginalFilename());
+//        String fileExtension = FilenameUtils.getExtension(fileName);
+//        String filePath = "/var/www/uploads/" + fileName; // 경로 수정 하기
+//
+//        // 프로필 이미지 파일을 저장
+//        Files.copy(profileFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+//
+//        return filePath;
+//    }
 
 }
