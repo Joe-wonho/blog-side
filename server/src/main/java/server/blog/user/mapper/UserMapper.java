@@ -14,11 +14,14 @@ public interface UserMapper {
     Users userPatchDtoToUser(UserDto.Patch requestBody);
 
     default UserDto.LoginResponse userToLoginResponseDto(Users users){
-        UserDto.LoginResponse userResponse = new UserDto.LoginResponse(users.getUserId(), users.getNickname());
-        return userResponse;
+        UserDto.LoginResponse userLoginResponse = new UserDto.LoginResponse(users.getUserId(), users.getNickname());
+        return userLoginResponse;
     }
 
-    UserDto.UserResponse userToUserResponseDto(Users users);
+    default UserDto.UserResponse userToUserResponseDto(Users users){
+        UserDto.UserResponse userResponse = new UserDto.UserResponse(users.getUserId(), users.getNickname(), users.getEmail(), users.getName(), users.getProfile());
+        return userResponse;
+    }
 
     default UserDto.UserCheckResponse userToUserCheckResponseDto(Users users){
         UserDto.UserCheckResponse userCheckResponse = new UserDto.UserCheckResponse(users.getUserId(), users.getNickname(), users.getName(), users.getProfile());
