@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import server.blog.user.entity.Users;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,12 +38,19 @@ public class StorageService {
         return url;
     }
 
-    public String uploadFile(MultipartFile file, Long userId) { // 해당 아이디로 파일 업로드
+
+    // s3 버킷에 파일 수정 업로드
+    public String uploadFile(MultipartFile file, Users users) { // 해당 아이디로 파일 업로드
+        // 기존 파일 삭제
+        s3Client.deleteObject(bucketName, users.getProfile());
+
+        // 현재 파일 업로드
         File fileObj = convertMultiPartFileToFile(file);
-        String fileName =  Long.toString(userId);
+        String fileName =  Long.toString(users.getUserId());
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+        String url = ""+s3Client.getUrl("blog-side", fileName);
         fileObj.delete();
-        return s3Client.getUrl(bucketName, Long.toString(userId)).toString();
+        return url;
     }
 
 
@@ -57,15 +66,6 @@ public class StorageService {
         return null;
     }
 
-
-//    public String deleteFile(String fileName) { // 파일 이름으로 s3 버킷에서 파일 삭제
-//        s3Client.deleteObject(bucketName, fileName);
-//        return fileName + " removed ...";
-//    }
-
-    public void deleteFile(String fileName) {
-        s3Client.deleteObject(bucketName, fileName);
-    }
 
 
     // MultipartFile -> File 객체 변환 메서드
