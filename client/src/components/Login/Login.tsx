@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import LoginForm from './LoginForm';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { emailValidation, pwdValidation } from '../Signup/validation';
+
 const LoginContainer = styled.div`
   padding: 0 24px;
   height: 100%;
@@ -123,14 +124,19 @@ const Login = () => {
     if (emailValidation(loginForm.email)[0] === false || pwdValidation(loginForm.password)[0] === false) {
       alert('올바른 정보를 입력해주세요');
     } else {
-      console.log(loginForm);
       //  이부분에서 서버와 통신하면 된다.
-      // try {
-      //   await axios.post('http://localhost:8080/login', loginForm);
-      // } catch (err: any) {
-      //   console.log('axios 에러');
-      //   throw new Error(err);
-      // }
+      try {
+        await axios.post('/login', { email: loginForm.email, password: loginForm.password }).then((res) => {
+          const { authorization, refresh } = res.headers;
+          let accessToken: string = authorization;
+          let refreshToken: string = refresh;
+          console.log(accessToken);
+          console.log(refreshToken);
+          navigate('/main');
+        });
+      } catch (err: any) {
+        alert('로그인 실패');
+      }
     }
   };
 

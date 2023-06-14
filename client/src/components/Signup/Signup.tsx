@@ -94,14 +94,15 @@ const Signup = () => {
       alert('올바른 정보를 입력해주세요');
     } else {
       //이부분에서 서버와 통신하면 된다.
-      // try {
-      //   await axios.post('http://localhost:8080/signup', formData, {
-      //     headers: { 'content-type': 'multipart/form-data' },
-      //   });
-      // } catch (err: any) {
-      //   console.log('axios 에러');
-      //   throw new Error(err);
-      // }
+      try {
+        await axios.post('/signup', formData, {
+          headers: { 'content-type': 'multipart/form-data' },
+        });
+        navigate('/login');
+      } catch (err: any) {
+        alert('회원가입 실패');
+        throw new Error(err);
+      }
     }
   };
   return (
