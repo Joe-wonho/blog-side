@@ -155,15 +155,5 @@ public class UserController {
     }
 
 
-//    private String saveProfileImage(MultipartFile profileFile) throws IOException {
-//        String fileName = StringUtils.cleanPath(profileFile.getOriginalFilename());
-//        String fileExtension = FilenameUtils.getExtension(fileName);
-//        String filePath = "/var/www/uploads/" + fileName; // 경로 수정 하기
-//
-//        // 프로필 이미지 파일을 저장
-//        Files.copy(profileFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-//
-//        return filePath;
-//    }
 
 }
