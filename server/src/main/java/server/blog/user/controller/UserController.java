@@ -1,9 +1,6 @@
 package server.blog.user.controller;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,9 +18,6 @@ import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 
 @RestController
