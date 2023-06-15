@@ -14,7 +14,7 @@ import java.io.IOException;
 // 인증에 성공했지만 리소스에 대한 접권 권한이 없을 때 호출되는 핸들러
 @Slf4j
 @Component
-public class UserAccessDeniedHandler implements org.springframework.security.web.access.AccessDeniedHandler {
+public class UserAuthenticationDeniedHandler implements org.springframework.security.web.access.AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
