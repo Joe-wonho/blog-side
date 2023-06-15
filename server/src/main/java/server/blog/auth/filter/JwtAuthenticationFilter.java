@@ -29,10 +29,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final JwtTokenizer jwtTokenizer; // JWT 생성, 토큰 관련 도구 제공
     private final UserRepository userRepository;
 
-//    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer) {
-//        this.authenticationManager = authenticationManager;
-//        this.jwtTokenizer = jwtTokenizer;
-//    }
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
@@ -92,6 +88,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     }
 
+
     // AccessToken 생성
     private String delegateAccessToken(Users users) {
         Map<String, Object> claims = new HashMap<>();
@@ -107,6 +104,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         return accessToken;
     }
+
 
     // RefreshToken 생성
     private String delegateRefreshToken(Users users) {
