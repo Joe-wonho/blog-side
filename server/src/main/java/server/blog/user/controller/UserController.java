@@ -17,8 +17,11 @@ import server.blog.user.entity.Users;
 import server.blog.user.mapper.UserMapper;
 import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
-
 import javax.validation.Valid;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -38,10 +41,10 @@ public class UserController {
     // 회원 가입 (폼 데이터 형식)
     @PostMapping("/signup")
     public ResponseEntity<?> postUser(
-            @RequestParam("name") String name,
-            @RequestParam("nickname") String nickname,
-            @RequestParam("email") String email,
-            @RequestParam("password") String password,
+            @RequestParam("name") @NotBlank(message = "이름을 입력하세요.") String name,
+            @RequestParam("nickname") @NotBlank(message = "닉네임을 입력하세요.") String nickname,
+            @RequestParam("email") @NotBlank(message = "이메일을 입력하세요.") @Email(message = "올바른 이메일 형식이 아닙니다.") String email,
+            @RequestParam("password") @NotBlank(message = "패스워드를 입력하세요.") @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()])[a-zA-Z\\d!@#$%^&*()]{8,}$", message = "비밀번호는 최소 8자리이며, 영문, 숫자, 특수문자를 포함해야 합니다.") String password,
             @RequestParam(value = "profile", required = false) MultipartFile file
     ) throws Exception {
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(nickname) || StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {

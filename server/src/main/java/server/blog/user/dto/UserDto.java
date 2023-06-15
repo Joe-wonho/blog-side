@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 public class UserDto {
 
@@ -30,9 +31,11 @@ public class UserDto {
 
         @Valid
         @NotBlank(message = "패스워드를 입력하세요.")
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()])[a-zA-Z\\d!@#$%^&*()]{8,}$", message = "비밀번호는 최소 8자리이며, 영문, 숫자, 특수문자를 포함해야 합니다.")
         private String password;
 
         private String profile;
+
     }
 
     @Getter
