@@ -73,7 +73,7 @@ public class JwtTokenizer {
         return key;
     }
 
-    // 비밀키 -> 토큰 클래임 추출
+    // 비밀키 -> 토큰 클래임 추출 (검증 후, Claims을 반환 하는 용도)
     public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey); // 토큰 서명 검증 사용
 
@@ -85,7 +85,7 @@ public class JwtTokenizer {
         return claims;
     }
 
-    // JWT 검증 메서드(서명의 유효성 검증)
+    // JWT 검증 메서드(서명의 유효성 검증 -> 단순히 검증만 하는 용도로 쓰일 경우)
     public void verifySignature(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey); // 디코딩 -> 실제 key 값
 
