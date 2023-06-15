@@ -70,9 +70,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String name = users.getName();
         String profile = users1.getProfile();
 
-        String refresh = "Bearer_" + refreshToken;
+//        String refresh = "Bearer_" + refreshToken;
 
-        Cookie cookie1 = new Cookie("Refresh", refresh);
+        Cookie cookie1 = new Cookie("Refresh", refreshToken);
         cookie1.setHttpOnly(true);
         cookie1.setPath("/");
         cookie1.setMaxAge(3600);
@@ -83,7 +83,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         jsonObject.put("userId", userId);
         jsonObject.put("name", name);
         jsonObject.put("profile", profile);
-        jsonObject.put("refreshToken", refresh);
+        jsonObject.put("refreshToken", refreshToken);
 
 
     }
