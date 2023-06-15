@@ -13,6 +13,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +46,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String authorization = request.getHeader("Authorization");
-        return authorization == null || !authorization.startsWith("Bearer");
+        String cookie = request.getHeader("Cookie");
+
+
+        return authorization == null || !authorization.startsWith("Bearer") || (cookie == null);
     }
+
 
     // JWT 검증하는 메서드 (HTTP 요청의 헤더에서 JWT 획득 후 -> 클레임 정보 추출)
     private Map<String, Object> verifyJws(HttpServletRequest request) {
@@ -61,8 +66,21 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     // Authentication 객체를 SecurityContext에 저장하는 메서드
     private void setAuthenticationToContext(Map<String, Object> claims) {
         String email = (String) claims.get("email");
-        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List) claims.get("roles"));
+        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));
         Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
+
+    private String extractAccessTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("Authorization".equals(cookie.getName())) {
+                    return cookie.getValue().replace("Bearer_", "");
+                }
+            }
+        }
+        return null;
+    }
+
 }
