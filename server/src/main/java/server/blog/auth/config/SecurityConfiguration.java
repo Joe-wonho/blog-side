@@ -14,25 +14,28 @@ import server.blog.auth.filter.JwtVerificationFilter;
 import server.blog.auth.handler.UserAuthenticationEntryPoint;
 import server.blog.auth.handler.UserAuthenticationFailureHandler;
 import server.blog.auth.handler.UserAuthenticationSuccessHandler;
+import static org.springframework.security.config.Customizer.withDefaults;
 import server.blog.auth.jwt.JwtTokenizer;
 import server.blog.auth.utils.UserAuthorityUtils;
 
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import server.blog.user.repository.UserRepository;
 
 import java.util.Arrays;
 
-import static org.springframework.security.config.Customizer.*;
 
 @Configuration
 public class SecurityConfiguration {
     private final UserAuthorityUtils authorityUtils;
     private final JwtTokenizer jwtTokenizer;
+    private final UserRepository userRepository;
 
-    public SecurityConfiguration(UserAuthorityUtils authorityUtils,  JwtTokenizer jwtTokenizer) {
+    public SecurityConfiguration(UserAuthorityUtils authorityUtils,  JwtTokenizer jwtTokenizer, UserRepository userRepository) {
         this.authorityUtils = authorityUtils;
         this.jwtTokenizer = jwtTokenizer;
+        this.userRepository = userRepository;
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -68,10 +71,12 @@ public class SecurityConfiguration {
 //        configuration.setAllowedOrigins(Arrays.asList("*")); // 모든 출처에 대해 HTTP 통신 허용
 //        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH","DELETE")); // 해당 HTTP 메서드에 대한 통신 허용
 
-        configuration.setAllowCredentials(true);
-        configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://localhost:8080"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "HEAD", "OPTIONS"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Refresh","Cookie"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+
+        configuration.setAllowCredentials(true); // credential 설정
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // 모든 URL에 CORS 정책 적용
@@ -85,7 +90,7 @@ public class SecurityConfiguration {
         public void configure(HttpSecurity builder) throws Exception {
             // getSharedObject()로 SecurityConfigurer 간 공유되는 객체 획득
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer,  userRepository);
             jwtAuthenticationFilter.setFilterProcessesUrl("/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new UserAuthenticationSuccessHandler()); // 로그인 인증 성공 시 처리
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new UserAuthenticationFailureHandler()); // 로그인 인증 실패 시 처리
