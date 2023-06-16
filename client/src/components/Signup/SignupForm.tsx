@@ -4,6 +4,7 @@ import { inputsState } from '../../recoil/signup';
 import { useRecoilState } from 'recoil';
 import { FileUpload } from './Signup';
 import { emailValidation, pwdValidation, checkPwdValidation } from './validation';
+import axios from 'axios';
 
 const SignupFormContainer = styled.form`
   hr {
@@ -86,13 +87,27 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
     });
   };
 
+  const onCheckEmail = async () => {
+    if (emailValidation(email)[0] === false) {
+      alert('잘못된 형식의 이메일입니다.');
+      return;
+    }
+    try {
+      await axios.post('http://localhost:8080/email', { email: email }).then((res) => {
+        alert('사용할 수 있는 이메일입니다.');
+      });
+    } catch {
+      alert('이미 존재하는 이메일입니다.');
+    }
+  };
+
   return (
     <SignupFormContainer>
       <label htmlFor='email'>이메일</label>
       <div className='input-box'>
         <input type='email' id='email' name='email' value={email} onChange={onChange} placeholder='your@email.com'></input>
         <HrTag className='hrtag' />
-        <EmailCheck>중복확인</EmailCheck>
+        <EmailCheck onClick={onCheckEmail}>중복확인</EmailCheck>
       </div>
       {emailValidation(email)[0] ? null : <ValidDesc className='false-input'>{emailValidation(email)[1]}</ValidDesc>}
       <hr />

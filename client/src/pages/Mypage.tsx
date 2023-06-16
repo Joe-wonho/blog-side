@@ -6,12 +6,14 @@ const MypageContainer = styled.div`
   height: 100vh;
   display: flex;
   justify-content: center;
-  background-color: var(--dark-blue-900);
+  background-color: var(--white-100);
+  margin-top: 50px;
+
+  /* background-color: var(--dark-blue-900); */
   /* background-color: var(--light-gray-150); */
 `;
 const MypageArea = styled.div`
   width: 790px;
-  height: 820px;
   background-color: var(--white-100);
   display: flex;
   flex-direction: column;

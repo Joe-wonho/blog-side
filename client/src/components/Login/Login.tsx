@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import LoginForm from './LoginForm';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
 import { emailValidation, pwdValidation } from '../Signup/validation';
+import axios from 'axios';
+import { accessToken, curUser } from '../../recoil/signup';
+import { useRecoilState } from 'recoil';
 
 const LoginContainer = styled.div`
   padding: 0 24px;
@@ -112,6 +114,10 @@ const CustomLink = styled.div`
 
 const Login = () => {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [userToken, setUserToken] = useRecoilState(accessToken);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [currentUser, setCurrentUser] = useRecoilState(curUser);
 
   const navigate = useNavigate();
 
@@ -126,14 +132,24 @@ const Login = () => {
     } else {
       //  이부분에서 서버와 통신하면 된다.
       try {
-        await axios.post('/login', { email: loginForm.email, password: loginForm.password }).then((res) => {
-          const { authorization, refresh } = res.headers;
-          let accessToken: string = authorization;
-          let refreshToken: string = refresh;
-          console.log(accessToken);
-          console.log(refreshToken);
-          navigate('/main');
-        });
+        await axios
+          .post('http://localhost:8080/login', { email: loginForm.email, password: loginForm.password }, { withCredentials: true })
+          .then((res) => {
+            setUserToken(res.headers.authorization);
+            axios
+              .get('http://localhost:8080/user', {
+                headers: {
+                  Authorization: res.headers.authorization,
+                },
+                withCredentials: true,
+              })
+              .then((res) => {
+                setCurrentUser(res.data);
+              })
+              .then(() => {
+                navigate('/main');
+              });
+          });
       } catch (err: any) {
         alert('로그인 실패');
       }

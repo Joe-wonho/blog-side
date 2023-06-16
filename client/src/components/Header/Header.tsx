@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 // BsSunFill
 import { BsFillMoonFill } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
 import Dropdown from './Dropdown';
+import { useRecoilValue } from 'recoil';
+import { curUser } from '../../recoil/signup';
+import { useNavigate } from 'react-router';
+import logo from '../../assets/logo.png';
 // interface HeaderProps {}
 
 //1024 이상이면 새글작성 버튼 나오게 하기, 글씨크기 살짝작게하기
@@ -23,10 +27,23 @@ const HeaderMenu = styled.div`
   align-items: center;
 `;
 const LSide = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
   text-shadow: 0.5px 0.5px;
   font-size: 1.3rem;
+  img {
+    width: 50px;
+    cursor: pointer;
+  }
+  div {
+    cursor: pointer;
+  }
   @media screen and (min-width: 1024px) {
     font-size: 1.5rem;
+    img {
+      width: 60px;
+    }
   }
 `;
 const RSide = styled.div`
@@ -67,10 +84,19 @@ const PostBtn = styled.div`
 `;
 
 const Header = () => {
+  const currentUser = useRecoilValue(curUser);
+  const { nickname, profile } = currentUser;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [myProfile, setProfile] = useState(profile);
+  const navigate = useNavigate();
   return (
     <HeaderContainer>
       <HeaderMenu>
-        <LSide>MY TODO</LSide>
+        <LSide>
+          <img src={logo} alt='logo'></img>
+          <div onClick={() => navigate('/main')}>{`${nickname}.log`}</div>
+        </LSide>
+        {/* <LSide onClick={() => navigate('/main')}>{`${nickname}.log`}</LSide> */}
         <RSide>
           <div className='hover-menu'>
             <BsFillMoonFill size='26'></BsFillMoonFill>
@@ -79,7 +105,7 @@ const Header = () => {
             <FiSearch size='30'></FiSearch>
           </div>
           <PostBtn>새 글 작성</PostBtn>
-          <Dropdown></Dropdown>
+          <Dropdown profile={myProfile}></Dropdown>
         </RSide>
       </HeaderMenu>
     </HeaderContainer>

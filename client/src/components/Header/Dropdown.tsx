@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { IoMdArrowDropdown } from 'react-icons/io';
-import profile from '../../assets/profile.png';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 const DropdownContainer = styled.div``;
 const DropdownToggle = styled.div`
@@ -46,21 +46,20 @@ const DropdownItem = styled.li`
     transform: scale(1.02, 1.02);
   }
 `;
+interface DropdownProps {
+  profile: string;
+}
 
-const Dropdown = () => {
+const Dropdown = ({ profile }: DropdownProps) => {
   const [dropdown, setDropdown] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
+
   const handleClick = () => {
     setDropdown(!dropdown);
   };
-  // useEffect(()=>{
-  //   const outsideClick=(event:MouseEvent)=>{
-  //     if(dropdown===true && dropdownRef.current && !dropdownRef.current.contains()){
-  //       console.log('외부클릭감지');
 
-  //     })
-  //   }
-  // })
   useEffect(() => {
     const outsideClick = (e: MouseEvent) => {
       //!searchRef.current.contains(e.target as Node) 은 SearchResult태그에 이벤트가 발생하지 않았을때를 의미
@@ -75,14 +74,6 @@ const Dropdown = () => {
     };
   }, [dropdown]);
 
-  //   Example
-  // 이 함수는 요소가 페이지의 body 안에 있는지 검사합니다. contains 는 포괄적이므로 node 가 body 자기 자신일 경우에도 true 가 반환됩니다. 만약 이걸 원하지 않는 경우에는 node 가 body 자기 자신인지 검사하여 false 를 반환하여 버리면 됩니다.
-
-  // function isInPage(node) {
-  //   return (node === document.body) ? false : document.body.contains(node);
-  // }
-  // Copy to Clipboard
-
   return (
     <DropdownContainer ref={dropdownRef}>
       <DropdownToggle onClick={handleClick}>
@@ -90,8 +81,8 @@ const Dropdown = () => {
         <IoMdArrowDropdown className='down-icon' size='24' color='var(--light-gray-200)'></IoMdArrowDropdown>
       </DropdownToggle>
       <DropdownMenu dropdown={dropdown}>
-        <DropdownItem>내 글 목록</DropdownItem>
-        <DropdownItem>나의 정보</DropdownItem>
+        <DropdownItem onClick={() => navigate('/main')}>내 블로그</DropdownItem>
+        <DropdownItem onClick={() => navigate('/mypage')}>나의 정보</DropdownItem>
         <DropdownItem>로그아웃</DropdownItem>
       </DropdownMenu>
     </DropdownContainer>

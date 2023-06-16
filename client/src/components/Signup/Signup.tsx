@@ -95,7 +95,7 @@ const Signup = () => {
     } else {
       //이부분에서 서버와 통신하면 된다.
       try {
-        await axios.post('/signup', formData, {
+        await axios.post('http://localhost:8080/signup', formData, {
           headers: { 'content-type': 'multipart/form-data' },
         });
         navigate('/login');
