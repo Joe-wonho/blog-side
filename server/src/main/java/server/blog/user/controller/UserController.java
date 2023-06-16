@@ -81,22 +81,32 @@ public class UserController {
 
         try {
             Users updatedUser = new Users();
-            if (nickname != null) {
+            updatedUser.setUserId(userId);
+            updatedUser.setEmail(currentUser.getEmail());
+            updatedUser.setName(currentUser.getName());
+            updatedUser.setProfile(currentUser.getProfile());
+            updatedUser.setPassword(currentUser.getPassword());
+
+            if (nickname != null && file != null && !file.isEmpty()) {
+                // 닉네임과 프로필 사진 모두 수정하는 경우
                 updatedUser.setNickname(nickname);
-                updatedUser.setProfile(currentUser.getProfile());
-                updatedUser.setUserId(userId);
-                updatedUser.setEmail(currentUser.getEmail());
-                updatedUser.setName(currentUser.getName());
-                updatedUser.setPassword(currentUser.getPassword());
-            }
-            if (file != null && !file.isEmpty()) {
                 // 프로필 파일 저장 및 파일 경로 설정
                 Users savedUser = userService.updateUser(updatedUser, file);
-            } else if (file == null && nickname == null) {
-                // nickname과 profile 모두 수정할 값이 없는 경우, BadRequest 응답
+            } else if (nickname != null) {
+                // 닉네임만 수정하는 경우
+                updatedUser.setNickname(nickname);
+                updatedUser.setProfile(currentUser.getProfile());
+                Users savedUser = userService.updateUser(updatedUser, null);
+            } else if (file != null && !file.isEmpty()) {
+                // 프로필 사진만 수정하는 경우
+                updatedUser.setNickname(currentUser.getNickname());
+                // 프로필 파일 저장 및 파일 경로 설정
+                Users savedUser = userService.updateUser(updatedUser, file);
+            } else {
+                // 수정할 내용이 없는 경우, BadRequest 응답
                 return new ResponseEntity<>("수정할 내용이 없습니다.", HttpStatus.BAD_REQUEST);
             }
-//            updatedUser.setUserId(currentUser.getUserId());
+
             return new ResponseEntity<>(mapper.userToUserResponseDto(updatedUser), HttpStatus.OK);
         } catch (IOException e) {
             // 파일 저장 오류 처리
