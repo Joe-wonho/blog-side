@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { useRecoilValue } from 'recoil';
-import { curUser } from '../../recoil/signup';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
+import { curUser, accessToken } from '../../recoil/signup';
 import UpdateProfile from './UpdateProfile';
-import client from '../../api/axios';
-
+import axios from '../../api/axios';
+import { useNavigate } from 'react-router';
 const MyinfoContainer = styled.div`
   width: 100%;
   padding: 20px;
@@ -62,16 +62,33 @@ const DeleteBtn = styled.button`
 
 const MyInfo = () => {
   const currentUser = useRecoilValue(curUser);
-  const { userId, email, nickname, profile } = currentUser;
+  const token = useRecoilValue(accessToken);
+  const { userId, email, nickname } = currentUser;
+
+  const navigate = useNavigate();
+
+  const clearCurUser = useResetRecoilState(curUser);
+  const clearToken = useResetRecoilState(accessToken);
 
   const onClickDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // await client.delete({});
+    axios
+      .delete(`http://localhost:8080/user/${userId}`, {
+        headers: { Authorization: token },
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log(res);
+        alert('삭제완료');
+        clearCurUser();
+        clearToken();
+        navigate('/login');
+      });
   };
 
   const handleModify = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    await client.patch(`/user/${userId}`);
+    // e.preventDefault();
+    // await client.patch(`/user/${userId}`);
   };
 
   return (

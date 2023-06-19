@@ -3,7 +3,7 @@ import SignupForm from './SignupForm';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import { inputsState } from '../../recoil/signup';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useResetRecoilState } from 'recoil';
 import axios from 'axios';
 import { emailValidation, pwdValidation, checkPwdValidation } from './validation';
 import { dataURItoFile } from '../Common/imgToFile';
@@ -68,6 +68,7 @@ const Signup = () => {
   const [file, setFile] = useState<FileList | null>(null);
 
   const navigate = useNavigate();
+  const clearSignupForm = useResetRecoilState(inputsState);
 
   const onClickCancle = () => {
     navigate('/login');
@@ -98,13 +99,7 @@ const Signup = () => {
         await axios.post('http://localhost:8080/signup', formData, {
           headers: { 'content-type': 'multipart/form-data' },
         });
-        setForm({
-          name: '',
-          nickname: '',
-          email: '',
-          password: '',
-          pwdCheck: '',
-        });
+        clearSignupForm();
         setFile(null);
         navigate('/login');
       } catch (err: any) {

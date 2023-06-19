@@ -2,6 +2,8 @@ import styled, { css } from 'styled-components';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { useRecoilValue } from 'recoil';
+import { curUser } from '../../recoil/signup';
 
 const DropdownContainer = styled.div``;
 const DropdownToggle = styled.div`
@@ -46,13 +48,12 @@ const DropdownItem = styled.li`
     transform: scale(1.02, 1.02);
   }
 `;
-interface DropdownProps {
-  profile: string;
-}
 
-const Dropdown = ({ profile }: DropdownProps) => {
+const Dropdown = () => {
   const [dropdown, setDropdown] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const currentUser = useRecoilValue(curUser);
 
   const navigate = useNavigate();
 
@@ -77,7 +78,7 @@ const Dropdown = ({ profile }: DropdownProps) => {
   return (
     <DropdownContainer ref={dropdownRef}>
       <DropdownToggle onClick={handleClick}>
-        <img src={profile} alt='profile-icon' className='people-icon'></img>
+        <img src={currentUser.profile} alt='profile-icon' className='people-icon'></img>
         <IoMdArrowDropdown className='down-icon' size='24' color='var(--light-gray-200)'></IoMdArrowDropdown>
       </DropdownToggle>
       <DropdownMenu dropdown={dropdown}>

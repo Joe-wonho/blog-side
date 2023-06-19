@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 // BsSunFill
 import { BsFillMoonFill } from 'react-icons/bs';
@@ -85,9 +85,9 @@ const PostBtn = styled.div`
 
 const Header = () => {
   const currentUser = useRecoilValue(curUser);
-  const { nickname, profile } = currentUser;
+  const { nickname } = currentUser;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [myProfile, setProfile] = useState(profile);
+  // const [myProfile, setProfile] = useState(profile);
   const navigate = useNavigate();
   return (
     <HeaderContainer>
@@ -105,7 +105,7 @@ const Header = () => {
             <FiSearch size='30'></FiSearch>
           </div>
           <PostBtn>새 글 작성</PostBtn>
-          <Dropdown profile={myProfile}></Dropdown>
+          <Dropdown />
         </RSide>
       </HeaderMenu>
     </HeaderContainer>
