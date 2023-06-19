@@ -46,9 +46,9 @@ public class StorageService {
 
         // 현재 파일 업로드
         File fileObj = convertMultiPartFileToFile(file);
-        String fileName =  Long.toString(users.getUserId());
-        s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
-        String url = ""+s3Client.getUrl("blog-side", fileName);
+        String name = fileObj.getName();
+        s3Client.putObject(new PutObjectRequest(bucketName, name, fileObj));
+        String url = ""+s3Client.getUrl("blog-side", name);
         fileObj.delete();
         return url;
     }
