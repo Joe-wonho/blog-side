@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import defaultProfile from '../../assets/profile.jpg';
+// import defaultProfile from '../../assets/profile.jpg';
 import { BsFillCameraFill, BsTrash3Fill } from 'react-icons/bs';
 import React, { useRef, useState } from 'react';
 import { FileUpload } from './Signup';
-
+import defaultProfile from '../../assets/profile.png';
 const ImgInputContainer = styled.div`
   width: 100%;
   display: flex;
@@ -44,6 +44,7 @@ const Preview = styled.div`
     width: 140px;
     height: 140px;
     object-fit: cover;
+    border-radius: 50%;
   }
 
   @media screen and (max-width: 767px) {
@@ -60,7 +61,6 @@ const ImgInput = ({ file, setFile }: FileUpload) => {
 
   const onChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      // setForm(e.target.files);
       setFile(e.target.files);
       const newFileURL = URL.createObjectURL(e.target.files[0]);
       setFileURL(newFileURL);

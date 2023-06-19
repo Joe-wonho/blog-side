@@ -5,8 +5,9 @@ import { useState } from 'react';
 import { inputsState } from '../../recoil/signup';
 import { useRecoilState } from 'recoil';
 import axios from 'axios';
-import defaultProfile from '../../assets/profile.jpg';
 import { emailValidation, pwdValidation, checkPwdValidation } from './validation';
+import { dataURItoFile } from '../Common/imgToFile';
+
 const SignupContainer = styled.div`
   padding: 0 24px;
   height: 100%;
@@ -65,7 +66,6 @@ const Signup = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [form, setForm] = useRecoilState(inputsState);
   const [file, setFile] = useState<FileList | null>(null);
-  const defaultImg = new File([defaultProfile], 'default.jpg', { type: 'image/jpg' });
 
   const navigate = useNavigate();
 
@@ -84,7 +84,7 @@ const Signup = () => {
     if (file) {
       formData.append('profile', file[0]);
     } else {
-      formData.append('profile', defaultImg);
+      formData.append('profile', dataURItoFile());
     }
     if (
       emailValidation(form.email)[0] === false ||
@@ -98,6 +98,14 @@ const Signup = () => {
         await axios.post('http://localhost:8080/signup', formData, {
           headers: { 'content-type': 'multipart/form-data' },
         });
+        setForm({
+          name: '',
+          nickname: '',
+          email: '',
+          password: '',
+          pwdCheck: '',
+        });
+        setFile(null);
         navigate('/login');
       } catch (err: any) {
         alert('회원가입 실패');
