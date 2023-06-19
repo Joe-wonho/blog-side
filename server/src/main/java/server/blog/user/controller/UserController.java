@@ -76,7 +76,7 @@ public class UserController {
 
         Users currentUser = userRepository.findByEmail(email).orElse(null);
         if (currentUser == null || !currentUser.getUserId().equals(userId)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
         }
 
         try {
@@ -140,7 +140,7 @@ public class UserController {
             }
         }
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
     }
 
 
