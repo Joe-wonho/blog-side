@@ -31,16 +31,16 @@ public class RefreshTokenController {
     public ResponseEntity<String> refreshAccessToken(@CookieValue(value = "Refresh", required = false) String refreshToken) {
         if (refreshToken != null) {
             try {
-                Jws<Claims> claims = jwtTokenizer.getClaims(refreshToken, jwtTokenizer.encodedBase64SecretKey(jwtTokenizer.getSecretKey()));
+                Jws<Claims> claims = jwtTokenizer.getClaims(refreshToken, jwtTokenizer.encodedBase64SecretKey(jwtTokenizer.getSecretKey())); // 토큰의 클레임 정보 가져옴
 
-                String email = claims.getBody().getSubject();
-                Optional<Users> optionalUsers = userRepository.findByEmail(email);
+                String email = claims.getBody().getSubject(); // 클레임 정보에서 이메일 추출하여 email 변수에 저장
+                Optional<Users> optionalUsers = userRepository.findByEmail(email); // 해당 이메일 가진 사용자 검색
 
-                if (optionalUsers.isPresent()) {
+                if (optionalUsers.isPresent()) { // 사용자 존재하면
                     Users users = optionalUsers.get();
-                    String accessToken = delegateAccessToken(users);
+                    String accessToken = delegateAccessToken(users); // 새로운 엑세스 토큰
 
-                    return ResponseEntity.ok().header("Authorization", "Bearer_" + accessToken).body("Access token refreshed");
+                    return ResponseEntity.ok().header("Authorization", "Bearer " + accessToken).body("Access token refreshed");
                 } else {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid member email");
                 }
@@ -56,7 +56,6 @@ public class RefreshTokenController {
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", users.getEmail());
         claims.put("roles", users.getRoles());
-        claims.put("name", users.getName());
 
         String subject = users.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
