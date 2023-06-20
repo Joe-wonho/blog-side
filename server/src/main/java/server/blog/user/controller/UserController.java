@@ -17,6 +17,9 @@ import server.blog.user.entity.Users;
 import server.blog.user.mapper.UserMapper;
 import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import javax.validation.constraints.Email;
@@ -171,5 +174,16 @@ public class UserController {
         }
 
         return ResponseEntity.ok("사용할 수 있는 이메일 입니다.");
+    }
+
+    //로그아웃
+    @PostMapping("/signout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            userService.logout(request, response);
+            return ResponseEntity.ok("로그아웃 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그아웃 실패");
+        }
     }
 }

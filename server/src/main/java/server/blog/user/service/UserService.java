@@ -1,6 +1,7 @@
 package server.blog.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,11 @@ import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import server.blog.auth.utils.RedisUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -25,17 +31,20 @@ public class UserService {
     private final UserAuthorityUtils authorityUtils;
     private final StorageService storageService;
     private final JwtTokenizer jwtTokenizer;
+    private final RedisUtils redisUtils;
 
     public UserService(UserRepository userRepository,
                          PasswordEncoder passwordEncoder,
                          UserAuthorityUtils authorityUtils,
                          StorageService storageService,
-                         JwtTokenizer jwtTokenizer) {
+                         JwtTokenizer jwtTokenizer,
+                         RedisUtils redisUtils) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityUtils = authorityUtils;
         this.storageService = storageService;
         this.jwtTokenizer = jwtTokenizer;
+        this.redisUtils = redisUtils;
     }
 
     /*
@@ -124,6 +133,44 @@ public class UserService {
         Optional<Users> optionalMember = userRepository.findByNickname(nickname);
         if (optionalMember.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.NICKNAME_EXISTS);
+        }
+    }
+
+    @Transactional
+    public void logout(HttpServletRequest request , HttpServletResponse response) {
+        String accessToken = request.getHeader("Authorization");
+        accessToken = accessToken.split(" ")[1]; //  " " (공백)을 기준으로 분리된 단어 중에서 두 번째 단어 추출
+
+        String ATKemail = jwtTokenizer.getATKemail(accessToken);
+        redisUtils.deleteData(ATKemail);
+
+        Long expiration = jwtTokenizer.getATKExpiration(accessToken);
+        redisUtils.setData(accessToken, "blackList", expiration);
+
+        Cookie[] cookies = request.getCookies();
+
+        String refreshToken = "";
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Refresh")) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        // 리프래시 토큰 삭제
+        if (refreshToken != null) {
+            ResponseCookie removeRefreshCookie = ResponseCookie.from("Refresh", refreshToken)
+                    .domain("localhost")
+                    .path("/")
+                    .sameSite("None")
+                    .secure(true)
+                    .httpOnly(false)
+                    .maxAge(0)
+                    .build();
+            response.addHeader("Set-Cookie", removeRefreshCookie.toString());
         }
     }
 }
