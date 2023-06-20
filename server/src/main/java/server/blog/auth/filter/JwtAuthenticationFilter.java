@@ -2,8 +2,11 @@ package server.blog.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import server.blog.auth.dto.LoginDto;
 import server.blog.auth.jwt.JwtTokenizer;
+import server.blog.auth.utils.RedisUtils;
 import server.blog.user.entity.Users;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,17 +27,15 @@ import java.util.Map;
 
 
 // 사용자 인증 처리, 인증 성공 -> JWT 생성하여 응답 헤더에 추가
+@Slf4j
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager; // 인증 처리
     private final JwtTokenizer jwtTokenizer; // JWT 생성, 토큰 관련 도구 제공
     private final UserRepository userRepository;
+    private final RedisUtils redisUtils;
 
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer, UserRepository userRepository) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenizer = jwtTokenizer;
-        this.userRepository = userRepository;
-    }
 
     // 인증 시도
     @SneakyThrows
@@ -79,11 +80,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         cookie1.setDomain("localhost");
         response.addCookie(cookie1);
 
+        Long expiration = (long) cookie1.getMaxAge(); // cookie1 만료 시간
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("userId", userId);
         jsonObject.put("name", name);
         jsonObject.put("profile", profile);
         jsonObject.put("refreshToken", refreshToken);
+
+        // redis에 이메일,refreshToken,만료시간 전달
+        redisUtils.setData(
+                users.getEmail(),
+                refreshToken,
+                expiration
+        );
 
 
     }
