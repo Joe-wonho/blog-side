@@ -129,7 +129,7 @@ public class UserService {
 
 
     // 중복 닉네임 검증 메서드
-    private void verifyExistsNickname(String nickname) {
+    public void verifyExistsNickname(String nickname) {
         Optional<Users> optionalMember = userRepository.findByNickname(nickname);
         if (optionalMember.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.NICKNAME_EXISTS);
