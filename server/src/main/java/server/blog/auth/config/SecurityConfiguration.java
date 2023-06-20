@@ -16,7 +16,10 @@ import server.blog.auth.handler.UserAuthenticationFailureHandler;
 import server.blog.auth.handler.UserAuthenticationSuccessHandler;
 import static org.springframework.security.config.Customizer.withDefaults;
 import server.blog.auth.jwt.JwtTokenizer;
+import server.blog.auth.userdetails.MemberDetailsService;
+import server.blog.auth.utils.RedisUtils;
 import server.blog.auth.utils.UserAuthorityUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -31,11 +34,16 @@ public class SecurityConfiguration {
     private final UserAuthorityUtils authorityUtils;
     private final JwtTokenizer jwtTokenizer;
     private final UserRepository userRepository;
-
-    public SecurityConfiguration(UserAuthorityUtils authorityUtils,  JwtTokenizer jwtTokenizer, UserRepository userRepository) {
+    private final RedisUtils redisUtils;
+    private final MemberDetailsService memberDetailsService;
+    private final RedisTemplate<String, String> redisTemplate;
+    public SecurityConfiguration(UserAuthorityUtils authorityUtils,  JwtTokenizer jwtTokenizer, UserRepository userRepository, RedisUtils redisUtils, MemberDetailsService memberDetailsService, RedisTemplate<String, String> redisTemplate) {
         this.authorityUtils = authorityUtils;
         this.jwtTokenizer = jwtTokenizer;
         this.userRepository = userRepository;
+        this.redisUtils = redisUtils;
+        this.memberDetailsService = memberDetailsService;
+        this.redisTemplate = redisTemplate;
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -88,17 +96,20 @@ public class SecurityConfiguration {
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
-            // getSharedObject()로 SecurityConfigurer 간 공유되는 객체 획득
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer,  userRepository);
+
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager,
+                    jwtTokenizer, userRepository ,redisUtils);
+
             jwtAuthenticationFilter.setFilterProcessesUrl("/login");
-            jwtAuthenticationFilter.setAuthenticationSuccessHandler(new UserAuthenticationSuccessHandler()); // 로그인 인증 성공 시 처리
-            jwtAuthenticationFilter.setAuthenticationFailureHandler(new UserAuthenticationFailureHandler()); // 로그인 인증 실패 시 처리
 
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
+            jwtAuthenticationFilter.setAuthenticationSuccessHandler(new UserAuthenticationSuccessHandler());
+            jwtAuthenticationFilter.setAuthenticationFailureHandler(new UserAuthenticationFailureHandler());
 
-            builder
-                    .addFilter(jwtAuthenticationFilter) // JwtAuthenticationFilter를 Spring Security Filter Chain에 추가
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils,
+                    memberDetailsService, redisTemplate);
+
+            builder.addFilter(jwtAuthenticationFilter)
                     .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
         }
     }
