@@ -12,7 +12,10 @@ public enum ExceptionCode {
     MAILKEY_MISMATCH(409, "메일키가 다릅니다."),
     PASSWORD_NOT_CORRECT(409, "잘못된 비밀번호입니다."),
     POST_NOT_FOUND(404, "게시글이 존재하지 않습니다."),
-    POST_NOT_WRITE(402, "권한이 없습니다.");
+    POST_NOT_WRITE(402, "권한이 없습니다."),
+    INVALID_REFRESH_TOKEN(50401, "리프래시 토큰이 유효하지 않습니다."),
+    INVALID_TOKEN(40003, "유효하지 않은 토큰입니다.");
+
 
     @Getter
     private int status;
