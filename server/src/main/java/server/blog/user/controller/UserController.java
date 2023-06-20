@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import server.blog.auth.userdetails.PrincipalDetails;
+import server.blog.exception.BusinessLogicException;
 import server.blog.user.dto.UserDto;
 import server.blog.user.entity.Users;
 import server.blog.user.mapper.UserMapper;
@@ -92,11 +93,13 @@ public class UserController {
 
             if (nickname != null && file != null && !file.isEmpty()) {
                 // 닉네임과 프로필 사진 모두 수정하는 경우
+                userService.verifyExistsNickname(nickname); // 닉네임 중복 검증
                 updatedUser.setNickname(nickname);
                 // 프로필 파일 저장 및 파일 경로 설정
                 Users savedUser = userService.updateUser(updatedUser, file);
             } else if (nickname != null) {
                 // 닉네임만 수정하는 경우
+                userService.verifyExistsNickname(nickname); // 닉네임 중복 검증
                 updatedUser.setNickname(nickname);
                 updatedUser.setProfile(currentUser.getProfile());
                 Users savedUser = userService.updateUser(updatedUser, null);
@@ -114,6 +117,9 @@ public class UserController {
         } catch (IOException e) {
             // 파일 저장 오류 처리
             return new ResponseEntity<>("프로필 이미지 저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (BusinessLogicException e) {
+            // 닉네임 중복 예외 처리
+            return new ResponseEntity<>("같은 이름의 닉네임이 존재합니다. ", HttpStatus.BAD_REQUEST);
         }
     }
 
