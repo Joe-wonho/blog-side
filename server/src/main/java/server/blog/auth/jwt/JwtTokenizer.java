@@ -103,4 +103,25 @@ public class JwtTokenizer {
 
         return expiration;
     }
+
+    // 엑세스 토큰에 포함된 email 반환 메서드
+    public String getATKemail(String accessToken) {
+        String base64EncodedSecretKey = encodedBase64SecretKey(secretKey); // secretKey -> Base64로 인코딩(secretKey를 암호화된 형태로 사용-> JWT 유효성 검사)
+        Map<String, Object> claims = getClaims(accessToken, base64EncodedSecretKey).getBody(); // JWT 클레임 정보 추출
+        return (String)claims.get("email"); // claims 에서 "email" 에 해당 값 추출
+    }
+
+
+    // 엑세스 토큰 만료 시간 가져옴 & 현재 시간과의 차이 반환
+    public Long getATKExpiration(String accessToken) {
+        Key key = getKeyFromBase64EncodedKey(encodedBase64SecretKey(secretKey));
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody()
+                .getExpiration();
+        Long now = new Date().getTime(); // 현재 시간 밀리초 단위로 가져옴
+        return (expiration.getTime() - now); // 토큰의 만료 시간과 현재 시간의 차이(남은 유효 기간)
+    }
 }
