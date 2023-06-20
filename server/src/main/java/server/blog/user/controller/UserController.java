@@ -69,8 +69,8 @@ public class UserController {
     }
 
 
-
     // 회원 정보 수정 (폼 데이터 형식 / 토큰 이용 -> 회원 확인)
+
     @PatchMapping("/user/{userId}")
     public ResponseEntity patchUser(@RequestParam(value = "nickname", required = false) String nickname,
                                     @RequestParam(value = "profile", required = false) MultipartFile file,
@@ -93,13 +93,17 @@ public class UserController {
 
             if (nickname != null && file != null && !file.isEmpty()) {
                 // 닉네임과 프로필 사진 모두 수정하는 경우
-                userService.verifyExistsNickname(nickname); // 닉네임 중복 검증
+                if (!nickname.equals(currentUser.getNickname())) {
+                    userService.verifyExistsNickname(nickname); // 닉네임 중복 검증
+                }
                 updatedUser.setNickname(nickname);
                 // 프로필 파일 저장 및 파일 경로 설정
                 Users savedUser = userService.updateUser(updatedUser, file);
             } else if (nickname != null) {
                 // 닉네임만 수정하는 경우
-                userService.verifyExistsNickname(nickname); // 닉네임 중복 검증
+                if (!nickname.equals(currentUser.getNickname())) {
+                    userService.verifyExistsNickname(nickname); // 닉네임 중복 검증
+                }
                 updatedUser.setNickname(nickname);
                 updatedUser.setProfile(currentUser.getProfile());
                 Users savedUser = userService.updateUser(updatedUser, null);
@@ -112,7 +116,6 @@ public class UserController {
                 // 수정할 내용이 없는 경우, BadRequest 응답
                 return new ResponseEntity<>("수정할 내용이 없습니다.", HttpStatus.BAD_REQUEST);
             }
-
             return new ResponseEntity<>(mapper.userToUserResponseDto(updatedUser), HttpStatus.OK);
         } catch (IOException e) {
             // 파일 저장 오류 처리
