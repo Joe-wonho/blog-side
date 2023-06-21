@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
-import { curUser, accessToken } from '../../recoil/signup';
+import { curUser } from '../../recoil/signup';
 import UpdateProfile from './UpdateProfile';
-import axios from '../../api/axios';
+// import axios from '../../api/axios';
+import client from '../../api/axios';
 import { useNavigate } from 'react-router';
 const MyinfoContainer = styled.div`
   width: 100%;
@@ -62,33 +63,32 @@ const DeleteBtn = styled.button`
 
 const MyInfo = () => {
   const currentUser = useRecoilValue(curUser);
-  const token = useRecoilValue(accessToken);
+  // const token = useRecoilValue(accessToken);
   const { userId, email, nickname } = currentUser;
 
   const navigate = useNavigate();
 
   const clearCurUser = useResetRecoilState(curUser);
-  const clearToken = useResetRecoilState(accessToken);
 
   const onClickDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    axios
-      .delete(`http://localhost:8080/user/${userId}`, {
-        headers: { Authorization: token },
-        withCredentials: true,
-      })
+    await client
+      .delete(`/user/${userId}`)
       .then((res) => {
         console.log(res);
-        alert('삭제완료');
-        clearCurUser();
-        clearToken();
-        navigate('/login');
+      })
+      .then(() => {
+        client.post(`/signout`).then((res) => {
+          clearCurUser();
+          window.localStorage.removeItem('accessToken');
+          alert('탈퇴 되었습니다.');
+          navigate('/login');
+        });
       });
   };
 
   const handleModify = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    // e.preventDefault();
-    // await client.patch(`/user/${userId}`);
+    e.preventDefault();
   };
 
   return (

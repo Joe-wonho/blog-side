@@ -25,7 +25,7 @@ export const inputsState = atom<ISignupForm>({
 });
 
 // 액세스 토큰
-export let accessToken = atom({
+export const accessToken = atom({
   key: 'accessToken',
   default: '',
   effects_UNSTABLE: [persistAtom],

@@ -2,9 +2,10 @@ import styled, { css } from 'styled-components';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { curUser } from '../../recoil/signup';
-
+import client from '../../api/axios';
+import axios from 'axios';
 const DropdownContainer = styled.div``;
 const DropdownToggle = styled.div`
   display: flex;
@@ -54,6 +55,7 @@ const Dropdown = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentUser = useRecoilValue(curUser);
+  const clearCurUser = useResetRecoilState(curUser);
 
   const navigate = useNavigate();
 
@@ -75,6 +77,14 @@ const Dropdown = () => {
     };
   }, [dropdown]);
 
+  const onClickLogout = async (e: React.MouseEvent<HTMLLIElement>) => {
+    client.post(`/signout`).then((res) => {
+      clearCurUser();
+      window.localStorage.removeItem('accessToken');
+      navigate('/login');
+    });
+  };
+
   return (
     <DropdownContainer ref={dropdownRef}>
       <DropdownToggle onClick={handleClick}>
@@ -84,7 +94,7 @@ const Dropdown = () => {
       <DropdownMenu dropdown={dropdown}>
         <DropdownItem onClick={() => navigate('/main')}>내 블로그</DropdownItem>
         <DropdownItem onClick={() => navigate('/mypage')}>나의 정보</DropdownItem>
-        <DropdownItem>로그아웃</DropdownItem>
+        <DropdownItem onClick={onClickLogout}>로그아웃</DropdownItem>
       </DropdownMenu>
     </DropdownContainer>
   );

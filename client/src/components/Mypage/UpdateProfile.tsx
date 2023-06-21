@@ -1,8 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useRecoilState, useRecoilValue } from 'recoil';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { curUser, accessToken } from '../../recoil/signup';
-import axios from 'axios';
+// import axios from 'axios';
+import client from '../../api/axios';
 import { dataURItoFile } from '../Common/imgToFile';
 
 const ProfileContainer = styled.div`
@@ -140,7 +143,7 @@ const ProfileInfoBox = styled.div`
   }
 `;
 const UpdateProfile = () => {
-  const token = useRecoilValue(accessToken);
+  // const token = useRecoilValue(accessToken);
   const [form, setForm] = useRecoilState(curUser);
   const [nickname, setNickname] = useState(form.nickname);
   const [modifyState, setModifyState] = useState(false);
@@ -153,15 +156,13 @@ const UpdateProfile = () => {
     if (e.target.files) {
       formData.append('profile', e.target.files[0]);
     }
-    axios
-      .patch(`http://localhost:8080/user/${form.userId}`, formData, {
-        headers: { 'content-type': 'multipart/form-data', Authorization: token },
-        withCredentials: true,
+    client
+      .patch(`/user/${form.userId}`, formData, {
+        headers: { 'content-type': 'multipart/form-data' },
       })
       .then((res) => {
         setForm({ ...form, profile: res.data.profile });
         setProfile(res.data.profile);
-        // window.location.reload();
       });
   };
 
@@ -171,25 +172,22 @@ const UpdateProfile = () => {
     const formData = new FormData();
     formData.append('profile', dataURItoFile());
 
-    axios
-      .patch(`http://localhost:8080/user/${form.userId}`, formData, {
-        headers: { 'content-type': 'multipart/form-data', Authorization: token },
-        withCredentials: true,
+    client
+      .patch(`/user/${form.userId}`, formData, {
+        headers: { 'content-type': 'multipart/form-data' },
       })
       .then((res) => {
         setForm({ ...form, profile: res.data.profile });
         setProfile(res.data.profile);
-        // window.location.reload();
       });
   };
 
   const onModifyNickname = () => {
     const formData = new FormData();
     formData.append('nickname', nickname);
-    axios
-      .patch(`http://localhost:8080/user/${form.userId}`, formData, {
-        headers: { 'content-type': 'multipart/form-data', Authorization: token },
-        withCredentials: true,
+    client
+      .patch(`/user/${form.userId}`, formData, {
+        headers: { 'content-type': 'multipart/form-data' },
       })
       .then((res) => {
         setForm({ ...form, nickname: res.data.nickname });

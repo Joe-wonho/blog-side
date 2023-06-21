@@ -5,9 +5,8 @@ import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import { emailValidation, pwdValidation } from '../Signup/validation';
 import axios from 'axios';
-import { accessToken, curUser } from '../../recoil/signup';
+import { curUser } from '../../recoil/signup';
 import { useRecoilState } from 'recoil';
-
 const LoginContainer = styled.div`
   padding: 0 24px;
   height: 100%;
@@ -115,7 +114,7 @@ const CustomLink = styled.div`
 const Login = () => {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userToken, setUserToken] = useRecoilState(accessToken);
+  // const [userToken, setUserToken] = useRecoilState(accessToken);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentUser, setCurrentUser] = useRecoilState(curUser);
 
@@ -135,7 +134,8 @@ const Login = () => {
         await axios
           .post('http://localhost:8080/login', { email: loginForm.email, password: loginForm.password }, { withCredentials: true })
           .then((res) => {
-            setUserToken(res.headers.authorization);
+            // setUserToken(res.headers.authorization);
+            window.localStorage.setItem('accessToken', res.headers.authorization);
             axios
               .get('http://localhost:8080/user', {
                 headers: {
