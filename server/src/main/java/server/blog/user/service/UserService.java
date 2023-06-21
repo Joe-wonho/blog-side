@@ -102,13 +102,40 @@ public class UserService {
         /*
        <회원 정보 삭제>
        1. 회원 검증(존재O or 존재X)
-       2. 삭제
+       2. 회원 삭제
+       3. 리프래시 토큰 삭제
         */
-    public void deleteUser(long userId) {
+    public void deleteUser(HttpServletRequest request , HttpServletResponse response, long userId) {
             // 회원 검증(존재O or 존재X)
         Users findUser = checkUser(userId);
 
         userRepository.delete(findUser);
+
+        Cookie[] cookies = request.getCookies();
+
+        String refreshToken = "";
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Refresh")) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        // 리프래시 토큰 삭제
+        if (refreshToken != null) {
+            ResponseCookie removeRefreshCookie = ResponseCookie.from("Refresh", refreshToken)
+                    .domain("localhost")
+                    .path("/")
+                    .sameSite("None")
+                    .secure(true)
+                    .httpOnly(false)
+                    .maxAge(0)
+                    .build();
+            response.addHeader("Set-Cookie", removeRefreshCookie.toString());
+        }
     }
 
 
