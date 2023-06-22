@@ -2,6 +2,7 @@ package server.blog.user.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+import server.blog.auth.dto.AuthLoginDto;
 import server.blog.user.dto.UserDto;
 import server.blog.user.entity.Users;
 
@@ -29,6 +30,16 @@ public interface UserMapper {
         userResponse.setProfile(users.getProfile());
 
         return userResponse;
+    }
+
+    default Users AuthLoginDtoUser(AuthLoginDto request){
+        Users users = new Users();
+        users.setEmail(request.getEmail());
+        users.setName(request.getName());
+        users.setNickname(request.getNickname());
+        users.setProfile(request.getProfile());
+
+        return users;
     }
 
 

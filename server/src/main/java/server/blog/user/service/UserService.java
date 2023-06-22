@@ -80,6 +80,27 @@ public class UserService {
         return userRepository.save(users);
     }
 
+    public Users createUserOAuth2(Users users) throws Exception {
+
+        String nickname = users.getNickname();
+        if (isNicknameExists(nickname)) {
+            nickname = generateUniqueNickname(nickname);
+        }
+        users.setNickname(nickname);
+
+        // 패스워드 암호화
+        String encryptedPassword = passwordEncoder.encode(users.getPassword());
+        users.setPassword(encryptedPassword);
+
+        // Role -> db에 저장
+        List<String> roles = authorityUtils.createRoles(users.getEmail());
+        users.setRoles(roles);
+
+
+        return userRepository.save(users);
+
+    }
+
 
     /*
       <회원 정보 수정>
@@ -147,6 +168,26 @@ public class UserService {
         }
     }
 
+    // 이메일 존재 여부
+    public Boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    // 닉네임 존재 여부
+    private boolean isNicknameExists(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
+
+    private String generateUniqueNickname(String nickname) {
+        String modifiedNickname = nickname;
+        int suffix = 2;
+        while (isNicknameExists(modifiedNickname)) {
+            modifiedNickname = nickname + suffix;
+            suffix++;
+        }
+        return modifiedNickname;
+    }
 
     // 회원 검증 메서드
     private Users checkUser(long userId) {

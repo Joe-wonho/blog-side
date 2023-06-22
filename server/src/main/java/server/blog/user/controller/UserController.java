@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import server.blog.auth.dto.AuthLoginDto;
 import server.blog.auth.userdetails.PrincipalDetails;
 import server.blog.exception.BusinessLogicException;
 import server.blog.user.dto.UserDto;
@@ -67,6 +68,31 @@ public class UserController {
 
         return new ResponseEntity<>(mapper.userToLoginResponseDto(createdUsers), HttpStatus.CREATED);
     }
+
+
+
+    //  # 프론트엔드에서 카카오유저의 정보를 알려주면 그걸 이용해 회원가입
+    @PostMapping("/oauth/signup")
+    public ResponseEntity oAuth2LoginKakao(@RequestBody @Valid AuthLoginDto requestBody) throws Exception{
+
+        Users users = mapper.AuthLoginDtoUser(requestBody);
+
+        // 오어스 가입시 이메일 수정 (.com -> .kakao)
+        String email = users.getEmail(); // 이메일 가져옴
+        String modifiedEmail = email.replace(".com", ".kakao");
+
+        users.setEmail(modifiedEmail);
+
+        users.setPassword(users.getName()+"123dssfv#42");
+        if(!userService.existsByEmail(users.getEmail())) {
+            Users createdUsers = userService.createUserOAuth2(users);
+            return new ResponseEntity<>("오어스 가입 성공", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("이미 가입 되어 있음", HttpStatus.CONFLICT);
+        }
+
+    }
+
 
 
     // 회원 정보 수정 (폼 데이터 형식 / 토큰 이용 -> 회원 확인)
