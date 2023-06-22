@@ -26,8 +26,8 @@ public class Post extends Auditable {
 
     @Column
     private List<String> img;
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Post_Tag> postTags = new ArrayList<>();
+//    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+//    private List<Post_Tag> postTags = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
