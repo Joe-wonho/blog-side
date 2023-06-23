@@ -1,6 +1,5 @@
 package server.blog.user.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import server.blog.auth.utils.RedisUtils;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Transactional
 @Service
@@ -168,6 +166,15 @@ public class UserService {
         }
     }
 
+    public Users getUserByEmail(String email) throws Exception {
+        Optional<Users> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
+        }
+    }
+
     // 이메일 존재 여부
     public Boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
@@ -204,6 +211,8 @@ public class UserService {
         }
     }
 
+
+    // 로그아웃
     @Transactional
     public void logout(HttpServletRequest request , HttpServletResponse response) {
         String accessToken = request.getHeader("Authorization");
@@ -241,4 +250,35 @@ public class UserService {
             response.addHeader("Set-Cookie", removeRefreshCookie.toString());
         }
     }
+
+
+    // AccessToken 생성
+    public String delegateAccessToken(Users users) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", users.getEmail());
+        claims.put("roles", users.getRoles());
+
+        String subject = users.getEmail();
+        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
+
+        String base64EncodedSecretKey = jwtTokenizer.encodedBase64SecretKey(jwtTokenizer.getSecretKey());
+
+        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+
+        return accessToken;
+    }
+
+
+    // RefreshToken 생성
+    public String delegateRefreshToken(Users users) {
+        String subject = users.getEmail();
+        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
+
+        String base64EncodedSecretKey = jwtTokenizer.encodedBase64SecretKey(jwtTokenizer.getSecretKey());
+
+        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
+
+        return refreshToken;
+    }
+
 }

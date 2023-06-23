@@ -20,6 +20,7 @@ import server.blog.user.mapper.UserMapper;
 import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -71,9 +72,10 @@ public class UserController {
 
 
 
-    //  # 프론트엔드에서 카카오유저의 정보를 알려주면 그걸 이용해 회원가입
+    //  # 프론트엔드에서 카카오유저의 정보를 알려주면 그걸 이용해 회원가입 -> 엑세스, 리프래시 토큰 발급
     @PostMapping("/oauth/signup")
-    public ResponseEntity oAuth2LoginKakao(@RequestBody @Valid AuthLoginDto requestBody) throws Exception{
+    public ResponseEntity oAuth2LoginKakao(HttpServletResponse response,
+                                           @RequestBody @Valid AuthLoginDto requestBody) throws Exception{
 
         Users users = mapper.AuthLoginDtoUser(requestBody);
 
@@ -82,15 +84,49 @@ public class UserController {
         String modifiedEmail = email.replace(".com", ".kakao");
 
         users.setEmail(modifiedEmail);
-
         users.setPassword(users.getName()+"123dssfv#42");
-        if(!userService.existsByEmail(users.getEmail())) {
-            Users createdUsers = userService.createUserOAuth2(users);
-            return new ResponseEntity<>("오어스 가입 성공", HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("이미 가입 되어 있음", HttpStatus.CONFLICT);
-        }
 
+        // 이메일이 이미 존재하는지 확인
+        if(!userService.existsByEmail(users.getEmail())) {
+            Users createdUser = userService.createUserOAuth2(users);
+
+            // 엑세스 토큰 생성
+            String accessToken = userService.delegateAccessToken(createdUser);
+            String refreshToken = userService.delegateRefreshToken(createdUser);
+
+            // 엑세스 토큰을 응답 헤더에 설정
+            response.setHeader("Authorization", "Bearer " + accessToken);
+
+            // 리프래쉬 쿠키 설정
+            Cookie cookie1 = new Cookie("Refresh", refreshToken);
+            cookie1.setHttpOnly(true);
+            cookie1.setPath("/");
+            cookie1.setMaxAge(3600); // 쿠키 만료 시간 설정 (초 단위)
+            cookie1.setDomain("localhost");
+            response.addCookie(cookie1);
+
+            return new ResponseEntity<>("OAuth 가입 성공", HttpStatus.CREATED);
+        } else {
+            // 이메일이 이미 존재하는 경우 해당 사용자 정보 찾기
+            Users existingUser = userService.getUserByEmail(users.getEmail());
+
+            // 엑세스 토큰 생성
+            String accessToken = userService.delegateAccessToken(existingUser);
+            String refreshToken = userService.delegateAccessToken(existingUser);
+
+            // 엑세스 토큰을 응답 헤더에 설정
+            response.setHeader("Authorization", "Bearer " + accessToken);
+
+            // 리프래쉬 쿠키 설정
+            Cookie cookie1 = new Cookie("Refresh", refreshToken);
+            cookie1.setHttpOnly(true);
+            cookie1.setPath("/");
+            cookie1.setMaxAge(3600); // 쿠키 만료 시간 설정 (초 단위)
+            cookie1.setDomain("localhost");
+            response.addCookie(cookie1);
+
+            return new ResponseEntity<>("이미 가입되어 있음", HttpStatus.OK);
+        }
     }
 
 
