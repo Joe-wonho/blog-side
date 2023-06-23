@@ -48,7 +48,7 @@ public class RefreshTokenController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
             }
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing refresh token");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Missing refresh token");
         }
     }
 
