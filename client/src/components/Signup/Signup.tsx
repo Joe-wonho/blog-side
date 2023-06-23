@@ -103,8 +103,9 @@ const Signup = () => {
         setFile(null);
         navigate('/login');
       } catch (err: any) {
-        alert('회원가입 실패');
-        throw new Error(err);
+        console.log(err);
+        console.log(err.response.data.message);
+        alert(err.response.data.message);
       }
     }
   };

@@ -89,6 +89,12 @@ const MyInfo = () => {
 
   const handleModify = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    // await client
+    //   .get(`user`)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => {
+    //     console.log(err.res);
+    //   });
   };
 
   return (

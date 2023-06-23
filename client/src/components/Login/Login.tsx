@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import kakaoBtn from '../../assets/kakaoLogo.png';
 import LoginForm from './LoginForm';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
@@ -95,6 +96,15 @@ const SignupBtn = styled.button`
   }
 `;
 
+const KakaoBtn = styled.div`
+  margin: 16px auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 183px;
+  cursor: pointer;
+`;
+
 const CustomLink = styled.div`
   display: flex;
   justify-content: center;
@@ -156,6 +166,14 @@ const Login = () => {
     }
   };
 
+  //카카오 로그인 버튼 클릭
+  const loginWithKakao = () => {
+    const REDIRECT_URI = `${process.env.REACT_APP_REDIRECT_URI}`;
+    const CLIENT_ID = `${process.env.REACT_APP_REST_API_APP_KEY}`;
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    window.location.replace(`${KAKAO_AUTH_URL}`);
+  };
+
   return (
     <LoginContainer>
       <Title>로그인이나 회원가입 해주세요</Title>
@@ -167,7 +185,9 @@ const Login = () => {
         </CustomLink>
         <SignupBtn onClick={onClickSignup}>회원가입</SignupBtn>
         <div className='or-tag'>혹은</div>
-        <SignupBtn>카카오 로그인</SignupBtn>
+        <KakaoBtn onClick={() => loginWithKakao()}>
+          <img src={kakaoBtn} alt='카카오버튼' />
+        </KakaoBtn>
       </BtnBox>
     </LoginContainer>
   );

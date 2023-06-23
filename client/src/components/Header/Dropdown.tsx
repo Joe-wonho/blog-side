@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { curUser } from '../../recoil/signup';
 import client from '../../api/axios';
-import axios from 'axios';
 const DropdownContainer = styled.div``;
 const DropdownToggle = styled.div`
   display: flex;

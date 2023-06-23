@@ -4,6 +4,7 @@ import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Mypage from './pages/Mypage';
+import KaKaoLoginPage from './components/Login/KaKaoLogin';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { CookiesProvider } from 'react-cookie';
@@ -20,6 +21,7 @@ const App: React.FC = () => {
               <Route path='/login' element={<LoginPage />}></Route>
               <Route path='/signup' element={<SignupPage />}></Route>
               <Route path='/mypage' element={<Mypage />}></Route>
+              <Route path='/oauth/callback/kakao' element={<KaKaoLoginPage />} />
             </Routes>
           </BrowserRouter>
         </RecoilRoot>

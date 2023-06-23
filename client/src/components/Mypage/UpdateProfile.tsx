@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { curUser, accessToken } from '../../recoil/signup';
-// import axios from 'axios';
+import { curUser } from '../../recoil/signup';
+import axios from 'axios';
 import client from '../../api/axios';
 import { dataURItoFile } from '../Common/imgToFile';
 
@@ -148,8 +148,9 @@ const UpdateProfile = () => {
   const [nickname, setNickname] = useState(form.nickname);
   const [modifyState, setModifyState] = useState(false);
   const imgRef = useRef<HTMLInputElement>(null);
-
+  let token = window.localStorage.getItem('accessToken');
   const [profile, setProfile] = useState(form.profile);
+  const clearUser = useResetRecoilState(curUser);
 
   const onChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formData = new FormData();
@@ -159,7 +160,7 @@ const UpdateProfile = () => {
     client
       .patch(`/user/${form.userId}`, formData, {
         headers: { 'content-type': 'multipart/form-data' },
-      })
+      }) //패치 자체가 거절되면 axios 인터셉터 리스폰스로 간다
       .then((res) => {
         setForm({ ...form, profile: res.data.profile });
         setProfile(res.data.profile);
@@ -185,14 +186,75 @@ const UpdateProfile = () => {
   const onModifyNickname = () => {
     const formData = new FormData();
     formData.append('nickname', nickname);
-    client
-      .patch(`/user/${form.userId}`, formData, {
-        headers: { 'content-type': 'multipart/form-data' },
+    axios
+      .patch(`http://localhost:8080/user/${form.userId}`, formData, {
+        headers: {
+          Authorization: token,
+        },
+        withCredentials: true,
       })
+      //액세스 토큰이 유효해서 수정이 될 경우
       .then((res) => {
         setForm({ ...form, nickname: res.data.nickname });
         setModifyState(false);
+      })
+      //액세스 토큰이 유효하지 않아서 수정이 안될 경우(axios try문)
+      .catch(async (err) => {
+        //액세스 토큰이 만료된 경우 if 문 처리
+        if (err.response.status === 401) {
+          console.log('케치문의 401일 경우');
+          console.log('액세스 토큰이 만료되었고');
+          //리프레시 토큰이 유효해서 액세스 재발급 가능한경우
+          await axios
+            .post(
+              'http://localhost:8080/refresh',
+              {},
+              {
+                withCredentials: true,
+              },
+            )
+            //리프레시 토큰이 유효해서 액세스 재발급 가능한경우
+            .then(async (res) => {
+              console.log('리프레시 토큰이 유효한경우');
+              console.log('액세스토큰 재발급 하기');
+              window.localStorage.setItem('accessToken', res.headers.authorization);
+              token = window.localStorage.getItem('accessToken');
+              //액세스 토큰 재발급 후 다시 원래 요청하기
+              await axios
+                .patch(`http://localhost:8080/user/${form.userId}`, formData, {
+                  headers: {
+                    Authorization: token,
+                  },
+                  withCredentials: true,
+                })
+                .then((res) => {
+                  setForm({ ...form, nickname: res.data.nickname });
+                  setModifyState(false);
+                });
+            })
+            //리프레시 토큰이 유효하지 않아서 액세스 재발급 못할 경우 다시 로그인하게 처리하기
+            .catch((err) => {
+              console.log('리프레시 토큰도 만료된경우');
+              console.log('재로그인 요청');
+              //모든 로컬스토리지 현재유저, 리프레시 토큰 제거 후 로그인 페이지로 가게하기
+              window.localStorage.removeItem('accessToken');
+              window.localStorage.removeItem('recoil-persist');
+              clearUser();
+              alert('재로그인 필요(리프레시 토큰 만료)');
+              window.location.href = 'http://localhost:3000/login';
+            });
+        } else {
+          console.log(' 401이 아닌경우');
+        }
       });
+    // client
+    //   .patch(`/user/${form.userId}`, formData, {
+    //     headers: { 'content-type': 'multipart/form-data' },
+    //   })
+    //   .then((res) => {
+    //     setForm({ ...form, nickname: res.data.nickname });
+    //     setModifyState(false);
+    //   });
   };
 
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
