@@ -25,6 +25,9 @@ public class Post extends Auditable {
     private String content;
 
     @Column
+    private String nickname;
+
+    @Column
     private List<String> img;
 //    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 //    private List<Post_Tag> postTags = new ArrayList<>();
@@ -40,4 +43,11 @@ public class Post extends Auditable {
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    public Post(Long postId, String content, List<String> img, Users users) {
+        this.postId = postId;
+        this.content = content;
+        this.img = img;
+        this.users = users;
+    }
 }
