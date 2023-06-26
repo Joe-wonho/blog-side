@@ -2,6 +2,10 @@ package server.blog.post.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.blog.exception.BusinessLogicException;
@@ -46,6 +50,13 @@ public class PostService {
             throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
         }
         repository.delete(findPost);
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<Post> findPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        return repository.findAll(pageable);
     }
 
 
