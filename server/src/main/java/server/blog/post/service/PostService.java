@@ -8,28 +8,41 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import server.blog.awsS3.StorageService;
 import server.blog.exception.BusinessLogicException;
 import server.blog.exception.ExceptionCode;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.entity.Post;
+import server.blog.user.entity.Users;
 import server.blog.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 @Slf4j
-@RequiredArgsConstructor // 필드 기반으로 자동으로 생성자 생성
 public class PostService {
-
     private final UserService userService;
     private final PostRepository repository;
+    private final StorageService storageService;
+
+    public PostService(UserService userService, PostRepository repository, StorageService storageService){
+        this.userService = userService;
+        this.repository = repository;
+        this.storageService = storageService;
+    }
 
 
-    public Post savedPost(Post requestBody) {
+    public Post savedPost(Post post, List<MultipartFile> files) {
 
-        Post savePost = repository.save(requestBody);
+
+        List<String> imageUrl = storageService.uploadFiles(files);
+        post.setImg(imageUrl);
+
+        Post savePost = repository.save(post);
 
         return savePost;
     }

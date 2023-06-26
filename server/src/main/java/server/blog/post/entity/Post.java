@@ -1,6 +1,5 @@
 package server.blog.post.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +27,7 @@ public class Post extends Auditable {
     @Column
     private String nickname;
 
-    @Column
+    @ElementCollection
     private List<String> img;
 //    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 //    private List<Post_Tag> postTags = new ArrayList<>();
