@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.blog.exception.BusinessLogicException;
 import server.blog.exception.ExceptionCode;
-import server.blog.post.dto.PostDto;
 import server.blog.post.repository.PostRepository;
-import server.blog.user.entity.Users;
 import server.blog.post.entity.Post;
 import server.blog.user.service.UserService;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -39,13 +40,25 @@ public class PostService {
                 .orElseThrow(()-> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND));
     }
 
+    public Post updatePost(Post post) {
+        Post findPost = findPost(post.getPostId());
+
+        if (post.getUsers().getUserId() != findPost.getUsers().getUserId()) {
+            throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
+        } else {
+            Optional.ofNullable(post.getContent()).ifPresent(content -> post.setContent(content));
+            Optional.ofNullable(post.getImg()).ifPresent(img -> post.setImg(img));
+            findPost.setCreatedAt(LocalDateTime.now());
+
+            return repository.save(findPost);
+        }
+    }
 
 
 
 
-
-    public void deletePost(long userId, Post Post){
-        Post findPost = findPost(Post.getPostId());
+    public void deletePost(long userId, Post post){
+        Post findPost = findPost(post.getPostId());
         if(userId != findPost.getUsers().getUserId()) { //  userId와 findPost의 작성자 ID를 비교하여 일치하지 않으면
             throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
         }

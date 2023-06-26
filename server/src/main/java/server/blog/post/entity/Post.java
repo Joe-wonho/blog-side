@@ -1,5 +1,6 @@
 package server.blog.post.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,6 +47,12 @@ public class Post extends Auditable {
 
     public Post(Long postId, String content, List<String> img, Users users) {
         this.postId = postId;
+        this.content = content;
+        this.img = img;
+        this.users = users;
+    }
+
+    public Post(String content, List<String> img, Users users) {
         this.content = content;
         this.img = img;
         this.users = users;

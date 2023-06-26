@@ -19,7 +19,13 @@ public interface PostMapper {
 
 
     // PatchDto -> Post
-    Post patchDtoToPost(PostDto.Patch requestBody);
+    default Post patchDtoToPost(Post post, PostDto.Patch requestBody){
+        Post newPost = new Post(requestBody.getUserId(), requestBody.getContent(), requestBody.getImg());
+        newPost.setPostId(post.getPostId());
+        newPost.setCreatedAt(post.getCreatedAt());
+        newPost.setNickname(post.getNickname());
+        return newPost;
+    }
 
 
 

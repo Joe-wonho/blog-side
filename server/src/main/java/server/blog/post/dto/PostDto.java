@@ -21,6 +21,7 @@ public class PostDto {
     @Getter
     @Setter
     public static class Patch{
+        public Long userId;
         private String content;
         private List<String> img;
     }

@@ -68,7 +68,27 @@ public class PostController {
 
 
     // 포스트 수정(토큰 인증)
+    @PatchMapping("/{postId}")
+    public ResponseEntity patchPost(@PathVariable("postId") @Positive long postId,
+                                    @RequestBody @Valid PostDto.Patch requestBody) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // 현재 사용자의 이메일
+
+        Users currentUser = userRepository.findByEmail(email).orElse(null);
+        if (currentUser == null || !currentUser.getUserId().equals(requestBody.userId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
+        }
+
+        Post findPost = service.findPost(postId);
+
+        Post post = mapper.patchDtoToPost(findPost, requestBody);
+
+        Post updatePost = service.updatePost(post);
+
+        return new ResponseEntity<>(mapper.postToPostResponseDto(updatePost), HttpStatus.OK);
+
+    }
 
 
 
