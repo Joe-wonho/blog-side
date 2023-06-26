@@ -29,6 +29,7 @@ public class PostDto {
     @Setter
     public static class Response{
         private Long userId;
+        private String nickname;
         private Long postId;
         private String content;
         private List<String> img;
