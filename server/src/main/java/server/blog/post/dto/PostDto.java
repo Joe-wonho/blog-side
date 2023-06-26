@@ -11,6 +11,7 @@ public class PostDto {
     @Getter
     @Setter
     public static class Post{
+        public Long userId;
         private String content;
         private List<String> img;
         private List<String> tags;
@@ -32,7 +33,7 @@ public class PostDto {
         private String content;
         private List<String> img;
         private List<String> tag;
-//        private String series;
+        //        private String series;
         private LocalDateTime createdAt;
     }
 }
