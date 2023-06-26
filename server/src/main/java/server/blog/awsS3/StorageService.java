@@ -15,6 +15,8 @@ import server.blog.user.entity.Users;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -36,6 +38,21 @@ public class StorageService {
         String url = ""+s3Client.getUrl("blog-side", name); // 업로드된 파일의 url 생성
         fileObj.delete();
         return url;
+    }
+
+    public List<String> uploadFiles(List<MultipartFile> files) {
+        List<String> urls = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            File fileObj = convertMultiPartFileToFile(file); // MultipartFile -> File 객체로 변환
+            String name = fileObj.getName();
+            s3Client.putObject(new PutObjectRequest(bucketName, name, fileObj)); // s3 버킷에 업로드
+            String url = "" + s3Client.getUrl("blog-side", name); // 업로드된 파일의 URL 생성
+            fileObj.delete();
+            urls.add(url);
+        }
+
+        return urls;
     }
 
 
@@ -78,4 +95,18 @@ public class StorageService {
         }
         return convertedFile;
     }
+
+//    private List<File> convertMultiPartFilesToFiles(List<MultipartFile> files) {
+//        List<File> convertedFiles = new ArrayList<>();
+//        for (MultipartFile file : files) {
+//            File convertedFile = new File(file.getOriginalFilename());
+//            try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
+//                fos.write(file.getBytes());
+//                convertedFiles.add(convertedFile);
+//            } catch (IOException e) {
+//                log.error("Error converting multipartFile to file", e);
+//            }
+//        }
+//        return convertedFiles;
+//    }
 }
