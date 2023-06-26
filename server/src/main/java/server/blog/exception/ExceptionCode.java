@@ -14,7 +14,8 @@ public enum ExceptionCode {
     POST_NOT_FOUND(404, "게시글이 존재하지 않습니다."),
     POST_NOT_WRITE(402, "권한이 없습니다."),
     INVALID_REFRESH_TOKEN(50401, "리프래시 토큰이 유효하지 않습니다."),
-    INVALID_TOKEN(40003, "유효하지 않은 토큰입니다.");
+    INVALID_TOKEN(40003, "유효하지 않은 토큰입니다."),
+    POST_AUTHOR_NOT_MATCH(401, "포스트 권한이 없습니다.");
 
 
     @Getter
