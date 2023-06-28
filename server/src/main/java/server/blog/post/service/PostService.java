@@ -66,12 +66,11 @@ public class PostService {
 
 
 
-
-    public void deletePost(long userId, Post post){
-        Post findPost = findPost(post.getPostId());
-        if(userId != findPost.getUsers().getUserId()) { //  userId와 findPost의 작성자 ID를 비교하여 일치하지 않으면
-            throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
-        }
+// 해당 userId가 게시글을 삭제할 수 있도록 추후 수정
+    public void deletePost(long userId, Post findPost){
+//        if(userId != findPost.getUsers().getUserId()) { //  userId와 findPost의 작성자 ID를 비교하여 일치하지 않으면
+//            throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
+//        }
         repository.delete(findPost);
     }
 

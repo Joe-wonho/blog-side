@@ -143,32 +143,32 @@ public class PostController {
     }
 
 
-//
-//    // 포스트 삭제
-//    @DeleteMapping("/{postId}")
-//    public ResponseEntity deleteFeedPost(@PathVariable("postId") @Positive long postId,
-//                                         @Valid @RequestBody PostDto.Post requestBody) {
-//
-//        // 액세스 토큰을 사용하여 사용자 정보 가져오기
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = authentication.getName(); // 현재 사용자의 이메일
-//
-//        // 사용자 정보 확인
-//        Users currentUser = userRepository.findByEmail(email).orElse(null);
-//        if (currentUser == null || !currentUser.getUserId().equals(requestBody.userId)) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
-//        }
-//
-//        Post findPost = service.findPost(postId);
-//
-//        // 글 삭제 처리
-//        service.deletePost(requestBody.userId, findPost);
-//
-//        // 작성된 글의 응답 생성
-//        return ResponseEntity.ok("게시글 삭제 성공");
-//    }
-//
-//
+
+    // 포스트 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity deleteFeedPost(@PathVariable("postId") @Positive long postId,
+                                         @Valid @RequestBody PostDto.Post requestBody) {
+
+        // 액세스 토큰을 사용하여 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // 현재 사용자의 이메일
+
+        // 사용자 정보 확인
+        Users currentUser = userRepository.findByEmail(email).orElse(null);
+        if (currentUser == null || !currentUser.getUserId().equals(requestBody.getUserId())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
+        }
+
+        Post findPost = service.findPost(postId);
+
+        // 글 삭제 처리
+        service.deletePost(requestBody.getUserId(), findPost);
+
+        // 작성된 글의 응답 생성
+        return ResponseEntity.ok("게시글 삭제 성공");
+    }
+
+
 
 
 
