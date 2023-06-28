@@ -108,45 +108,41 @@ public class PostController {
 
 
 
-//
-//    // 포스트 전체 조회(엑세스 토큰 x)
-//    @GetMapping("/")
-//    public ResponseEntity getFeedPosts(@Positive @RequestParam int page,
-//                                       @Positive @RequestParam int size) {
-//        Page<Post> pagePosts = service.findPosts(page -1, size);
-//        List<Post> list = pagePosts.getContent();
-//
-//        return new ResponseEntity<>(
-//                new MultiResponse<>(
-//                        mapper.PostsToResponseDtos(list), pagePosts), HttpStatus.OK);
-//    }
-//
-//
-//
-//
-//    // 포스트 상세 조회(엑세스 토큰 x)
-//    @GetMapping("/{nickname}/{postId}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
-//    public ResponseEntity getFeed(@PathVariable("nickname") String nickname,
-//                                  @PathVariable("postId") @Positive long postId) {
-//        Post post = repository.findById(postId)
-//                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND));
-//
-//
-//        if (post.getPostId() != postId) {
-//            throw new BusinessLogicException(ExceptionCode.POST_NOT_FOUND);
-//        }
-//
-//        Post findPost = service.findPost(postId);
-//
-//        if (post.getNickname() != nickname) {
-//            throw new BusinessLogicException(ExceptionCode.POST_NOT_FOUND);
-//        }
-//
-//        return new ResponseEntity<>(mapper.postToPostResponseDto(findPost),
-//                HttpStatus.OK);
-//    }
-//
-//
+
+    // 포스트 전체 조회(엑세스 토큰 x)
+    @GetMapping("/")
+    public ResponseEntity getFeedPosts(@Positive @RequestParam int page,
+                                       @Positive @RequestParam int size) {
+        Page<Post> pagePosts = service.findPosts(page -1, size);
+        List<Post> list = pagePosts.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponse<>(
+                        mapper.PostsToResponseDtos(list), pagePosts), HttpStatus.OK);
+    }
+
+
+
+
+    // 포스트 상세 조회(엑세스 토큰 x)
+    @GetMapping("/{nickname}/{postId}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
+    public ResponseEntity getFeed(@PathVariable("nickname") String nickname,
+                                  @PathVariable("postId") @Positive long postId) {
+        Post post = repository.findById(postId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND));
+
+
+        Post findPost = service.findPost(postId);
+
+        if (!findPost.getNickname().equals(nickname)) {
+            throw new BusinessLogicException(ExceptionCode.POST_NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(mapper.postToPostResponseDto(findPost),
+                HttpStatus.OK);
+    }
+
+
 //
 //    // 포스트 삭제
 //    @DeleteMapping("/{postId}")

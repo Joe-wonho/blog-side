@@ -1,10 +1,8 @@
 package server.blog.post.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +12,6 @@ import server.blog.exception.BusinessLogicException;
 import server.blog.exception.ExceptionCode;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.entity.Post;
-import server.blog.user.entity.Users;
 import server.blog.user.service.UserService;
 
 import java.time.LocalDateTime;
@@ -81,9 +78,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Page<Post> findPosts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        return repository.findAll(pageable);
+        return repository.findAll(PageRequest.of(page, size,Sort.by("postId").descending()));
     }
-
 
 }
