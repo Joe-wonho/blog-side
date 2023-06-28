@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import server.blog.post.entity.Post;
 import server.blog.user.entity.Users;
 
 import java.io.File;
@@ -30,7 +31,7 @@ public class StorageService {
     private AmazonS3 s3Client;
 
 
-    // s3 버킷에 파일 업로드
+    // s3 버킷에 파일 업로드(한장)
     public String uploadFile(MultipartFile file) {
         File fileObj = convertMultiPartFileToFile(file); // MultipartFile -> File 객체로 변환
         String name = fileObj.getName();
@@ -40,6 +41,8 @@ public class StorageService {
         return url;
     }
 
+
+    // s3 버킷에 파일 업로드(여러장)
     public List<String> uploadFiles(List<MultipartFile> files) {
         List<String> urls = new ArrayList<>();
 
@@ -56,7 +59,7 @@ public class StorageService {
     }
 
 
-    // s3 버킷에 파일 수정 업로드
+    // s3 버킷에 파일 수정 업로드(한장)
     public String uploadFile(MultipartFile file, Users users) { // 해당 아이디로 파일 업로드
         // 기존 파일 삭제
         s3Client.deleteObject(bucketName, users.getProfile());
@@ -66,6 +69,38 @@ public class StorageService {
         String name = fileObj.getName();
         s3Client.putObject(new PutObjectRequest(bucketName, name, fileObj));
         String url = ""+s3Client.getUrl("blog-side", name);
+        fileObj.delete();
+        return url;
+    }
+
+
+    // s3 버킷에 파일 수정 업로드(여러장)
+    public List<String> uploadFiles(Post post, List<MultipartFile> files) {
+        // 기존 이미지 삭제
+        List<String> existingImages = post.getImg();
+        if (existingImages != null) {
+            for (String existingImage : existingImages) {
+                // 기존 이미지 삭제 로직 작성 (예: S3에서 이미지 삭제)
+                s3Client.deleteObject(bucketName, existingImage);
+            }
+        }
+
+        // 새로운 이미지 업로드
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String imageUrl = uploadImg(file, post.getUsers());
+            imageUrls.add(imageUrl);
+        }
+
+        return imageUrls;
+    }
+    // 여러장 수정시 필요 로직
+    public String uploadImg(MultipartFile file, Users users) {
+        // 현재 파일 업로드
+        File fileObj = convertMultiPartFileToFile(file);
+        String name = fileObj.getName();
+        s3Client.putObject(new PutObjectRequest(bucketName, name, fileObj));
+        String url = "" + s3Client.getUrl("blog-side", name);
         fileObj.delete();
         return url;
     }
