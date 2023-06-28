@@ -14,9 +14,8 @@ import server.blog.post.repository.PostRepository;
 import server.blog.post.entity.Post;
 import server.blog.user.service.UserService;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -50,19 +49,33 @@ public class PostService {
                 .orElseThrow(()-> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND));
     }
 
-    public Post updatePost(Post post) {
+
+//    @Transactional // 업데이트와 파일 업로드가 하나의 트랜잭션으로 처리되므로, 어느 한 곳에서라도 실패할 경우 롤백
+    public Post updatePost(Post post, List<MultipartFile> files) throws IOException {
         Post findPost = findPost(post.getPostId());
 
-        if (post.getUsers().getUserId() != findPost.getUsers().getUserId()) {
-            throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
-        } else {
-            Optional.ofNullable(post.getContent()).ifPresent(content -> post.setContent(content));
-            Optional.ofNullable(post.getImg()).ifPresent(img -> post.setImg(img));
-            findPost.setCreatedAt(LocalDateTime.now());
-
-            return repository.save(findPost);
+        // 기존 이미지 삭제 및 새로운 이미지 업로드
+        if (files != null && !files.isEmpty()) {
+            List<String> imageUrls = storageService.uploadFiles(findPost, files);
+            findPost.setImg(imageUrls);
         }
+
+        return repository.save(findPost);
     }
+
+
+
+
+    //        if (post.getUsers().getUserId() != findPost.getUsers().getUserId()) {
+//            throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
+//        } else {
+//            Optional.ofNullable(post.getContent()).ifPresent(content -> post.setContent(content));
+//            Optional.ofNullable(post.getImg()).ifPresent(img -> post.setImg(img));
+//            findPost.setCreatedAt(LocalDateTime.now());
+//
+//            return repository.save(findPost);
+//        }
+
 
 
 

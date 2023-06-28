@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import server.blog.awsS3.StorageService;
 import server.blog.exception.BusinessLogicException;
 import server.blog.exception.ExceptionCode;
 import server.blog.post.dto.PostDto;
@@ -23,10 +24,9 @@ import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -41,6 +41,7 @@ public class PostController {
     private final PostMapper mapper;
     private final PostRepository repository;
     private final UserRepository userRepository;
+    private final StorageService storageService;
 
 
 
@@ -84,27 +85,59 @@ public class PostController {
 
 
     // 포스트 수정(토큰 인증)
-//    @PatchMapping("/{postId}")
-//    public ResponseEntity patchPost(@PathVariable("postId") @Positive long postId,
-//                                    @RequestBody @Valid PostDto.Patch requestBody) {
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = authentication.getName(); // 현재 사용자의 이메일
-//
-//        Users currentUser = userRepository.findByEmail(email).orElse(null);
-//        if (currentUser == null || !currentUser.getUserId().equals(requestBody.userId)) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
-//        }
-//
-//        Post findPost = service.findPost(postId);
-//
-//        Post post = mapper.patchDtoToPost(findPost, requestBody);
-//
-//        Post updatePost = service.updatePost(post);
-//
-//        return new ResponseEntity<>(mapper.postToPostResponseDto(updatePost), HttpStatus.OK);
-//
-//    }
+    // 1. content 수정후 다시 요청시 이미지만 변경하면 기존 내용 그대로 에러( 추후 수정)
+    // 2. 이미지 두번 요청시 전부 수정됨(추후 수정)
+    @PatchMapping("/{postId}")
+    public ResponseEntity patchPost(@PathVariable("postId") @Positive long postId,
+                                    @RequestParam("userId") Long userId,
+                                    @RequestParam(value = "content", required = false) String content, // 선택적으로 받을 수 있도록
+                                    @RequestParam(value = "img", required = false) List<MultipartFile> files) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // 현재 사용자의 이메일
+
+        Users currentUser = userRepository.findByEmail(email).orElse(null);
+        if (currentUser == null || !currentUser.getUserId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
+        }
+
+        Post findPost = service.findPost(postId);
+
+        try {
+            Post updatedPost = new Post();
+//            updatedPost.getUsers().setUserId(findPost.getUsers().getUserId());
+            updatedPost.setCreatedAt(findPost.getCreatedAt());
+            updatedPost.setImg(findPost.getImg());
+            updatedPost.setPostId(findPost.getPostId());
+//            updatedPost.setContent(findPost.getContent());
+            updatedPost.setNickname(findPost.getNickname());
+
+
+            if (content != null && files != null && !files.isEmpty()) {
+                // 내용과 사진 모두 수정하는 경우
+                updatedPost.setContent(content);
+                // 프로필 파일 저장 및 파일 경로 설정
+                Post savedPost = service.updatePost(updatedPost, files);
+            } else if (content != null) {
+                // 내용만 수정하는 경우
+                updatedPost.setContent(content);
+                updatedPost.setImg(findPost.getImg());
+                Post savedPost =  service.updatePost(updatedPost, null);
+            } else if (files != null && !files.isEmpty()) {
+                // 사진만 수정하는 경우
+                updatedPost.setContent(findPost.getContent());
+                // 프로필 파일 저장 및 파일 경로 설정
+                Post savedPost = service.updatePost(updatedPost, files);
+            } else {
+                // 수정할 내용이 없는 경우, BadRequest 응답
+                return new ResponseEntity<>("수정할 내용이 없습니다.", HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(mapper.postToPostResponseDto(updatedPost), HttpStatus.OK);
+        } catch (IOException e) {
+            // 파일 저장 오류 처리
+            return new ResponseEntity<>("오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 

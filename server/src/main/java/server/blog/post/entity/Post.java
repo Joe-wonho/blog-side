@@ -1,6 +1,5 @@
 package server.blog.post.entity;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +9,6 @@ import server.blog.user.entity.Users;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -56,5 +54,10 @@ public class Post extends Auditable {
         this.content = content;
         this.img = img;
         this.users = users;
+    }
+
+    public Post(String content, List<String> img) {
+        this.content = content;
+        this.img = img;
     }
 }
