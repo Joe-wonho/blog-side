@@ -1,11 +1,13 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { curUser } from '../../recoil/signup';
 import client from '../../api/axios';
+
 const DropdownContainer = styled.div``;
+
 const DropdownToggle = styled.div`
   display: flex;
   align-items: center;
@@ -19,11 +21,6 @@ const DropdownToggle = styled.div`
 `;
 
 const DropdownMenu = styled.ul<{ dropdown: boolean }>`
-  /* ${({ dropdown }) =>
-    dropdown &&
-    css`
-      color: #ced4da;
-    `} */
   display: ${({ dropdown }) => (dropdown ? 'flex' : 'none')};
   position: absolute;
   flex-direction: column;
@@ -35,6 +32,9 @@ const DropdownMenu = styled.ul<{ dropdown: boolean }>`
   background-color: var(--dark-blue-900);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  @media screen and (max-width: 1023px) {
+    right: -20px;
+  }
 `;
 
 const DropdownItem = styled.li`
@@ -50,7 +50,9 @@ const DropdownItem = styled.li`
 `;
 
 const Dropdown = () => {
+  // 드롭다운이 열려 있는지 닫혀 있는지 확인하는 상태
   const [dropdown, setDropdown] = useState<boolean>(false);
+  // useRef를 이용해서 드롭다운 DOM 에 접근
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentUser = useRecoilValue(curUser);
@@ -58,15 +60,17 @@ const Dropdown = () => {
 
   const navigate = useNavigate();
 
+  //드롭다운 상태 변경
   const handleClick = () => {
     setDropdown(!dropdown);
   };
-
   useEffect(() => {
+    // 드롭다운의 외부를 클릭했을 때 발생할 함수 작성
     const outsideClick = (e: MouseEvent) => {
-      //!searchRef.current.contains(e.target as Node) 은 SearchResult태그에 이벤트가 발생하지 않았을때를 의미
+      //!dropdownRef.current.contains(e.target as Node)
+      //DropdownContainer 태그 영역에 이벤트가 발생하지 않았을때를 의미
       if (dropdown === true && dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdown(false); //외부 클릭시 실행할 로직
+        setDropdown(false); //외부 클릭시 실행할 로직 (드롭다운의 상태 변경)
       }
     };
     document.addEventListener('mousedown', outsideClick); //컴포넌트 렌더링 후 이벤트 등록
@@ -85,7 +89,7 @@ const Dropdown = () => {
   };
 
   return (
-    <DropdownContainer ref={dropdownRef}>
+    <DropdownContainer className='top-div' ref={dropdownRef}>
       <DropdownToggle onClick={handleClick}>
         <img src={currentUser.profile} alt='profile-icon' className='people-icon'></img>
         <IoMdArrowDropdown className='down-icon' size='24' color='var(--light-gray-200)'></IoMdArrowDropdown>

@@ -28,12 +28,14 @@
   --gray-blue-300: #b3bcc3;
   --gray-blue-400: #727c85;
 
-  --dark-blue-500: #3d4d58;
+  --dark-blue-500: #04337f;
   --dark-blue-700: #353a3f;
   --dark-blue-800: #21292f;
   --dark-blue-850: #191919;
   --dark-blue-860: #161616;
   --dark-blue-900: #131c23;
+  --blue100: hsl(217, 79%, 51%);
+  --active: #525fe1;
 }
 
 @import './reset.css';

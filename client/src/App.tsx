@@ -1,6 +1,7 @@
 import React from 'react';
 // import Footer from './components/Footer';
 import MainPage from './pages/MainPage';
+import Myblogpage from './pages/MyblogPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Mypage from './pages/Mypage';
@@ -18,6 +19,7 @@ const App: React.FC = () => {
           <BrowserRouter>
             <Routes>
               <Route path='/main' element={<MainPage />}></Route>
+              <Route path='/:nickname' element={<Myblogpage />}></Route>
               <Route path='/login' element={<LoginPage />}></Route>
               <Route path='/signup' element={<SignupPage />}></Route>
               <Route path='/mypage' element={<Mypage />}></Route>

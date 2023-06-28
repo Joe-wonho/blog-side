@@ -183,6 +183,7 @@ const UpdateProfile = () => {
       });
   };
 
+  // axios client 와 다르게 원래 동작을 테스트 해보기 위함
   const onModifyNickname = () => {
     const formData = new FormData();
     formData.append('nickname', nickname);
