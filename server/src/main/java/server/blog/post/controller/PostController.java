@@ -25,6 +25,7 @@ import server.blog.user.repository.UserRepository;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.util.List;
@@ -90,7 +91,7 @@ public class PostController {
     // 포스트 수정(토큰 인증)
     @PatchMapping("/{postId}")
     public ResponseEntity patchPost(@PathVariable("postId") @Positive long postId,
-                                    @RequestParam("userId") Long userId,
+                                    @RequestParam("userId") @Positive @NotNull Long userId,
                                     @RequestParam(value = "content", required = false) String content, // 선택적으로 받을 수 있도록
                                     @RequestParam(value = "img", required = false) List<MultipartFile> files) {
 
