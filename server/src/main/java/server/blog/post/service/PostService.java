@@ -66,24 +66,11 @@ public class PostService {
 
 
 
-    //        if (post.getUsers().getUserId() != findPost.getUsers().getUserId()) {
-//            throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
-//        } else {
-//            Optional.ofNullable(post.getContent()).ifPresent(content -> post.setContent(content));
-//            Optional.ofNullable(post.getImg()).ifPresent(img -> post.setImg(img));
-//            findPost.setCreatedAt(LocalDateTime.now());
-//
-//            return repository.save(findPost);
-//        }
-
-
-
-
-// 해당 userId가 게시글을 삭제할 수 있도록 추후 수정
+// 해당 userId가 작성한 게시글을 삭제할 수 있음
     public void deletePost(long userId, Post findPost){
-//        if(userId != findPost.getUsers().getUserId()) { //  userId와 findPost의 작성자 ID를 비교하여 일치하지 않으면
-//            throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
-//        }
+        if(userId != findPost.getUsers().getUserId()) { //  userId와 findPost의 작성자 ID를 비교하여 일치하지 않으면
+            throw new BusinessLogicException(ExceptionCode.POST_AUTHOR_NOT_MATCH);
+        }
         repository.delete(findPost);
     }
 
