@@ -108,7 +108,9 @@ public class PostController {
 
         try {
             Post updatedPost = new Post();
-//            updatedPost.getUsers().setUserId(findPost.getUsers().getUserId());
+            Users users = new Users(); // 새로운 Users 객체 생성
+            users.setUserId(currentUser.getUserId());
+            updatedPost.setUsers(users);
             updatedPost.setCreatedAt(findPost.getCreatedAt());
             updatedPost.setImg(findPost.getImg());
             updatedPost.setPostId(findPost.getPostId());
