@@ -3,6 +3,7 @@ package server.blog.post.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +79,13 @@ public class PostService {
     @Transactional(readOnly = true)
     public Page<Post> findPosts(int page, int size) {
         return repository.findAll(PageRequest.of(page, size,Sort.by("postId").descending()));
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<Post> findUserPosts(String nickname, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAllByNickname(nickname, pageable);
     }
 
 }

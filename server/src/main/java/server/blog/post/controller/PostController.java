@@ -131,8 +131,8 @@ public class PostController {
 
     // 포스트 전체 조회(엑세스 토큰 x)
     @GetMapping("/")
-    public ResponseEntity getFeedPosts(@Positive @RequestParam int page,
-                                       @Positive @RequestParam int size) {
+    public ResponseEntity getPosts(@Positive @RequestParam int page,
+                                   @Positive @RequestParam int size) {
         Page<Post> pagePosts = service.findPosts(page -1, size);
         List<Post> list = pagePosts.getContent();
 
@@ -146,7 +146,7 @@ public class PostController {
 
     // 포스트 상세 조회(엑세스 토큰 x)
     @GetMapping("/{nickname}/{postId}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
-    public ResponseEntity getFeed(@PathVariable("nickname") String nickname,
+    public ResponseEntity getPost(@PathVariable("nickname") String nickname,
                                   @PathVariable("postId") @Positive long postId) {
         Post post = repository.findById(postId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND));
@@ -161,6 +161,24 @@ public class PostController {
         return new ResponseEntity<>(mapper.postToPostResponseDto(findPost),
                 HttpStatus.OK);
     }
+
+
+
+    // 회원 포스트 전체 조회(엑세스 토큰 x)
+    // 닉네임 수정시 수정된 닉네임으로 포스트 조회(추후 수정 필요)
+    @GetMapping("/{nickname}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
+    public ResponseEntity getUserPosts(@PathVariable("nickname") String nickname,
+                                       @Positive @RequestParam int page,
+                                       @Positive @RequestParam int size) {
+
+        Page<Post> pagePosts = service.findUserPosts(nickname,page -1, size);
+        List<Post> list = pagePosts.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponse<>(
+                        mapper.PostsToResponseDtos(list), pagePosts), HttpStatus.OK);
+    }
+
 
 
 
@@ -198,6 +216,8 @@ public class PostController {
 
 
 
+
+    // 포스트 태그 목록 조회
 
 
 
