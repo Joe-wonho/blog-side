@@ -6,8 +6,10 @@ const PostCardContainer = styled.div`
   height: 635px;
   display: flex;
   flex-direction: column;
+  width: 767px;
   @media screen and (max-width: 767px) {
     height: auto;
+    width: 100%;
   }
 `;
 const Hrtag = styled.div`

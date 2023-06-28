@@ -8,9 +8,14 @@ const TagContainer = styled.div`
   .title {
     display: none;
   }
+  @media screen and (max-width: 767px) {
+    top: -3.8rem;
+    width: 100%;
+  }
   @media screen and (min-width: 768px) and (max-width: 1169px) {
     top: -3rem;
     width: 768px;
+    min-width: 400px;
   }
   @media screen and (min-width: 1170px) {
     width: 11.5rem;
@@ -36,6 +41,24 @@ const TagList = styled.ul`
   font-weight: 500;
   line-height: 21px;
 
+  @media screen and (max-width: 767px) {
+    gap: 12px;
+    scroll-behavior: smooth;
+    overflow-x: scroll;
+    height: 47px;
+    width: 100%;
+    ::-webkit-scrollbar {
+      height: 8px; //스크롤바의 너비
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(82, 95, 255, 0.5); // 스크롤바의 색상
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(33, 122, 244, 0.1); /*스크롤바 뒷 배경 색상*/
+    }
+  }
+
   @media screen and (min-width: 768px) and (max-width: 1169px) {
     gap: 14px;
     width: 682px;
@@ -59,10 +82,16 @@ const TagLi = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  height: 29px;
+  :hover {
+    color: var(--active);
+  }
 
-  @media screen and (min-width: 768px) and (max-width: 1169px) {
-    flex-shrink: 0;
-    height: 29px;
+  @media screen and (max-width: 767px) {
+    height: 22px;
+    padding: 2px 8px;
   }
 
   @media screen and (min-width: 1170px) {
@@ -74,14 +103,15 @@ const TagLi = styled.li`
 `;
 
 const PrevBtn = styled.button`
-  @media screen and (min-width: 1170px) {
-    display: none;
+  display: none;
+  @media screen and (min-width: 768px) and (max-width: 1169px) {
+    display: block;
   }
 `;
 const NextBtn = styled.button`
-  /* position: absolute; */
-  @media screen and (min-width: 1170px) {
-    display: none;
+  display: none;
+  @media screen and (min-width: 768px) and (max-width: 1169px) {
+    display: block;
   }
 `;
 
@@ -114,7 +144,6 @@ const Tag = () => {
       setWidth(tagRef.current.scrollWidth);
     }
   }, [width]);
-  //682는 화면 길이  1077은 원래 길이   // 1077-682 = 395남음
   const prevClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (tagRef.current) {
       if (viewWidth.current - 682 >= 0) {

@@ -18,7 +18,7 @@ const TapContainer = styled.div`
   align-items: center;
   position: relative;
   @media screen and (max-width: 767px) {
-    margin: 20px 0 20px;
+    margin: 20px 0 90px;
     height: 30px;
   }
 `;
