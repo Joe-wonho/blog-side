@@ -69,6 +69,9 @@ public class PostController {
 
         // 글 작성 처리
         Post post = new Post();
+        Users users = new Users(); // 새로운 Users 객체 생성
+        users.setUserId(currentUser.getUserId());
+        post.setUsers(users); // 생성한 Users 객체를 post에 설정
         post.setContent(content);
         post.setNickname(currentUser.getNickname());
         post.getPostId();
