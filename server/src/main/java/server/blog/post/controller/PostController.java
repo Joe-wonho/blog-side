@@ -88,8 +88,6 @@ public class PostController {
 
 
     // 포스트 수정(토큰 인증)
-    // 1. content 수정후 다시 요청시 이미지만 변경하면 기존 내용 그대로 에러( 추후 수정)
-    // 2. 이미지 두번 요청시 전부 수정됨(추후 수정)
     @PatchMapping("/{postId}")
     public ResponseEntity patchPost(@PathVariable("postId") @Positive long postId,
                                     @RequestParam("userId") Long userId,
@@ -107,37 +105,20 @@ public class PostController {
         Post findPost = service.findPost(postId);
 
         try {
-            Post updatedPost = new Post();
-            Users users = new Users(); // 새로운 Users 객체 생성
-            users.setUserId(currentUser.getUserId());
-            updatedPost.setUsers(users);
-            updatedPost.setCreatedAt(findPost.getCreatedAt());
-            updatedPost.setImg(findPost.getImg());
-            updatedPost.setPostId(findPost.getPostId());
-//            updatedPost.setContent(findPost.getContent());
-            updatedPost.setNickname(findPost.getNickname());
-
-
-            if (content != null && files != null && !files.isEmpty()) {
-                // 내용과 사진 모두 수정하는 경우
-                updatedPost.setContent(content);
-                // 프로필 파일 저장 및 파일 경로 설정
-                Post savedPost = service.updatePost(updatedPost, files);
-            } else if (content != null) {
-                // 내용만 수정하는 경우
-                updatedPost.setContent(content);
-                updatedPost.setImg(findPost.getImg());
-                Post savedPost =  service.updatePost(updatedPost, null);
-            } else if (files != null && !files.isEmpty()) {
-                // 사진만 수정하는 경우
-                updatedPost.setContent(findPost.getContent());
-                // 프로필 파일 저장 및 파일 경로 설정
-                Post savedPost = service.updatePost(updatedPost, files);
+            if (findPost.getUsers().getUserId().equals(currentUser.getUserId())) {
+                if (content != null) {
+                    findPost.setContent(content);
+                }
+                if (files != null && !files.isEmpty()) {
+                    // 새로운 이미지 업로드
+                    List<String> imageUrls = storageService.uploadFiles(findPost, files);
+                    findPost.setImg(imageUrls);
+                }
+                Post updatedPost = service.updatePost(findPost, files);
+                return new ResponseEntity<>(mapper.postToPostResponseDto(updatedPost), HttpStatus.OK);
             } else {
-                // 수정할 내용이 없는 경우, BadRequest 응답
-                return new ResponseEntity<>("수정할 내용이 없습니다.", HttpStatus.BAD_REQUEST);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
             }
-            return new ResponseEntity<>(mapper.postToPostResponseDto(updatedPost), HttpStatus.OK);
         } catch (IOException e) {
             // 파일 저장 오류 처리
             return new ResponseEntity<>("오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
