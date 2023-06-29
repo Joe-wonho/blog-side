@@ -10,4 +10,5 @@ import server.blog.post.entity.Post;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
 //    Page<Post> findAllByNickname(String nickname, Pageable pageable);
+    Page<Post> findAllByUsersNickname(String nickname, Pageable pageable);
 }

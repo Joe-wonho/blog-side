@@ -86,15 +86,15 @@ public class PostService {
     }
 
 
-//    @Transactional(readOnly = true)
-//    public Page<Post> findUserPosts(String nickname, int page, int size) {
-//        Users user = userRepository.findByNickname(nickname)
-//                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-//
-//        String currentNickname = user.getNickname();
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        return repository.findAllByNickname(currentNickname, pageable);
-//    }
+    @Transactional(readOnly = true)
+    public Page<Post> findUserPosts(String nickname, int page, int size) {
+        Users user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        String currentNickname = user.getNickname();
+
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAllByUsersNickname(currentNickname, pageable);
+    }
 
 }
