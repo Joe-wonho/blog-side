@@ -23,8 +23,6 @@ public class Post extends Auditable {
     @Column(nullable = false)
     private String content;
 
-    @Column
-    private String nickname;
 
     @ElementCollection
     private List<String> img;

@@ -13,6 +13,8 @@ import server.blog.exception.BusinessLogicException;
 import server.blog.exception.ExceptionCode;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.entity.Post;
+import server.blog.user.entity.Users;
+import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
 
 import java.io.IOException;
@@ -25,11 +27,13 @@ public class PostService {
     private final UserService userService;
     private final PostRepository repository;
     private final StorageService storageService;
+    private final UserRepository userRepository;
 
-    public PostService(UserService userService, PostRepository repository, StorageService storageService){
+    public PostService(UserService userService, PostRepository repository, StorageService storageService, UserRepository userRepository){
         this.userService = userService;
         this.repository = repository;
         this.storageService = storageService;
+        this.userRepository = userRepository;
     }
 
 
@@ -82,10 +86,15 @@ public class PostService {
     }
 
 
-    @Transactional(readOnly = true)
-    public Page<Post> findUserPosts(String nickname, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return repository.findAllByNickname(nickname, pageable);
-    }
+//    @Transactional(readOnly = true)
+//    public Page<Post> findUserPosts(String nickname, int page, int size) {
+//        Users user = userRepository.findByNickname(nickname)
+//                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+//
+//        String currentNickname = user.getNickname();
+//
+//        Pageable pageable = PageRequest.of(page, size);
+//        return repository.findAllByNickname(currentNickname, pageable);
+//    }
 
 }

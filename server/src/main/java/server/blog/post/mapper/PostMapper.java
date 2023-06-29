@@ -24,7 +24,7 @@ public interface PostMapper {
         newPost.getUsers().setUserId(requestBody.getUserId());
         newPost.setPostId(post.getPostId());
         newPost.setCreatedAt(post.getCreatedAt());
-        newPost.setNickname(post.getNickname());
+        newPost.getUsers().getNickname();
         return newPost;
     }
 
@@ -35,7 +35,7 @@ public interface PostMapper {
     default PostDto.Response postToPostResponseDto(Post post){
         PostDto.Response newPost = new PostDto.Response();
         newPost.setUserId(post.getUsers().getUserId());
-        newPost.setNickname(post.getNickname());
+        newPost.setNickname(post.getUsers().getNickname());
         newPost.setCreatedAt(post.getCreatedAt());
         newPost.setImg(post.getImg());
         newPost.setContent(post.getContent());

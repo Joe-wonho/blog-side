@@ -72,14 +72,13 @@ public class PostController {
         Post post = new Post();
         Users users = new Users(); // 새로운 Users 객체 생성
         users.setUserId(currentUser.getUserId());
+        users.setNickname(currentUser.getNickname());
         post.setUsers(users); // 생성한 Users 객체를 post에 설정
         post.setContent(content);
-        post.setNickname(currentUser.getNickname());
         post.getPostId();
         post.getCreatedAt();
 
         Post create = service.savedPost(post, files);
-//        create.getUsers().setUserId(userId);
 
         // 작성된 글의 응답 생성
         return new ResponseEntity<>(mapper.postToPostResponseDto(create), HttpStatus.CREATED);
@@ -154,7 +153,7 @@ public class PostController {
 
         Post findPost = service.findPost(postId);
 
-        if (!findPost.getNickname().equals(nickname)) {
+        if (!findPost.getUsers().getNickname().equals(nickname)) {
             throw new BusinessLogicException(ExceptionCode.POST_NOT_FOUND);
         }
 
@@ -164,20 +163,20 @@ public class PostController {
 
 
 
-    // 회원 포스트 전체 조회(엑세스 토큰 x)
-    // 닉네임 수정시 수정된 닉네임으로 포스트 조회(추후 수정 필요)
-    @GetMapping("/{nickname}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
-    public ResponseEntity getUserPosts(@PathVariable("nickname") String nickname,
-                                       @Positive @RequestParam int page,
-                                       @Positive @RequestParam int size) {
-
-        Page<Post> pagePosts = service.findUserPosts(nickname,page -1, size);
-        List<Post> list = pagePosts.getContent();
-
-        return new ResponseEntity<>(
-                new MultiResponse<>(
-                        mapper.PostsToResponseDtos(list), pagePosts), HttpStatus.OK);
-    }
+//    // 회원 포스트 전체 조회(엑세스 토큰 x)
+//    // 닉네임 수정시 수정된 닉네임으로 포스트 조회(추후 수정 필요)
+//    @GetMapping("/{nickname}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
+//    public ResponseEntity getUserPosts(@PathVariable("nickname") String nickname,
+//                                       @Positive @RequestParam int page,
+//                                       @Positive @RequestParam int size) {
+//
+//        Page<Post> pagePosts = service.findUserPosts(nickname,page -1, size);
+//        List<Post> list = pagePosts.getContent();
+//
+//        return new ResponseEntity<>(
+//                new MultiResponse<>(
+//                        mapper.PostsToResponseDtos(list), pagePosts), HttpStatus.OK);
+//    }
 
 
 
