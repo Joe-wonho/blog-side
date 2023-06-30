@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import Posts from './Posts';
 import Series from './Series';
 import { useRecoilState } from 'recoil';
@@ -57,10 +58,12 @@ const SeriesTab = styled.div<{ selected: string }>`
 
 const Tap = () => {
   const [selected, setSelected] = useRecoilState(selectedTap);
+  const navigate = useNavigate();
   const handleSelect = (e: React.MouseEvent<HTMLDivElement>) => {
     const eventTarget = e.target as HTMLDivElement;
     if (selected !== `${eventTarget.id}`) {
       setSelected(`${eventTarget.id}`);
+      // navigate()
     }
   };
   return (

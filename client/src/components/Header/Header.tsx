@@ -12,7 +12,7 @@ import logo from '../../assets/logo.png';
 
 //1024 이상이면 새글작성 버튼 나오게 하기, 글씨크기 살짝작게하기
 const HeaderContainer = styled.div`
-  /* width: 100%; */
+  min-width: 400px;
   height: 60px;
   display: flex;
   justify-content: center;
