@@ -24,7 +24,12 @@ const HeaderMenu = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 1320px;
+  max-width: 1340px;
+
+  @media screen and (min-width: 1024px) and (max-width: 1356px) {
+    max-width: 1002px;
+  }
+
   @media screen and (max-width: 1023px) {
     margin: 0 20px;
   }
@@ -107,7 +112,13 @@ const Header = () => {
           <div className='hover-menu'>
             <FiSearch size='28'></FiSearch>
           </div>
-          <PostBtn>새 글 작성</PostBtn>
+          <PostBtn
+            onClick={() => {
+              navigate('/write');
+            }}
+          >
+            새 글 작성
+          </PostBtn>
           <Dropdown />
         </RSide>
       </HeaderMenu>

@@ -1,22 +1,33 @@
-import React from 'react';
 import styled from 'styled-components';
-import SideBar from '../components/SideBar';
-import Main from '../components/Main';
+import MainCard from '../components/Main/MainCard';
 import Header from '../components/Header/Header';
 
 const MainPageContainer = styled.div`
-  min-height: 900px;
+  height: 100%;
   display: flex;
   justify-content: center;
   background-color: var(--light-gray-150);
+  padding-top: 50px;
+  min-width: 400px;
 `;
 
 const MainWrapper = styled.div`
-  width: 100%;
-  max-width: 1320px;
-  min-width: 1024px;
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 25px 20px;
+  @media screen and (min-width: 1357px) {
+    width: 1342px; // 보더 지우면 2빼기
+  }
+  @media screen and (min-width: 1024px) and (max-width: 1356px) {
+    width: 1002px;
+  }
+  @media screen and (min-width: 662px) and (max-width: 1023px) {
+    width: 100%;
+    justify-content: center;
+  }
+  @media screen and (max-width: 661px) {
+    width: 96%;
+  }
 `;
 
 const MainPage = () => {
@@ -25,9 +36,17 @@ const MainPage = () => {
       <Header></Header>
       <MainPageContainer>
         <MainWrapper>
-          <SideBar></SideBar>
-          {/* 여기에 메인 컴포넌트 추가 */}
-          <Main></Main>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
+          <MainCard></MainCard>
         </MainWrapper>
       </MainPageContainer>
     </>

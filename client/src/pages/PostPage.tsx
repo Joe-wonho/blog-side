@@ -12,7 +12,7 @@ const Container = styled.div`
   background-color: var(--light-gray-150);
   min-width: 400px;
   @media screen and (max-width: 767px) {
-    padding-top: 40px;
+    padding: 40px 10px 0;
   }
 `;
 
