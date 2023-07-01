@@ -11,6 +11,12 @@ const MainCardContainer = styled.div`
   /* background-color: var(--gray-blue-200); */
   background-color: var(--light-gray-200);
   border-radius: 5px;
+  @media screen and (min-width: 1024px) {
+    transition: transform 0.3s ease-in-out;
+    :hover {
+      transform: translateY(-10px);
+    }
+  }
 
   @media screen and (min-width: 662px) and (max-width: 1023px) {
     width: 48%;
@@ -30,6 +36,7 @@ const Thumbnail = styled.div`
     object-fit: cover;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    cursor: pointer;
   }
   @media screen and (min-width: 1024px) {
     .thumbnail-img {
@@ -54,6 +61,7 @@ const Title = styled.h4`
   font-weight: 500;
   height: 24px;
   font-size: 16px;
+  cursor: pointer;
   @media screen and (min-width: 1024px) {
     font-weight: 600;
   }
@@ -65,6 +73,8 @@ const Desc = styled.p`
   height: 63px;
   line-height: 21px;
   font-weight: 450;
+  cursor: pointer;
+
   //텍스트 너비에 맞춰서 흘러넘치지 않게하기
   white-space: pre-line;
   word-break: break-all;
@@ -99,6 +109,8 @@ const WriterInfo = styled.div`
   flex-grow: 1;
   align-items: center;
   height: 38px;
+  cursor: pointer;
+
   .people-icon {
     border-radius: 50%;
     width: 26px;

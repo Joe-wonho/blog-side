@@ -83,10 +83,13 @@ const PostBtn = styled.div`
     padding: 7px 12px;
     border-radius: 1rem;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 16px;
+    margin-top: 3px;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
     :hover {
-      color: var(--white-100);
+      color: var(--dark-blue-900);
+      background-color: var(--light-gray-200);
     }
   }
 `;
@@ -101,8 +104,9 @@ const Header = () => {
     <HeaderContainer>
       <HeaderMenu>
         <LSide>
-          <img src={logo} alt='logo'></img>
-          <div onClick={() => navigate('/main')}>{`${nickname}.log`}</div>
+          <img src={logo} alt='logo' onClick={() => navigate('/')}></img>
+          {/* 여기서는 현재 들어가있는 페이지 유저의 닉네임이 들어와야함 */}
+          <div onClick={() => navigate(`/${nickname}`)}>{`${nickname}.log`}</div>
         </LSide>
         {/* <LSide onClick={() => navigate('/main')}>{`${nickname}.log`}</LSide> */}
         <RSide>

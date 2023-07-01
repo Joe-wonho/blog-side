@@ -21,7 +21,7 @@ const App: React.FC = () => {
         <RecoilRoot>
           <BrowserRouter>
             <Routes>
-              <Route path='/main' element={<MainPage />}></Route>
+              <Route path='/' element={<MainPage />}></Route>
               <Route path='/:nickname' element={<PostPage />}></Route>
               <Route path='/:nickname/series' element={<SeriesPage />}></Route>
               {/* <Route path='/:nickname/series' element={<Myblogpage />}></Route> */}

@@ -27,13 +27,15 @@ const DropdownMenu = styled.ul<{ dropdown: boolean }>`
   justify-content: space-around;
   top: 105%;
   right: 0;
-  width: 185px;
-  height: 140px;
+  width: 170px;
+  height: 150px;
   background-color: var(--dark-blue-900);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  z-index: 10;
   @media screen and (max-width: 1023px) {
     right: -20px;
+    height: 190px;
   }
 `;
 
@@ -41,11 +43,17 @@ const DropdownItem = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--light-gray-200);
+  cursor: pointer;
   :hover {
     color: var(--white-100);
     transform: scale(1.02, 1.02);
+  }
+  @media screen and (min-width: 1024px) {
+    &.post-btn {
+      display: none;
+    }
   }
 `;
 
@@ -95,8 +103,11 @@ const Dropdown = () => {
         <IoMdArrowDropdown className='down-icon' size='24' color='var(--light-gray-200)'></IoMdArrowDropdown>
       </DropdownToggle>
       <DropdownMenu dropdown={dropdown}>
-        <DropdownItem onClick={() => navigate('/main')}>내 블로그</DropdownItem>
+        <DropdownItem onClick={() => navigate(`/${currentUser.nickname}`)}>내 블로그</DropdownItem>
         <DropdownItem onClick={() => navigate('/mypage')}>나의 정보</DropdownItem>
+        <DropdownItem className='post-btn' onClick={() => navigate('/write')}>
+          새 글 작성
+        </DropdownItem>
         <DropdownItem onClick={onClickLogout}>로그아웃</DropdownItem>
       </DropdownMenu>
     </DropdownContainer>
