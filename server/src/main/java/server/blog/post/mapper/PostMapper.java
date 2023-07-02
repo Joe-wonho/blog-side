@@ -3,8 +3,12 @@ package server.blog.post.mapper;
 import org.mapstruct.Mapper;
 import server.blog.post.dto.PostDto;
 import server.blog.post.entity.Post;
+import server.blog.post.entity.PostTag;
+import server.blog.tag.dto.TagDto;
+import server.blog.tag.entity.Tag;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Mapper(componentModel = "spring")
@@ -40,6 +44,19 @@ public interface PostMapper {
         newPost.setImg(post.getImg());
         newPost.setContent(post.getContent());
         newPost.setPostId(post.getPostId());
+
+        // 태그 정보 추가
+        List<TagDto.Response> tagResponses = post.getPostTag().stream()
+                .map(postTag -> {
+                    TagDto.Response tagResponse = new TagDto.Response();
+                    Tag tag = postTag.getTag();
+                    tagResponse.setTagId(tag.getTagId());
+                    tagResponse.setTagName(tag.getTagName());
+                    tagResponse.setCount((long) tag.getPostTags().size());
+                    return tagResponse;
+                })
+                .collect(Collectors.toList());
+        newPost.setTag(tagResponses.stream().map(TagDto.Response::getTagName).collect(Collectors.toList()));
 
         return newPost;
     }

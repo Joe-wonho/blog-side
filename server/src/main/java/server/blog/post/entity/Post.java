@@ -1,5 +1,6 @@
 package server.blog.post.entity;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,11 +10,13 @@ import server.blog.user.entity.Users;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@Data
 @NoArgsConstructor
 public class Post extends Auditable {
     @Id
@@ -26,8 +29,10 @@ public class Post extends Auditable {
 
     @ElementCollection
     private List<String> img;
-//    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-//    private List<Post_Tag> postTags = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<PostTag> postTag = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY) // 필요할 때까지 로딩x.(Post 엔티티의 users 속성에 접근할 때 해당 Users 엔티티가 로딩됩니다.
     @JoinColumn(name = "USER_ID")

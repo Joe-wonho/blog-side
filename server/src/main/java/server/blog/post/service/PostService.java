@@ -11,14 +11,20 @@ import org.springframework.web.multipart.MultipartFile;
 import server.blog.awsS3.StorageService;
 import server.blog.exception.BusinessLogicException;
 import server.blog.exception.ExceptionCode;
+import server.blog.post.entity.PostTag;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.entity.Post;
+import server.blog.post.repository.PostTagRepository;
+import server.blog.tag.entity.Tag;
+import server.blog.tag.repository.TagRepository;
 import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
 import server.blog.user.service.UserService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,16 +34,21 @@ public class PostService {
     private final PostRepository repository;
     private final StorageService storageService;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
+    private final PostTagRepository postTagRepository;
 
-    public PostService(UserService userService, PostRepository repository, StorageService storageService, UserRepository userRepository){
+    public PostService(UserService userService, PostRepository repository, StorageService storageService,
+                       UserRepository userRepository, TagRepository tagRepository, PostTagRepository postTagRepository){
         this.userService = userService;
         this.repository = repository;
         this.storageService = storageService;
         this.userRepository = userRepository;
+        this.tagRepository = tagRepository;
+        this.postTagRepository = postTagRepository;
     }
 
 
-    public Post savedPost(Post post, List<MultipartFile> files) {
+    public Post savedPost(Post post, List<MultipartFile> files, List<String> tags) {
 
 
         List<String> imageUrl = storageService.uploadFiles(files);
@@ -45,8 +56,71 @@ public class PostService {
 
         Post savePost = repository.save(post);
 
-        return savePost;
+        // 태그 처리
+        if (tags != null && !tags.isEmpty()) {
+            List<PostTag> postTags = tags.stream()
+                    .map(tagName -> {
+                        Tag tag = tagRepository.findByTagName(tagName)
+                                .orElseGet(() -> {
+                                    Tag newTag = new Tag();
+                                    newTag.setTagName(tagName);
+                                    return tagRepository.save(newTag);
+                                });
+
+                        PostTag postTag = new PostTag();
+                        postTag.setTag(tag);
+                        postTag.setPost(savePost);
+                        return postTag;
+                    })
+                    .collect(Collectors.toList());
+
+
+//        // 태그 처리(작동 세모)
+//        List<PostTag> postTags = new ArrayList<>();
+//        if (tags != null && !tags.isEmpty()) {
+//            for (String tagName : tags) {
+//                Tag tag = tagRepository.findByTagName(tagName)
+//                        .orElseGet(() -> {
+//                            Tag newTag = new Tag();
+//                            newTag.setTagName(tagName);
+//                            return tagRepository.save(newTag);
+//                        });
+//
+//                PostTag postTag = new PostTag();
+//                postTag.setTag(tag);
+//                postTag.setPost(savePost);
+//                postTags.add(postTag);
+//            }
+//        }
+
+            // 포스트 태그 저장
+            postTagRepository.saveAll(postTags);
+
+        }
+
+
+            return savePost;
     }
+
+
+
+//    // 태그 처리
+//        if (tags != null && !tags.isEmpty()) {
+//        for (String tagName : tags) {
+//            Tag tag = tagRepository.findByTagName(tagName);
+//            if (tag == null) {
+//                // 새로운 태그 생성
+//                tag = new Tag(tagName, 1L);
+//            } else {
+//                // 기존 태그 카운트 증가
+//                tag.setCount(tag.getCount() + 1);
+//            }
+//            tagRepository.save(tag);
+//
+//            Post_Tag postTag = new Post_Tag(post, tag);
+//            post.getPostTags().add(postTag);
+//        }
+//    }
 
 
     public Post findPost(long postId){

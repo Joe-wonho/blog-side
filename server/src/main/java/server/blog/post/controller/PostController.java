@@ -20,8 +20,10 @@ import server.blog.post.mapper.PostMapper;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.service.PostService;
 import server.blog.response.MultiResponse;
+import server.blog.tag.entity.Tag;
 import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
+import server.blog.post.entity.PostTag;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -29,6 +31,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 // todo : 회원이 탈퇴되도 글 유지
@@ -47,12 +50,13 @@ public class PostController {
 
 
     // 포스트 작성(토큰 인증)
+    // tag 잘 저장되나 작성시 tag에 빈값 -> 수정 필요
     @PostMapping("/post")
     public ResponseEntity postPost(@RequestParam("userId") Long userId,
                                    @RequestParam("content") @NotBlank(message = "내용을 입력하세요.") String content,
 //                                   @RequestParam("series") String series,
-                                   @RequestParam(value = "img", required = false) List<MultipartFile> files
-//                                   @RequestPart(value = "tags", required = false) List<String> tags
+                                   @RequestParam(value = "img", required = false) List<MultipartFile> files,
+                                   @RequestParam(value = "tag", required = false) List<String> tags
     ) throws Exception {
         if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(content)) {
             // 필수 필드가 누락된 경우, 적절한 응답 처리
@@ -75,10 +79,12 @@ public class PostController {
         users.setNickname(currentUser.getNickname());
         post.setUsers(users); // 생성한 Users 객체를 post에 설정
         post.setContent(content);
-        post.getPostId();
-        post.getCreatedAt();
+//        post.getPostId();
+//        post.getCreatedAt();
+//        post.getPostTag();
 
-        Post create = service.savedPost(post, files);
+
+        Post create = service.savedPost(post, files, tags);
 
         // 작성된 글의 응답 생성
         return new ResponseEntity<>(mapper.postToPostResponseDto(create), HttpStatus.CREATED);
