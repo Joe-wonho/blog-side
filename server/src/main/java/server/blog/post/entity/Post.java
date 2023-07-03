@@ -63,4 +63,11 @@ public class Post extends Auditable {
         this.content = content;
         this.img = img;
     }
+
+    public void setPostTags(List<PostTag> postTags) {
+        this.postTag = postTags;
+        for (PostTag postTag : postTags) {
+            postTag.setPost(this);
+        }
+    }
 }

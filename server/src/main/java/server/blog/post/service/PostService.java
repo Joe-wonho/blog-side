@@ -76,24 +76,7 @@ public class PostService {
                     })
                     .collect(Collectors.toList());
 
-
-//        // 태그 처리(작동 세모)
-//        List<PostTag> postTags = new ArrayList<>();
-//        if (tags != null && !tags.isEmpty()) {
-//            for (String tagName : tags) {
-//                Tag tag = tagRepository.findByTagName(tagName)
-//                        .orElseGet(() -> {
-//                            Tag newTag = new Tag();
-//                            newTag.setTagName(tagName);
-//                            return tagRepository.save(newTag);
-//                        });
-//
-//                PostTag postTag = new PostTag();
-//                postTag.setTag(tag);
-//                postTag.setPost(savePost);
-//                postTags.add(postTag);
-//            }
-//        }
+            savePost.setPostTags(postTags);
 
             // 포스트 태그 저장
             postTagRepository.saveAll(postTags);

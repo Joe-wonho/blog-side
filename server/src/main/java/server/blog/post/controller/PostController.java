@@ -51,7 +51,6 @@ public class PostController {
 
 
     // 포스트 작성(토큰 인증)
-    // tag 잘 저장되나 작성시 tag에 빈값 -> 수정 필요
     @PostMapping("/post")
     public ResponseEntity postPost(@RequestParam("userId") Long userId,
                                    @RequestParam("content") @NotBlank(message = "내용을 입력하세요.") String content,
@@ -80,9 +79,6 @@ public class PostController {
         users.setNickname(currentUser.getNickname());
         post.setUsers(users); // 생성한 Users 객체를 post에 설정
         post.setContent(content);
-//        post.getPostId();
-//        post.getCreatedAt();
-//        post.getPostTag();
 
 
         Post create = service.savedPost(post, files, tags);
@@ -216,7 +212,7 @@ public class PostController {
 
 
     // 포스트 태그 조회
-    @GetMapping("tag/{nickname}/{tagName}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
+    @GetMapping("/tag/{nickname}/{tagName}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
     public ResponseEntity getTagPosts(@PathVariable("nickname") String nickname,
                                       @PathVariable("tagName") String tagName,
                                        @Positive @RequestParam int page,
