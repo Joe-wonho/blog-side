@@ -170,7 +170,6 @@ public class PostController {
 
 
     // 회원 포스트 전체 조회(엑세스 토큰 x)
-    // 닉네임 수정시 수정된 닉네임으로 포스트 조회(추후 수정 필요)
     @GetMapping("/{nickname}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
     public ResponseEntity getUserPosts(@PathVariable("nickname") String nickname,
                                        @Positive @RequestParam int page,
@@ -216,7 +215,19 @@ public class PostController {
 
 
     // 포스트 태그 조회
+    @GetMapping("tag/{nickname}/{tagName}") // 경로 변수 안에는 entity 클래스의 식별자 들어감
+    public ResponseEntity getTagPosts(@PathVariable("nickname") String nickname,
+                                      @PathVariable("tagName") String tagName,
+                                       @Positive @RequestParam int page,
+                                       @Positive @RequestParam int size) {
 
+        Page<Post> pagePosts = service.findTagPosts(nickname,tagName, page -1, size);
+        List<Post> list = pagePosts.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponse<>(
+                        mapper.PostsToResponseDtos(list), pagePosts), HttpStatus.OK);
+    }
 
 
 

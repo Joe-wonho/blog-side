@@ -171,4 +171,16 @@ public class PostService {
         return repository.findAllByUsersNickname(currentNickname, pageable);
     }
 
+
+    @Transactional(readOnly = true)
+    public Page<Post> findTagPosts(String nickname, String tagName, int page, int size) {
+        Users user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        String currentNickname = user.getNickname();
+
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAllByUsersNicknameAndPostTag_Tag_TagName(currentNickname, tagName, pageable);
+    }
+
 }
