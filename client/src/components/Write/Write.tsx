@@ -2,25 +2,12 @@ import styled from 'styled-components';
 import { useRef, useState, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
+import Title from './Title';
+import TagArea from './TagArea';
 const WriteContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
-`;
-const Title = styled.textarea`
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid red;
-  font-size: 2.75rem;
-  font-weight: 700;
-  line-height: 1.5;
-  display: flex;
-  resize: none;
-  overflow: hidden;
-  /* border: none; */
-  outline: none;
 `;
 
 const Write = () => {
@@ -97,7 +84,8 @@ const Write = () => {
 
   return (
     <WriteContainer>
-      <Title placeholder='제목을 입력하세요'></Title>
+      <Title></Title>
+      <TagArea></TagArea>
       <ReactQuill
         ref={(element) => {
           if (element !== null) {
