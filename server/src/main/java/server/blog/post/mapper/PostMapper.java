@@ -44,6 +44,7 @@ public interface PostMapper {
         newPost.setImg(post.getImg());
         newPost.setContent(post.getContent());
         newPost.setPostId(post.getPostId());
+        newPost.setThumbnail(post.getThumbnail());
 
         // 태그 정보 추가
         List<TagDto.Response> tagResponses = post.getPostTag().stream()

@@ -31,6 +31,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,12 +55,13 @@ public class PostController {
     // 포스트 작성(토큰 인증)
     @PostMapping("/post")
     public ResponseEntity postPost(@RequestParam("userId") Long userId,
-                                   @RequestParam("content") @NotBlank(message = "내용을 입력하세요.") String content,
+                                   @RequestParam(value = "content") @NotBlank(message = "내용을 입력하세요.") String content,
 //                                   @RequestParam("series") String series,
                                    @RequestParam(value = "img", required = false) List<MultipartFile> files,
-                                   @RequestParam(value = "tag", required = false) List<String> tags
+                                   @RequestParam(value = "tag", required = false) List<String> tags,
+                                   @RequestParam(value = "thumbnail") MultipartFile thumbnail
     ) throws Exception {
-        if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(content)) {
+        if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(content) || StringUtils.isEmpty(thumbnail)) {
             // 필수 필드가 누락된 경우, 적절한 응답 처리
             return new ResponseEntity<>("필수 필드를 입력하세요.", HttpStatus.BAD_REQUEST);
         }
@@ -80,6 +83,12 @@ public class PostController {
         post.setUsers(users); // 생성한 Users 객체를 post에 설정
         post.setContent(content);
 
+        if (thumbnail != null) {
+            // thumbnail 업로드
+            String thumbnailUrl = storageService.uploadFile(thumbnail);
+            post.setThumbnail(thumbnailUrl);
+        }
+
 
         Post create = service.savedPost(post, files, tags);
 
@@ -95,6 +104,7 @@ public class PostController {
     public ResponseEntity patchPost(@PathVariable("postId") @Positive long postId,
                                     @RequestParam("userId") @Positive @NotNull Long userId,
                                     @RequestParam(value = "content", required = false) String content, // 선택적으로 받을 수 있도록
+                                    @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
                                     @RequestParam(value = "img", required = false) List<MultipartFile> files) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -117,6 +127,11 @@ public class PostController {
                     List<String> imageUrls = storageService.uploadFiles(findPost, files);
                     findPost.setImg(imageUrls);
                 }
+                if (thumbnail != null) {
+                    // thumbnail 업로드
+                    String thumbnailUrl = storageService.uploadFile(thumbnail);
+                    findPost.setThumbnail(thumbnailUrl);
+                }
                 Post updatedPost = service.updatePost(findPost, files);
                 return new ResponseEntity<>(mapper.postToPostResponseDto(updatedPost), HttpStatus.OK);
             } else {
@@ -131,7 +146,7 @@ public class PostController {
 
 
 
-    // 포스트 전체 조회(엑세스 토큰 x)
+            // 포스트 전체 조회(엑세스 토큰 x)
     @GetMapping("/")
     public ResponseEntity getPosts(@Positive @RequestParam int page,
                                    @Positive @RequestParam int size) {

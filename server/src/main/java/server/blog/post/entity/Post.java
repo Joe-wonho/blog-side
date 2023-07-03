@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.web.multipart.MultipartFile;
 import server.blog.audit.Auditable;
 import server.blog.user.entity.Users;
 
@@ -29,6 +30,9 @@ public class Post extends Auditable {
 
     @ElementCollection
     private List<String> img;
+
+    @Column
+    private String thumbnail;
 
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)

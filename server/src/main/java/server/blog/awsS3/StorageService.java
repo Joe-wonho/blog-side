@@ -131,17 +131,4 @@ public class StorageService {
         return convertedFile;
     }
 
-//    private List<File> convertMultiPartFilesToFiles(List<MultipartFile> files) {
-//        List<File> convertedFiles = new ArrayList<>();
-//        for (MultipartFile file : files) {
-//            File convertedFile = new File(file.getOriginalFilename());
-//            try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
-//                fos.write(file.getBytes());
-//                convertedFiles.add(convertedFile);
-//            } catch (IOException e) {
-//                log.error("Error converting multipartFile to file", e);
-//            }
-//        }
-//        return convertedFiles;
-//    }
 }

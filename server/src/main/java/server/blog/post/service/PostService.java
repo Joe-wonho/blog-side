@@ -53,8 +53,12 @@ public class PostService {
     public Post savedPost(Post post, List<MultipartFile> files, List<String> tags) {
 
 
-        List<String> imageUrl = storageService.uploadFiles(files);
-        post.setImg(imageUrl);
+        if (files != null && !files.isEmpty()) {
+            List<String> imageUrl = storageService.uploadFiles(files);
+            post.setImg(imageUrl);
+        } else {
+            post.setImg(new ArrayList<>());
+        }
 
         Post savePost = repository.save(post);
 
