@@ -20,7 +20,7 @@ public class Tag {
     @OneToMany(mappedBy = "tag")
     private List<PostTag> postTags = new ArrayList<>();
 
-    public void addBoardTag(PostTag postTag) {
+    public void addPostTag(PostTag postTag) {
         this.postTags.add(postTag);
         if (postTag.getTag() != this) {
             postTag.addTag(this);

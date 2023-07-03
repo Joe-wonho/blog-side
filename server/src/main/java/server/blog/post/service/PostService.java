@@ -15,6 +15,7 @@ import server.blog.post.entity.PostTag;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.entity.Post;
 import server.blog.post.repository.PostTagRepository;
+import server.blog.tag.dto.TagDto;
 import server.blog.tag.entity.Tag;
 import server.blog.tag.repository.TagRepository;
 import server.blog.user.entity.Users;
@@ -24,6 +25,7 @@ import server.blog.user.service.UserService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -181,6 +183,23 @@ public class PostService {
 
         Pageable pageable = PageRequest.of(page, size);
         return repository.findAllByUsersNicknameAndPostTag_Tag_TagName(currentNickname, tagName, pageable);
+    }
+
+
+
+    public List<TagDto.tagResponse> getTagInfoByNickname(String nickname) {
+        Optional<Users> user = userRepository.findByNickname(nickname);
+        List<Tag> tags = tagRepository.findDistinctByPostTagsPostUsers(user);
+
+        List<TagDto.tagResponse> responseList = new ArrayList<>();
+
+        for (Tag tag : tags) {
+            Long count = (long) tag.getPostTags().size();
+            TagDto.tagResponse response = new TagDto.tagResponse(tag.getTagName(), count);
+            responseList.add(response);
+        }
+
+        return responseList;
     }
 
 }

@@ -20,6 +20,7 @@ import server.blog.post.mapper.PostMapper;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.service.PostService;
 import server.blog.response.MultiResponse;
+import server.blog.tag.dto.TagDto;
 import server.blog.tag.entity.Tag;
 import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
@@ -232,9 +233,12 @@ public class PostController {
 
 
 
-
-    // 포스트 태그 목록 조회
-
+    // 태그 목록 조회
+    @GetMapping("/tag/{nickname}")
+    public ResponseEntity<List<TagDto.tagResponse>> getTag(@PathVariable("nickname") String nickname) {
+        List<TagDto.tagResponse> responseList = service.getTagInfoByNickname(nickname);
+        return ResponseEntity.ok(responseList);
+    }
 
 
 }

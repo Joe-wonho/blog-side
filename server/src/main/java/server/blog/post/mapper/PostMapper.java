@@ -52,7 +52,6 @@ public interface PostMapper {
                     Tag tag = postTag.getTag();
                     tagResponse.setTagId(tag.getTagId());
                     tagResponse.setTagName(tag.getTagName());
-                    tagResponse.setCount((long) tag.getPostTags().size());
                     return tagResponse;
                 })
                 .collect(Collectors.toList());
