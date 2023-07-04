@@ -15,6 +15,8 @@ import server.blog.post.entity.PostTag;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.entity.Post;
 import server.blog.post.repository.PostTagRepository;
+import server.blog.series.entity.Series;
+import server.blog.series.repository.SeriesRepository;
 import server.blog.tag.dto.TagDto;
 import server.blog.tag.entity.Tag;
 import server.blog.tag.repository.TagRepository;
@@ -38,19 +40,33 @@ public class PostService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
+    private final SeriesRepository seriesRepository;
 
     public PostService(UserService userService, PostRepository repository, StorageService storageService,
-                       UserRepository userRepository, TagRepository tagRepository, PostTagRepository postTagRepository){
+                       UserRepository userRepository, TagRepository tagRepository, PostTagRepository postTagRepository,
+                       SeriesRepository seriesRepository){
         this.userService = userService;
         this.repository = repository;
         this.storageService = storageService;
         this.userRepository = userRepository;
         this.tagRepository = tagRepository;
         this.postTagRepository = postTagRepository;
+        this.seriesRepository = seriesRepository;
     }
 
 
-    public Post savedPost(Post post, List<MultipartFile> files, List<String> tags) {
+    public Post savedPost(Post post, List<MultipartFile> files, List<String> tags, String seriesName) {
+
+
+        if (seriesName != null && !seriesName.isEmpty()) {
+            Series series = new Series();
+            series.setSeriesName(seriesName);
+            seriesRepository.save(series); // Series 엔티티를 먼저 저장
+
+            post.setSeries(series); // 저장된 Series 엔티티를 Post의 series 필드에 설정
+        }else{
+            post.setSeries(null);
+        }
 
 
         if (files != null && !files.isEmpty()) {

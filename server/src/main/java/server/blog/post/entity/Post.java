@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.web.multipart.MultipartFile;
 import server.blog.audit.Auditable;
+import server.blog.series.entity.Series;
 import server.blog.user.entity.Users;
 
 import javax.persistence.*;
@@ -42,9 +43,9 @@ public class Post extends Auditable {
     @JoinColumn(name = "USER_ID")
     private Users users;
 
-//    @ManyToOne
-//    @JoinColumn(name = "SERIES_ID")
-//    private String series;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SERIES_ID")
+    private Series series;
 
     @CreatedDate
     @Column(name = "created_at")

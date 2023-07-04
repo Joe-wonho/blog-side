@@ -20,21 +20,18 @@ import server.blog.post.mapper.PostMapper;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.service.PostService;
 import server.blog.response.MultiResponse;
+import server.blog.series.entity.Series;
+import server.blog.series.repository.SeriesRepository;
 import server.blog.tag.dto.TagDto;
-import server.blog.tag.entity.Tag;
 import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
-import server.blog.post.entity.PostTag;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 // todo : 회원이 탈퇴되도 글 유지
@@ -49,6 +46,7 @@ public class PostController {
     private final PostRepository repository;
     private final UserRepository userRepository;
     private final StorageService storageService;
+    private final SeriesRepository seriesRepository;
 
 
 
@@ -56,7 +54,7 @@ public class PostController {
     @PostMapping("/post")
     public ResponseEntity postPost(@RequestParam("userId") Long userId,
                                    @RequestParam(value = "content") @NotBlank(message = "내용을 입력하세요.") String content,
-//                                   @RequestParam("series") String series,
+                                   @RequestParam(value = "series", required = false) String seriesName,
                                    @RequestParam(value = "img", required = false) List<MultipartFile> files,
                                    @RequestParam(value = "tag", required = false) List<String> tags,
                                    @RequestParam(value = "thumbnail") MultipartFile thumbnail
@@ -90,7 +88,7 @@ public class PostController {
         }
 
 
-        Post create = service.savedPost(post, files, tags);
+        Post create = service.savedPost(post, files, tags , seriesName);
 
         // 작성된 글의 응답 생성
         return new ResponseEntity<>(mapper.postToPostResponseDto(create), HttpStatus.CREATED);

@@ -35,7 +35,7 @@ public class PostDto {
         private String content;
         private List<String> img;
         private List<String> tag;
-        //        private String series;
+        private String series;
         private String thumbnail;
         private LocalDateTime createdAt;
     }
