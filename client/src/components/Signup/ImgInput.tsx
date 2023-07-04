@@ -1,9 +1,8 @@
-import styled from 'styled-components';
-// import defaultProfile from '../../assets/profile.jpg';
-import { BsFillCameraFill, BsTrash3Fill } from 'react-icons/bs';
-import React, { useRef, useState } from 'react';
-import { FileUpload } from './Signup';
-import defaultProfile from '../../assets/profile.png';
+import styled from "styled-components";
+import { BsFillCameraFill, BsTrash3Fill } from "react-icons/bs";
+import React, { useRef, useState } from "react";
+import { FileUpload } from "./Signup";
+import defaultProfile from "../../assets/profile.png";
 const ImgInputContainer = styled.div`
   width: 100%;
   display: flex;
@@ -57,7 +56,7 @@ const Preview = styled.div`
 
 const ImgInput = ({ file, setFile }: FileUpload) => {
   const imgRef = useRef<HTMLInputElement>(null);
-  const [fileURL, setFileURL] = useState<string>('');
+  const [fileURL, setFileURL] = useState<string>("");
 
   const onChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -69,7 +68,7 @@ const ImgInput = ({ file, setFile }: FileUpload) => {
 
   const onRemoveImg = (): void => {
     URL.revokeObjectURL(fileURL);
-    setFileURL('');
+    setFileURL("");
     setFile(null);
   };
 
@@ -78,7 +77,7 @@ const ImgInput = ({ file, setFile }: FileUpload) => {
       <ImgInputContainer>
         <label>
           <p>프로필 사진</p>
-          <div className='icon-box'>
+          <div className="icon-box">
             <IconBox
               onClick={(e) => {
                 e.preventDefault();
@@ -87,18 +86,24 @@ const ImgInput = ({ file, setFile }: FileUpload) => {
                 }
               }}
             >
-              <BsFillCameraFill size='25' color='var(--light-gray-400)' />
+              <BsFillCameraFill size="25" color="var(--light-gray-400)" />
             </IconBox>
             <IconBox onClick={onRemoveImg}>
-              <BsTrash3Fill size='21' color='var(--light-gray-400)' />
+              <BsTrash3Fill size="21" color="var(--light-gray-400)" />
             </IconBox>
           </div>
         </label>
-        <input type='file' placeholder='이미지업로드' accept='image/*' ref={imgRef} onChange={onChangeImg}></input>
+        <input
+          type="file"
+          placeholder="이미지업로드"
+          accept="image/*"
+          ref={imgRef}
+          onChange={onChangeImg}
+        ></input>
       </ImgInputContainer>
 
       <Preview>
-        <img src={fileURL ? fileURL : defaultProfile} alt='profile-img'></img>
+        <img src={fileURL ? fileURL : defaultProfile} alt="profile-img"></img>
       </Preview>
     </>
   );

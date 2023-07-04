@@ -1,16 +1,18 @@
-import { useState } from 'react';
-import styled from 'styled-components';
-import TextareaAutosize from 'react-textarea-autosize';
+// import { useState } from "react";
+import styled from "styled-components";
+import TextareaAutosize from "react-textarea-autosize";
 
 const TitleContainer = styled(TextareaAutosize)`
   display: block;
   width: 100%;
+  min-width: 430px;
   font-size: 2.3rem;
   font-weight: 650;
   resize: none;
   outline: none;
   border: none;
   margin-bottom: 10px;
+  background-color: var(--light-gray-100);
 `;
 const TitleBorder = styled.div`
   width: 100px;
@@ -21,7 +23,10 @@ const TitleBorder = styled.div`
 const Title = () => {
   return (
     <>
-      <TitleContainer placeholder='제목을 입력하세요' maxRows={5}></TitleContainer>
+      <TitleContainer
+        placeholder="제목을 입력하세요"
+        maxRows={5}
+      ></TitleContainer>
       <TitleBorder></TitleBorder>
     </>
   );
