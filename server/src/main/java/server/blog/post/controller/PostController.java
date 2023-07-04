@@ -20,8 +20,6 @@ import server.blog.post.mapper.PostMapper;
 import server.blog.post.repository.PostRepository;
 import server.blog.post.service.PostService;
 import server.blog.response.MultiResponse;
-import server.blog.series.entity.Series;
-import server.blog.series.repository.SeriesRepository;
 import server.blog.tag.dto.TagDto;
 import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
@@ -46,8 +44,6 @@ public class PostController {
     private final PostRepository repository;
     private final UserRepository userRepository;
     private final StorageService storageService;
-    private final SeriesRepository seriesRepository;
-
 
 
     // 포스트 작성(토큰 인증)
