@@ -36,4 +36,13 @@ public class SeriesService {
         Pageable pageable = PageRequest.of(page, size);
         return seriesRepository.findAllByPostsUsersNickname(nickname, pageable);
     }
+
+    @Transactional(readOnly = true)
+    public Page<Series> findNicknameAndSeries(String nickname, String seriesName, int page, int size) {
+        Users user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        Pageable pageable = PageRequest.of(page, size);
+        return seriesRepository.findAllByPostsUsersNicknameAndSeriesName(nickname, seriesName, pageable);
+    }
 }

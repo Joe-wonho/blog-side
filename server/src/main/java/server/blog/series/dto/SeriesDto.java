@@ -17,7 +17,7 @@ public class SeriesDto {
     @Data
     @NoArgsConstructor
     public static class detailResponse {
-        private Long seriesName;
+        private String seriesName;
         private PostDto.Response post; // 게시글 정보
 
     }
