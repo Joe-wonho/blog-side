@@ -38,14 +38,13 @@ public interface SeriesMapper {
     }
 
 
-//    List<SeriesDto.detailResponse> seriesToSeriesDetailResponseDto(List<Series> list);
+
 
     default List<SeriesDto.detailResponse> seriesToSeriesDetailResponseDto(List<Series> list) {
         List<SeriesDto.detailResponse> responseList = new ArrayList<>();
 
         for (Series series : list) {
             SeriesDto.detailResponse response = new SeriesDto.detailResponse();
-            response.setSeriesName(series.getSeriesName());
 
             // 게시글 정보 가져오기
             List<Post> posts = series.getPosts(); // 시리즈에 속한 포스트들
