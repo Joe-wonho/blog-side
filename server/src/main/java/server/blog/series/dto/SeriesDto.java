@@ -11,7 +11,7 @@ public class SeriesDto {
     @NoArgsConstructor
     public static class allResponse {
         private String seriesName;
-        private String banner; // 해당 시리즈에 있는 첫번째 게시글의 thmbnail
+        private String banner; // 해당 시리즈에 있는 첫번째 게시글의 thumbnail
         private Long count; // 게시글 갯수
 
     }
@@ -19,7 +19,6 @@ public class SeriesDto {
     @Data
     @NoArgsConstructor
     public static class detailResponse {
-//        private PostDto.Response post; // 게시글 정보
         private Long userId;
         private String nickname;
         private Long postId;

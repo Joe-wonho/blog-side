@@ -1,11 +1,9 @@
 package server.blog.series.mapper;
 
 import org.mapstruct.Mapper;
-import server.blog.post.dto.PostDto;
 import server.blog.post.entity.Post;
 import server.blog.series.dto.SeriesDto;
 import server.blog.series.entity.Series;
-import server.blog.post.entity.PostTag;
 
 import java.util.ArrayList;
 import java.util.HashMap;

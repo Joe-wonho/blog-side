@@ -1,24 +1,19 @@
 package server.blog.series.controller;
 
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import server.blog.post.entity.Post;
 import server.blog.response.MultiResponse;
 import server.blog.series.dto.SeriesDto;
 import server.blog.series.entity.Series;
 import server.blog.series.mapper.SeriesMapper;
 import server.blog.series.service.SeriesService;
-import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
 
 import javax.validation.constraints.Positive;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
