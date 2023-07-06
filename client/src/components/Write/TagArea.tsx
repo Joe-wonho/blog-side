@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { tagAtom } from '../../recoil/write';
 
 const TagAreaContainer = styled.div`
   background-color: var(--light-gray-100);
@@ -60,16 +62,16 @@ const TagInput = styled.input`
 `;
 
 const TagArea = () => {
-  const [tagItem, setTagItem] = useState<string>("");
-  const [tagList, setTagList] = useState<string[]>([]);
-
+  const [tagItem, setTagItem] = useState<string>('');
+  // const [tagList, setTagList] = useState<string[]>([]);
+  const [tagList, setTagList] = useRecoilState(tagAtom);
   const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     // 같은 태그가 없을때, 태그의 값이 '' 이 아닐때, 태그의 개수가 4개까지만 가능
     if (
       target.value.length !== 0 &&
-      e.key === "Enter" &&
-      target.value.trim() !== "" &&
+      e.key === 'Enter' &&
+      target.value.trim() !== '' &&
       !tagList.includes(tagItem) &&
       !tagList.includes(tagItem.trim()) &&
       tagList.length < 4
@@ -82,7 +84,7 @@ const TagArea = () => {
     let updatedTagList = [...tagList];
     updatedTagList.push(tagItem.trim());
     setTagList(updatedTagList);
-    setTagItem("");
+    setTagItem('');
   };
 
   const deleteTagItem = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -107,8 +109,8 @@ const TagArea = () => {
           );
         })}
         <TagInput
-          type="text"
-          placeholder="태그를 등록하세요. (최대 4개)"
+          type='text'
+          placeholder='태그를 등록하세요. (최대 4개)'
           tabIndex={2}
           onChange={(e) => setTagItem(e.target.value)}
           value={tagItem}

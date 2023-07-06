@@ -1,6 +1,8 @@
-// import { useState } from "react";
-import styled from "styled-components";
-import TextareaAutosize from "react-textarea-autosize";
+import { useState } from 'react';
+import styled from 'styled-components';
+import TextareaAutosize from 'react-textarea-autosize';
+import { useRecoilState } from 'recoil';
+import { titleAtom } from '../../recoil/write';
 
 const TitleContainer = styled(TextareaAutosize)`
   display: block;
@@ -21,12 +23,13 @@ const TitleBorder = styled.div`
 `;
 
 const Title = () => {
+  const [title, setTitle] = useRecoilState(titleAtom);
+  const handleTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTitle(e.target.value);
+  };
   return (
     <>
-      <TitleContainer
-        placeholder="제목을 입력하세요"
-        maxRows={5}
-      ></TitleContainer>
+      <TitleContainer placeholder='제목을 입력하세요' maxRows={5} onChange={handleTitle} value={title}></TitleContainer>
       <TitleBorder></TitleBorder>
     </>
   );

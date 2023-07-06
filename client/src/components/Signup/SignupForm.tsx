@@ -71,6 +71,7 @@ const ValidDesc = styled.p`
   color: rgb(109, 109, 109);
   &.false-input {
     color: rgb(253, 91, 21);
+  
   }
 `;
 

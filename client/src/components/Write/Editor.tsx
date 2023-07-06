@@ -1,29 +1,30 @@
-import styled from "styled-components";
-import { useRef, useState, useMemo } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import EditorToolbar, { modules, formats } from "./EditorToolbar";
+import styled from 'styled-components';
+import { useRef, useState, useMemo } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import EditorToolbar, { modules, formats } from './EditorToolbar';
+import { useRecoilState } from 'recoil';
 
 const Editor = () => {
   const QuillRef = useRef<ReactQuill>();
-  const [contents, setContents] = useState("");
+  const [contents, setContents] = useState('');
 
   // 이미지를 업로드 하기 위한 함수
   const imageHandler = () => {
     // 파일을 업로드 하기 위한 input 태그 생성
-    const input = document.createElement("input");
+    const input = document.createElement('input');
     const formData = new FormData();
-    let url = "";
+    let url = '';
 
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
     input.click();
 
     // 파일이 input 태그에 담기면 실행 될 함수
     input.onchange = async () => {
       const file = input.files;
       if (file !== null) {
-        formData.append("image", file[0]);
+        formData.append('image', file[0]);
 
         // 저의 경우 파일 이미지를 서버에 저장했기 때문에
         // 백엔드 개발자분과 통신을 통해 이미지를 저장하고 불러왔습니다.
@@ -55,7 +56,6 @@ const Editor = () => {
       }
     };
   };
-
   console.log(contents);
   return (
     <>
@@ -70,9 +70,9 @@ const Editor = () => {
         onChange={setContents}
         modules={modules}
         formats={formats}
-        theme="snow"
-        placeholder="내용을 입력해주세요."
-        style={{ height: "600px", minWidth: "430px" }}
+        theme='snow'
+        placeholder='내용을 입력해주세요.'
+        style={{ height: '600px', minWidth: '430px' }}
       />
     </>
   );

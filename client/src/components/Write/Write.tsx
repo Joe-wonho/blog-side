@@ -1,9 +1,10 @@
-import styled from "styled-components";
-import Title from "./Title";
-import TagArea from "./TagArea";
-import Editor from "./Editor";
-import { useNavigate } from "react-router";
-
+import styled from 'styled-components';
+import Title from './Title';
+import TagArea from './TagArea';
+import Editor from './Editor';
+import { useNavigate } from 'react-router';
+import { useState } from 'react';
+import SeriesArea from './SeriesArea';
 const WriteContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -18,7 +19,9 @@ const SubmitContainer = styled.div`
   gap: 30px;
   padding: 20px;
   font-weight: 600;
-  .cancle-btn {
+`;
+export const CommonBtn = styled.div`
+  &.cancle-btn {
     color: var(--active);
     /* background-color: var(--light-gray-200); */
     border-radius: 8px;
@@ -31,7 +34,7 @@ const SubmitContainer = styled.div`
       background-color: var(--light-gray-200);
     }
   }
-  .submit-btn {
+  &.submit-btn {
     background-color: var(--blue100);
     color: white;
     border-radius: 8px;
@@ -49,6 +52,8 @@ const SubmitContainer = styled.div`
 
 const Write = () => {
   const navigate = useNavigate();
+  //시리즈창 온오프 설정
+  const [openCheck, setCheck] = useState(false);
   return (
     <>
       <WriteContainer>
@@ -57,16 +62,24 @@ const Write = () => {
         <Editor />
       </WriteContainer>
       <SubmitContainer>
-        <div className="cancle-btn">✘ 취소</div>
-        <div
-          className="submit-btn"
+        <CommonBtn
           onClick={() => {
-            navigate("/check");
+            navigate(-1);
+          }}
+          className='cancle-btn'
+        >
+          ✘ 취소
+        </CommonBtn>
+        <CommonBtn
+          className='submit-btn'
+          onClick={() => {
+            setCheck(true);
           }}
         >
           출간하기
-        </div>
+        </CommonBtn>
       </SubmitContainer>
+      <SeriesArea openCheck={openCheck} setCheck={setCheck}></SeriesArea>
     </>
   );
 };
