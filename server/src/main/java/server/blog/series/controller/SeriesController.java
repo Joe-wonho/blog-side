@@ -40,7 +40,6 @@ public class SeriesController {
 
 
     // 포스트 시리즈 전체 조회
-    // 배너 -> 가장 오래된 게시글의 썸네일로 수정 필요
     @GetMapping("/{nickname}/series")
     public ResponseEntity allSeries(@PathVariable("nickname") String nickname,
                                     @Positive @RequestParam int page,

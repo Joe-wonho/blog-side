@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface SeriesMapper {
 
-    default List<SeriesDto.allResponse> seriesToSeriesResponseDto(List<Series> seriesList){
+    default List<SeriesDto.allResponse> seriesToSeriesResponseDto(List<Series> seriesList) {
         Map<String, SeriesDto.allResponse> seriesMap = new HashMap<>();
 
         for (Series series : seriesList) {
@@ -26,11 +26,20 @@ public interface SeriesMapper {
 
             List<Post> posts = series.getPosts();
             if (!posts.isEmpty()) {
-                response.setBanner(posts.get(0).getThumbnail());
+                Post oldestPost = null;
+
+                for (Post post : posts) {
+                    if (oldestPost == null || post.getCreatedAt().isBefore(oldestPost.getCreatedAt())) {
+                        oldestPost = post;
+                    }
+                }
+
+                if (oldestPost != null) {
+                    response.setBanner(oldestPost.getThumbnail());
+                }
             }
 
             response.setCount((response.getCount() != null ? response.getCount() : 0) + posts.size());
-
             seriesMap.put(seriesName, response);
         }
 
