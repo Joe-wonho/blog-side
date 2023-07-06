@@ -44,33 +44,24 @@ public interface SeriesMapper {
         List<SeriesDto.detailResponse> responseList = new ArrayList<>();
 
         for (Series series : list) {
-            SeriesDto.detailResponse response = new SeriesDto.detailResponse();
-
-            // 게시글 정보 가져오기
             List<Post> posts = series.getPosts(); // 시리즈에 속한 포스트들
 
             for (Post post : posts) {
-                PostDto.Response postResponse = new PostDto.Response();
+                SeriesDto.detailResponse response = new SeriesDto.detailResponse();
 
-                // 포스트 정보를 가져오는 로직을 구현해야 합니다.
-                // 예시로 getContent() 메서드를 사용하였습니다.
-                postResponse.setContent(post.getContent());
-                postResponse.setImg(post.getImg());
-                postResponse.setUserId(post.getUsers().getUserId());
-                postResponse.setNickname(post.getUsers().getNickname());
-                postResponse.setPostId(post.getPostId());
-
-                // 포스트 태그 정보를 가져오기
-                List<String> tagList = post.getPostTag().stream()
+                // 포스트 정보 매핑
+                response.setUserId(post.getUsers().getUserId());
+                response.setNickname(post.getUsers().getNickname());
+                response.setPostId(post.getPostId());
+                response.setContent(post.getContent());
+                response.setImg(post.getImg());
+                response.setTag(post.getPostTag().stream()
                         .map(postTag -> postTag.getTag().getTagName())
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()));
+                response.setSeries(series.getSeriesName());
+                response.setThumbnail(post.getThumbnail());
+                response.setCreatedAt(post.getCreatedAt());
 
-                postResponse.setTag(tagList);
-                postResponse.setSeries(series.getSeriesName());
-                postResponse.setThumbnail(post.getThumbnail());
-                postResponse.setCreatedAt(post.getCreatedAt());
-
-                response.setPost(postResponse);
                 responseList.add(response);
             }
         }

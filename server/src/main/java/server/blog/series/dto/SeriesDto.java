@@ -2,7 +2,9 @@ package server.blog.series.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import server.blog.post.dto.PostDto;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class SeriesDto {
     @Data
@@ -17,7 +19,16 @@ public class SeriesDto {
     @Data
     @NoArgsConstructor
     public static class detailResponse {
-        private PostDto.Response post; // 게시글 정보
+//        private PostDto.Response post; // 게시글 정보
+        private Long userId;
+        private String nickname;
+        private Long postId;
+        private String content;
+        private List<String> img;
+        private List<String> tag;
+        private String series;
+        private String thumbnail;
+        private LocalDateTime createdAt;
 
     }
 }

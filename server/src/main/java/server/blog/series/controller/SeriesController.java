@@ -70,7 +70,7 @@ public class SeriesController {
         Map<String, Object> responseData = new LinkedHashMap<>();  // LinkedHashMap 사용
 
         responseData.put("seriesName", seriesName);
-        responseData.put("data", responseList);
+        responseData.put("post", responseList);
 
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
