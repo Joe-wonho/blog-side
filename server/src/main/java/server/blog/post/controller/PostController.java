@@ -58,10 +58,11 @@ public class PostController {
     public ResponseEntity postPost(@RequestParam("userId") Long userId,
                                    @RequestParam(value = "content") @NotBlank(message = "내용을 입력하세요.") String content,
                                    @RequestParam(value = "series", required = false) String seriesName,
+                                   @RequestParam(value = "title") String title,
                                    @RequestParam(value = "tag", required = false) List<String> tags,
                                    @RequestParam(value = "thumbnail") MultipartFile thumbnail
     ) throws Exception {
-        if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(content) || StringUtils.isEmpty(thumbnail)) {
+        if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(content) || StringUtils.isEmpty(thumbnail) || StringUtils.isEmpty(title)) {
             // 필수 필드가 누락된 경우, 적절한 응답 처리
             return new ResponseEntity<>("필수 필드를 입력하세요.", HttpStatus.BAD_REQUEST);
         }
@@ -82,6 +83,7 @@ public class PostController {
         users.setNickname(currentUser.getNickname());
         post.setUsers(users); // 생성한 Users 객체를 post에 설정
         post.setContent(content);
+        post.setTitle(title);
 
         if (thumbnail != null) {
             // thumbnail 업로드
@@ -105,6 +107,7 @@ public class PostController {
                                     @RequestParam("userId") @Positive @NotNull Long userId,
                                     @RequestParam(value = "content", required = false) String content, // 선택적으로 받을 수 있도록
                                     @RequestParam(value = "series", required = false) String seriesName,
+                                    @RequestParam(value = "title", required = false) String title,
                                     @RequestParam(value = "tag", required = false) List<String> tags,
                                     @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail) {
 
@@ -125,6 +128,9 @@ public class PostController {
                 }
                 if (seriesName != null) {
                     findPost.getSeries().setSeriesName(seriesName);
+                }
+                if (title != null) {
+                    findPost.setTitle(title);
                 }
                 if (tags != null) {
                     // 기존 태그 삭제

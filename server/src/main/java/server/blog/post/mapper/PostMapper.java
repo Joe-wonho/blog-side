@@ -25,6 +25,7 @@ public interface PostMapper {
         newPost.setContent(post.getContent());
         newPost.setPostId(post.getPostId());
         newPost.setThumbnail(post.getThumbnail());
+        newPost.setTitle(post.getTitle());
         if (post.getSeries() != null) {
             newPost.setSeries(post.getSeries().getSeriesName());
         }

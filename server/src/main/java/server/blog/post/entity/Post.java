@@ -35,6 +35,9 @@ public class Post extends Auditable {
     @Column
     private String thumbnail;
 
+    @Column
+    private String title;
+
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostTag> postTag = new ArrayList<>();
