@@ -5,6 +5,8 @@ import Editor from './Editor';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import SeriesArea from './SeriesArea';
+import { useRecoilState } from 'recoil';
+import { titleAtom, tagAtom, contentAtom, thumbnailImgAtom, selectedSeriesAtom } from '../../recoil/write';
 const WriteContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,6 +56,9 @@ const Write = () => {
   const navigate = useNavigate();
   //시리즈창 온오프 설정
   const [openCheck, setCheck] = useState(false);
+  const handleCancleBtn = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
   return (
     <>
       <WriteContainer>

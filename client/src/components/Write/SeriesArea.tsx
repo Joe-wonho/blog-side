@@ -80,9 +80,6 @@ const SeriesList = styled.div<{ open: boolean }>`
     open &&
     css`
       display: flex;
-      /* transition: all ease-in-out 0.4s;
-      opacity: 1;
-      height: auto; */
     `}
   width: 100%;
   font-size: 1.05rem;

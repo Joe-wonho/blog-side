@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { tagAtom } from '../../recoil/write';
 
-const TagAreaContainer = styled.div`
+export const TagAreaContainer = styled.div`
   background-color: var(--light-gray-100);
   min-width: 432px;
   margin-bottom: 20px;
 `;
 
-const TagBox = styled.div`
+export const TagBox = styled.div`
   min-width: 432px;
   min-height: 40px;
   display: flex;
@@ -21,7 +21,7 @@ const TagBox = styled.div`
   }
 `;
 
-const TagItem = styled.div`
+export const TagItem = styled.div`
   display: flex;
   align-items: center;
   padding: 4px 6px;

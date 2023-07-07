@@ -44,14 +44,18 @@ export const tagAtom = atom<string[]>({
 });
 
 // 내용
+export const contentAtom = atom<string>({
+  key: 'content',
+  default: '',
+});
 
 //시리즈 목록
 export const seriesListAtom = atom<string[]>({
   key: 'seriesList',
   default: ['시리즈 더미', 'GOOD!'],
 });
-//시리즈 이미지
-export const seriesImgAtom = atom<FileList | null>({
+//썸네일 이미지
+export const thumbnailImgAtom = atom<FileList | null>({
   key: 'seriesImg',
   default: null,
   dangerouslyAllowMutability: true,
@@ -59,5 +63,5 @@ export const seriesImgAtom = atom<FileList | null>({
 // 제출할 시리즈 이름
 export const selectedSeriesAtom = atom<string | null>({
   key: 'selectedSeries',
-  default: '',
+  default: null,
 });

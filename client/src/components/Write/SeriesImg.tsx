@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
-import { seriesImgAtom } from '../../recoil/write';
+import { thumbnailImgAtom } from '../../recoil/write';
 import { Desc } from './SeriesArea';
 import { BsFillCameraFill, BsTrash3Fill } from 'react-icons/bs';
 import defaultThumbnail from '../../assets/thumbnail.png';
@@ -48,7 +48,7 @@ const Preview = styled.div`
 `;
 const SeriesImg = () => {
   const imgRef = useRef<HTMLInputElement>(null);
-  const [file, setFile] = useRecoilState(seriesImgAtom);
+  const [file, setFile] = useRecoilState(thumbnailImgAtom);
   const [fileURL, setFileURL] = useState<string>('');
 
   const onChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +68,7 @@ const SeriesImg = () => {
   return (
     <SeriesImgContainer>
       <label>
-        <Desc>시리즈 이미지</Desc>
+        <Desc>썸네일 이미지</Desc>
         <div className='icon-box'>
           <IconBox
             onClick={(e) => {

@@ -8,6 +8,7 @@ import SeriesPage from './pages/SeriesPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Mypage from './pages/Mypage';
+import DetailPage from './pages/DetailPage';
 import KaKaoLoginPage from './components/Login/KaKaoLogin';
 import Check from './components/Write/SeriesArea';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -25,6 +26,7 @@ const App: React.FC = () => {
               <Route path='/' element={<MainPage />}></Route>
               <Route path='/:nickname' element={<PostPage />}></Route>
               <Route path='/:nickname/series' element={<SeriesPage />}></Route>
+              <Route path='/:nickname/:postId' element={<DetailPage />}></Route>
               {/* <Route path='/:nickname/series' element={<Myblogpage />}></Route> */}
               <Route path='/login' element={<LoginPage />}></Route>
               <Route path='/signup' element={<SignupPage />}></Route>
