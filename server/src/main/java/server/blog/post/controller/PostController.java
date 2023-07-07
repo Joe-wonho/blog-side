@@ -16,11 +16,15 @@ import server.blog.exception.BusinessLogicException;
 import server.blog.exception.ExceptionCode;
 import server.blog.post.dto.PostDto;
 import server.blog.post.entity.Post;
+import server.blog.post.entity.PostTag;
 import server.blog.post.mapper.PostMapper;
 import server.blog.post.repository.PostRepository;
+import server.blog.post.repository.PostTagRepository;
 import server.blog.post.service.PostService;
 import server.blog.response.MultiResponse;
 import server.blog.tag.dto.TagDto;
+import server.blog.tag.entity.Tag;
+import server.blog.tag.repository.TagRepository;
 import server.blog.user.entity.Users;
 import server.blog.user.repository.UserRepository;
 
@@ -30,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 // todo : 회원이 탈퇴되도 글 유지
@@ -44,6 +49,8 @@ public class PostController {
     private final PostRepository repository;
     private final UserRepository userRepository;
     private final StorageService storageService;
+    private final TagRepository tagRepository;
+    private final PostTagRepository postTagRepository;
 
 
     // 포스트 작성(토큰 인증)
@@ -92,11 +99,13 @@ public class PostController {
 
 
 
-    // 포스트 수정(토큰 인증)
+    // 포스트 수정(토큰 인증)(태그/ 시리즈 또한 수정 가능)
     @PatchMapping("/{postId}")
     public ResponseEntity patchPost(@PathVariable("postId") @Positive long postId,
                                     @RequestParam("userId") @Positive @NotNull Long userId,
                                     @RequestParam(value = "content", required = false) String content, // 선택적으로 받을 수 있도록
+                                    @RequestParam(value = "series", required = false) String seriesName,
+                                    @RequestParam(value = "tag", required = false) List<String> tags,
                                     @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,11 +123,41 @@ public class PostController {
                 if (content != null) {
                     findPost.setContent(content);
                 }
-//                if (files != null && !files.isEmpty()) {
-//                    // 새로운 이미지 업로드
-//                    List<String> imageUrls = storageService.uploadFiles(findPost, files);
-//                    findPost.setImg(imageUrls);
-//                }
+                if (seriesName != null) {
+                    findPost.getSeries().setSeriesName(seriesName);
+                }
+                if (tags != null) {
+                    // 기존 태그 삭제
+                    findPost.getPostTag().forEach(postTag -> {
+                        postTag.getTag().getPostTags().remove(postTag);
+                        postTag.setPost(null);
+                        postTag.setTag(null);
+                    });
+                    findPost.getPostTag().clear();
+
+                    // 새로운 태그 추가
+                    List<PostTag> postTags = tags.stream()
+                            .distinct()
+                            .map(tagName -> {
+                                Tag tag = tagRepository.findByTagName(tagName)
+                                        .orElseGet(() -> {
+                                            Tag newTag = new Tag();
+                                            newTag.setTagName(tagName);
+                                            return tagRepository.save(newTag);
+                                        });
+
+                                PostTag postTag = new PostTag();
+                                postTag.setTag(tag);
+                                postTag.setPost(findPost);
+                                return postTag;
+                            })
+                            .collect(Collectors.toList());
+
+                    findPost.setPostTags(postTags);
+
+                    // 포스트 태그 저장
+                    postTagRepository.saveAll(postTags);
+                }
                 if (thumbnail != null) {
                     // thumbnail 업로드
                     String thumbnailUrl = storageService.uploadFile(thumbnail);
@@ -134,6 +173,48 @@ public class PostController {
             return new ResponseEntity<>("오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+//    @PatchMapping("/{postId}") -> 기존 코드
+//    public ResponseEntity patchPost(@PathVariable("postId") @Positive long postId,
+//                                    @RequestParam("userId") @Positive @NotNull Long userId,
+//                                    @RequestParam(value = "content", required = false) String content, // 선택적으로 받을 수 있도록
+//                                    @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail) {
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String email = authentication.getName(); // 현재 사용자의 이메일
+//
+//        Users currentUser = userRepository.findByEmail(email).orElse(null);
+//        if (currentUser == null || !currentUser.getUserId().equals(userId)) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
+//        }
+//
+//        Post findPost = service.findPost(postId);
+//
+//        try {
+//            if (findPost.getUsers().getUserId().equals(currentUser.getUserId())) {
+//                if (content != null) {
+//                    findPost.setContent(content);
+//                }
+////                if (files != null && !files.isEmpty()) {
+////                    // 새로운 이미지 업로드
+////                    List<String> imageUrls = storageService.uploadFiles(findPost, files);
+////                    findPost.setImg(imageUrls);
+////                }
+//                if (thumbnail != null) {
+//                    // thumbnail 업로드
+//                    String thumbnailUrl = storageService.uploadFile(thumbnail);
+//                    findPost.setThumbnail(thumbnailUrl);
+//                }
+//                Post updatedPost = service.updatePost(findPost);
+//                return new ResponseEntity<>(mapper.postToPostResponseDto(updatedPost), HttpStatus.OK);
+//            } else {
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
+//            }
+//        } catch (IOException e) {
+//            // 파일 저장 오류 처리
+//            return new ResponseEntity<>("오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 
 
