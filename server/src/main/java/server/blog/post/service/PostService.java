@@ -109,14 +109,14 @@ public class PostService {
 
 
 //    @Transactional // 업데이트와 파일 업로드가 하나의 트랜잭션으로 처리되므로, 어느 한 곳에서라도 실패할 경우 롤백
-    public Post updatePost(Post post, List<MultipartFile> files) throws IOException {
+    public Post updatePost(Post post) throws IOException {
         Post findPost = findPost(post.getPostId());
 
-        // 기존 이미지 삭제 및 새로운 이미지 업로드
-        if (files != null && !files.isEmpty()) {
-            List<String> imageUrls = storageService.uploadFiles(findPost, files);
-            findPost.setImg(imageUrls);
-        }
+//        // 기존 이미지 삭제 및 새로운 이미지 업로드
+//        if (files != null && !files.isEmpty()) {
+//            List<String> imageUrls = storageService.uploadFiles(findPost, files);
+//            findPost.setImg(imageUrls);
+//        }
 
         return repository.save(findPost);
     }

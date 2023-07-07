@@ -31,7 +31,7 @@ public class imgController {
 
     // 이미지 업로드
     @PostMapping("/uploadImg")
-    public ResponseEntity<List<String>> uploadImg(@RequestParam(value = "img", required = false) List<MultipartFile> files) throws Exception {
+    public ResponseEntity<List<String>> saveImg(@RequestParam(value = "img", required = false) List<MultipartFile> files) throws Exception {
         if (StringUtils.isEmpty(files)) {
             // 이미지 누락된 경우
             return new ResponseEntity<>(Collections.singletonList("이미지 값을 입력하세요."), HttpStatus.BAD_REQUEST);
@@ -43,7 +43,24 @@ public class imgController {
             imageUrl = storageService.uploadFiles(files);
         }
 
-        // 작성된 글의 응답 생성
         return new ResponseEntity<>(imageUrl, HttpStatus.CREATED);
     }
+
+
+//    // 이미지 수정
+//    @PatchMapping("/uploadImg")
+//    public ResponseEntity<List<String>> uploadImg(@RequestParam(value = "img", required = false) List<MultipartFile> files) throws Exception {
+//        if (StringUtils.isEmpty(files)) {
+//            // 이미지 누락된 경우
+//            return new ResponseEntity<>(Collections.singletonList("이미지 값을 입력하세요."), HttpStatus.BAD_REQUEST);
+//        }
+//
+//        List<String> imageUrl = new ArrayList<>();
+//
+//        if (files != null && !files.isEmpty()) {
+//            List<String> imageUrls = storageService.uploadFiles(findPost, files);
+//        }
+//
+//        return new ResponseEntity<>(imageUrl, HttpStatus.CREATED);
+//    }
 }

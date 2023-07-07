@@ -97,8 +97,7 @@ public class PostController {
     public ResponseEntity patchPost(@PathVariable("postId") @Positive long postId,
                                     @RequestParam("userId") @Positive @NotNull Long userId,
                                     @RequestParam(value = "content", required = false) String content, // 선택적으로 받을 수 있도록
-                                    @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
-                                    @RequestParam(value = "img", required = false) List<MultipartFile> files) {
+                                    @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName(); // 현재 사용자의 이메일
@@ -115,17 +114,17 @@ public class PostController {
                 if (content != null) {
                     findPost.setContent(content);
                 }
-                if (files != null && !files.isEmpty()) {
-                    // 새로운 이미지 업로드
-                    List<String> imageUrls = storageService.uploadFiles(findPost, files);
-                    findPost.setImg(imageUrls);
-                }
+//                if (files != null && !files.isEmpty()) {
+//                    // 새로운 이미지 업로드
+//                    List<String> imageUrls = storageService.uploadFiles(findPost, files);
+//                    findPost.setImg(imageUrls);
+//                }
                 if (thumbnail != null) {
                     // thumbnail 업로드
                     String thumbnailUrl = storageService.uploadFile(thumbnail);
                     findPost.setThumbnail(thumbnailUrl);
                 }
-                Post updatedPost = service.updatePost(findPost, files);
+                Post updatedPost = service.updatePost(findPost);
                 return new ResponseEntity<>(mapper.postToPostResponseDto(updatedPost), HttpStatus.OK);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("접근 권한이 없습니다.");
