@@ -51,7 +51,6 @@ public class PostController {
     public ResponseEntity postPost(@RequestParam("userId") Long userId,
                                    @RequestParam(value = "content") @NotBlank(message = "내용을 입력하세요.") String content,
                                    @RequestParam(value = "series", required = false) String seriesName,
-                                   @RequestParam(value = "img", required = false) List<MultipartFile> files,
                                    @RequestParam(value = "tag", required = false) List<String> tags,
                                    @RequestParam(value = "thumbnail") MultipartFile thumbnail
     ) throws Exception {
@@ -84,7 +83,7 @@ public class PostController {
         }
 
 
-        Post create = service.savedPost(post, files, tags , seriesName);
+        Post create = service.savedPost(post, tags , seriesName);
 
         // 작성된 글의 응답 생성
         return new ResponseEntity<>(mapper.postToPostResponseDto(create), HttpStatus.CREATED);
@@ -140,7 +139,7 @@ public class PostController {
 
 
 
-            // 포스트 전체 조회(엑세스 토큰 x)
+    // 포스트 전체 조회(엑세스 토큰 x)
     @GetMapping("/")
     public ResponseEntity getPosts(@Positive @RequestParam int page,
                                    @Positive @RequestParam int size) {

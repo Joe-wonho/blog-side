@@ -12,18 +12,6 @@ public class PostDto {
     @Setter
     public static class Post{
         public Long userId;
-        private String content;
-        private List<String> img;
-        private List<String> tags;
-//    private String series;
-    }
-
-    @Getter
-    @Setter
-    public static class Patch{
-        public Long userId;
-        private String content;
-        private List<String> img;
     }
 
     @Getter
@@ -33,7 +21,6 @@ public class PostDto {
         private String nickname;
         private Long postId;
         private String content;
-        private List<String> img;
         private List<String> tag;
         private String series;
         private String thumbnail;

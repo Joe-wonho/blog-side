@@ -61,7 +61,6 @@ public interface SeriesMapper {
                 response.setNickname(post.getUsers().getNickname());
                 response.setPostId(post.getPostId());
                 response.setContent(post.getContent());
-                response.setImg(post.getImg());
                 response.setTag(post.getPostTag().stream()
                         .map(postTag -> postTag.getTag().getTagName())
                         .collect(Collectors.toList()));

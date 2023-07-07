@@ -55,7 +55,7 @@ public class PostService {
     }
 
 
-    public Post savedPost(Post post, List<MultipartFile> files, List<String> tags, String seriesName) {
+    public Post savedPost(Post post, List<String> tags, String seriesName) {
 
 
         if (seriesName != null && !seriesName.isEmpty()) {
@@ -68,13 +68,6 @@ public class PostService {
             post.setSeries(null);
         }
 
-
-        if (files != null && !files.isEmpty()) {
-            List<String> imageUrl = storageService.uploadFiles(files);
-            post.setImg(imageUrl);
-        } else {
-            post.setImg(new ArrayList<>());
-        }
 
         Post savePost = repository.save(post);
 
@@ -107,25 +100,6 @@ public class PostService {
             return savePost;
     }
 
-
-
-//    // 태그 처리
-//        if (tags != null && !tags.isEmpty()) {
-//        for (String tagName : tags) {
-//            Tag tag = tagRepository.findByTagName(tagName);
-//            if (tag == null) {
-//                // 새로운 태그 생성
-//                tag = new Tag(tagName, 1L);
-//            } else {
-//                // 기존 태그 카운트 증가
-//                tag.setCount(tag.getCount() + 1);
-//            }
-//            tagRepository.save(tag);
-//
-//            Post_Tag postTag = new Post_Tag(post, tag);
-//            post.getPostTags().add(postTag);
-//        }
-//    }
 
 
     public Post findPost(long postId){

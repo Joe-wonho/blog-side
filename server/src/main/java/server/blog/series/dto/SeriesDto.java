@@ -23,7 +23,6 @@ public class SeriesDto {
         private String nickname;
         private Long postId;
         private String content;
-        private List<String> img;
         private List<String> tag;
         private String series;
         private String thumbnail;
