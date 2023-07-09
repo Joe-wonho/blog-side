@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header/Header';
 import Detail from '../components/Detail/Detail';
-//770이상은 최대너비
 const Box = styled.div`
   overflow-y: auto;
 `;

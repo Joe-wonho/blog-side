@@ -1,11 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled, { css } from 'styled-components';
 import { BiListPlus } from 'react-icons/bi';
 import { CommonBtn } from './Write';
-import { useRecoilState } from 'recoil';
-import { selectedSeriesAtom, seriesListAtom } from '../../recoil/write';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { curUser } from '../../recoil/signup';
+import { dataURItoFile } from '../Common/tumbnailTofile';
+import {
+  titleAtom,
+  tagAtom,
+  contentAtom,
+  thumbnailImgAtom,
+  selectedSeriesAtom,
+  seriesListAtom,
+} from '../../recoil/write';
 import SeriesImg from './SeriesImg';
+import client from '../../api/axios';
 const CheckContainer = styled.div<{ openCheck: boolean }>`
   transform: translateY(100%);
   transition: all 0.4s ease-in-out;
@@ -122,17 +132,17 @@ const SeriesUl = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 172px;
+  max-height: 192px;
   overflow-y: auto;
 `;
 const SeriesItem = styled.li`
-  padding: 0 5px 5px;
+  padding: 4px 5px;
   border-bottom: 1px solid var(--light-gray-300);
   cursor: pointer;
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  height: 28px;
+  height: 32px;
   &.active {
     border-radius: 8px;
     background-color: var(--blue100);
@@ -164,15 +174,73 @@ const SeriesArea = ({ openCheck, setCheck }: SeriesAreaProps) => {
   const handleSeriesName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSeriesName(e.currentTarget.value);
   };
+
+  const userInfo = useRecoilValue(curUser);
+  //폼데이터
+  const userId: string = String(userInfo.userId);
+  const [title, setTitle] = useRecoilState(titleAtom);
+  const [tag, setTag] = useRecoilState(tagAtom);
+  const [content, setContent] = useRecoilState(contentAtom);
+  const [thumbnailImg, setThumbnailImg] = useRecoilState(thumbnailImgAtom);
+
+  //새로운 시리즈 추가
   const handleClickAddSeries = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!seriesList.includes(seriesName.trim()) && seriesName.trim() !== '') {
       setSeriesList([seriesName, ...seriesList]);
       setSeriesName('');
     }
   };
+  //시리즈 선택
   const handleClickSelectSerires = (e: React.MouseEvent<HTMLLIElement>) => {
-    setSelectedSeries(e.currentTarget.textContent);
+    if (e.currentTarget.textContent !== null) {
+      setSelectedSeries(e.currentTarget.textContent);
+    }
   };
+
+  // 출간하기 버튼 클릭
+  const handleSubmit = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (title === '') {
+      return alert('제목이 비었습니다');
+    } else if (content === '') {
+      return alert('내용이 비었습니다');
+    }
+
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('title', title);
+    formData.append('content', content);
+    if (tag.length !== 0) {
+      tag.map((el) => {
+        formData.append('tag', el);
+      });
+    }
+    if (selectedSeries !== '') {
+      formData.append('series', selectedSeries);
+    }
+    if (thumbnailImg) {
+      formData.append('thumbnail', thumbnailImg[0]);
+    } else {
+      formData.append('thumbnail', dataURItoFile());
+    }
+    for (const pair of formData.entries()) {
+      console.log(`${pair[0]}, ${pair[1]}`);
+    }
+    client
+      .post('/post', formData, {
+        headers: { 'content-type': 'multipart/form-data' },
+      })
+      .then((res) => {
+        console.log(res);
+        setTitle('');
+        setTag([]);
+        setContent('');
+        setThumbnailImg(null);
+        setSelectedSeries('');
+        navigate(`/${userInfo.nickname}`);
+      });
+  };
+
   return (
     <CheckContainer openCheck={openCheck}>
       <ThumbnailContainer>
@@ -222,7 +290,9 @@ const SeriesArea = ({ openCheck, setCheck }: SeriesAreaProps) => {
           >
             ✘ 취소
           </CommonBtn>
-          <CommonBtn className='submit-btn'>출간하기</CommonBtn>
+          <CommonBtn onClick={handleSubmit} className='submit-btn'>
+            출간하기
+          </CommonBtn>
         </BtnBox>
       </ThumbnailContainer>
     </CheckContainer>

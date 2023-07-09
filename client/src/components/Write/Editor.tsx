@@ -11,7 +11,6 @@ const Editor = () => {
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useRecoilState(contentAtom);
   // 이미지를 업로드 하기 위한 함수
-  console.log(contents);
   const imageHandler = () => {
     // 파일을 업로드 하기 위한 input 태그 생성
     const input = document.createElement('input');

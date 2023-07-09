@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 // BsSunFill
 import { BsFillMoonFill } from 'react-icons/bs';
@@ -6,7 +6,7 @@ import { FiSearch } from 'react-icons/fi';
 import Dropdown from './Dropdown';
 import { useRecoilValue } from 'recoil';
 import { curUser } from '../../recoil/signup';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import logo from '../../assets/logo.png';
 // interface HeaderProps {}
 
@@ -93,10 +93,31 @@ const PostBtn = styled.div`
     }
   }
 `;
+const LoginBtn = styled.div`
+  display: flex;
+  background-color: var(--light-gray-200);
+  color: var(--dark-blue-900);
+  padding: 7px 12px;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 16px;
+  margin-top: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  :hover {
+    color: var(--light-gray-200);
+    background-color: var(--dark-blue-700);
+  }
+`;
 
 const Header = () => {
+  const [isLogin, setLogin] = useState(false);
   const currentUser = useRecoilValue(curUser);
   const { nickname } = currentUser;
+  const location = useLocation();
+
+  //현재 와있는 블로그 소유자의 닉네임
+  const blogUser: string = location.pathname.slice(1);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [myProfile, setProfile] = useState(profile);
   const navigate = useNavigate();
@@ -105,10 +126,9 @@ const Header = () => {
       <HeaderMenu>
         <LSide>
           <img src={logo} alt='logo' onClick={() => navigate('/')}></img>
-          {/* 여기서는 현재 들어가있는 페이지 유저의 닉네임이 들어와야함 */}
-          <div onClick={() => navigate(`/${nickname}`)}>{`${nickname}.log`}</div>
+          {blogUser !== '' ? <div onClick={() => navigate(`/${blogUser}`)}>{`${blogUser}.log`}</div> : null}
         </LSide>
-        {/* <LSide onClick={() => navigate('/main')}>{`${nickname}.log`}</LSide> */}
+
         <RSide>
           <div className='hover-menu'>
             <BsFillMoonFill size='22'></BsFillMoonFill>
@@ -116,14 +136,28 @@ const Header = () => {
           <div className='hover-menu'>
             <FiSearch size='28'></FiSearch>
           </div>
-          <PostBtn
-            onClick={() => {
-              navigate('/write');
-            }}
-          >
-            새 글 작성
-          </PostBtn>
-          <Dropdown />
+          {currentUser.nickname !== '' ? (
+            <>
+              <PostBtn
+                onClick={() => {
+                  navigate('/write');
+                }}
+              >
+                새 글 작성
+              </PostBtn>
+              <Dropdown />
+            </>
+          ) : (
+            <LoginBtn
+              onClick={() => {
+                navigate('/login');
+              }}
+            >
+              로그인
+            </LoginBtn>
+          )}
+
+          {/* <Dropdown /> */}
         </RSide>
       </HeaderMenu>
     </HeaderContainer>

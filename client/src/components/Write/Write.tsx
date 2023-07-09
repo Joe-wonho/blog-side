@@ -5,8 +5,6 @@ import Editor from './Editor';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import SeriesArea from './SeriesArea';
-import { useRecoilState } from 'recoil';
-import { titleAtom, tagAtom, contentAtom, thumbnailImgAtom, selectedSeriesAtom } from '../../recoil/write';
 const WriteContainer = styled.div`
   display: flex;
   flex-direction: column;

@@ -61,7 +61,7 @@ export const thumbnailImgAtom = atom<FileList | null>({
   dangerouslyAllowMutability: true,
 });
 // 제출할 시리즈 이름
-export const selectedSeriesAtom = atom<string | null>({
+export const selectedSeriesAtom = atom<string>({
   key: 'selectedSeries',
-  default: null,
+  default: '',
 });

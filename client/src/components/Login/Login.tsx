@@ -142,7 +142,11 @@ const Login = () => {
       //  이부분에서 서버와 통신하면 된다.
       try {
         await axios
-          .post('http://localhost:8080/login', { email: loginForm.email, password: loginForm.password }, { withCredentials: true })
+          .post(
+            'http://localhost:8080/login',
+            { email: loginForm.email, password: loginForm.password },
+            { withCredentials: true }
+          )
           .then((res) => {
             // setUserToken(res.headers.authorization);
             window.localStorage.setItem('accessToken', res.headers.authorization);
@@ -157,7 +161,7 @@ const Login = () => {
                 setCurrentUser(res.data);
               })
               .then(() => {
-                navigate('/main');
+                navigate('/');
               });
           });
       } catch (err: any) {
