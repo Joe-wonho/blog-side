@@ -44,4 +44,14 @@ public interface UserMapper {
 
 
     List<Users> usersToUserResponseDtos(List<Users> users);
+
+    default UserDto.UserNicknameResponse userToUserNicknameResponseDto(Users users){
+        UserDto.UserNicknameResponse userResponse = new UserDto.UserNicknameResponse();
+        userResponse.setUserId(users.getUserId());
+        userResponse.setEmail(users.getEmail());
+        userResponse.setNickname(users.getNickname());
+        userResponse.setProfile(users.getProfile());
+
+        return userResponse;
+    }
 }

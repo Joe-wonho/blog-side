@@ -258,4 +258,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그아웃 실패");
         }
     }
+
+    // 닉네임 회원 정보 확인
+    @GetMapping("/check/{nickname}")
+    public ResponseEntity<UserDto.UserNicknameResponse> nicknameUser(@PathVariable("nickname") String nickname) {
+        Users user = userService.findUserByNickname(nickname);
+
+        if (user != null) {
+            return new ResponseEntity<>((mapper.userToUserNicknameResponseDto(user)), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

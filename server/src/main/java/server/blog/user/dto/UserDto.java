@@ -56,4 +56,14 @@ public class UserDto {
         private String profile;
     }
 
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class UserNicknameResponse{
+        private Long userId;
+        private String nickname;
+        private String email;
+        private String profile;
+    }
+
 }

@@ -202,6 +202,12 @@ public class UserService {
                 new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
     }
 
+    // 닉네임으로 회원 조회
+    public Users findUserByNickname(String nickname) {
+        return userRepository.findByNickname(nickname).orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+    }
+
 
     // 중복 닉네임 검증 메서드
     public void verifyExistsNickname(String nickname) {
