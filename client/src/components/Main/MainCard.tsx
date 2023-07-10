@@ -1,13 +1,14 @@
-import React from 'react';
 import styled from 'styled-components';
-import ThumbnailImg from '../../assets/test.png';
-import ProfileImg from '../../assets/profile.png';
+import { ServerData } from './MainList';
+import { changeDate } from '../Common/changeDate';
+import Dompurify from 'dompurify';
+import { useNavigate } from 'react-router';
 
 const MainCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 320px;
-  height: 377px;
+  height: auto;
   /* background-color: var(--gray-blue-200); */
   background-color: var(--light-gray-200);
   border-radius: 5px;
@@ -20,11 +21,10 @@ const MainCardContainer = styled.div`
 
   @media screen and (min-width: 662px) and (max-width: 1023px) {
     width: 48%;
-    height: auto;
+    margin: 0 auto;
   }
   @media screen and (max-width: 661px) {
     width: 100%;
-    height: auto;
   }
 `;
 
@@ -98,7 +98,7 @@ const CreatedAt = styled.div`
 
   @media screen and (min-width: 1024px) {
     height: 35px;
-    margin: 5px 0 12px;
+    margin: 2px 0 2px;
     border-bottom: 1px solid var(--light-gray-300);
   }
 `;
@@ -109,37 +109,61 @@ const WriterInfo = styled.div`
   flex-grow: 1;
   align-items: center;
   height: 38px;
-  cursor: pointer;
 
   .people-icon {
     border-radius: 50%;
     width: 26px;
     height: 26px;
+    cursor: pointer;
   }
 `;
 const Writer = styled.div`
   font-size: 13px;
+  cursor: pointer;
 `;
 
-const MainCard = () => {
+const MainCard = ({
+  title,
+  content,
+  createdAt,
+  profile,
+  nickname,
+  postId,
+  series,
+  tag,
+  userId,
+  thumbnail,
+}: ServerData) => {
+  // const changeContent = content.replace(/<(\/img|img)([^>]*)>/gi, '').replace(/<(\/br|br)([^>]*)>/gi, '');
+  const navigate = useNavigate();
+
+  const handleGoDetail = (e: React.MouseEvent<HTMLDivElement | HTMLHeadingElement | HTMLParagraphElement>) => {
+    e.preventDefault();
+    navigate(`/${nickname}/${postId}`);
+  };
+
+  const handleGoBlog = (e: React.MouseEvent<HTMLImageElement | HTMLDivElement>) => {
+    e.preventDefault();
+    navigate(`/${nickname}`);
+  };
   return (
     <MainCardContainer>
-      <Thumbnail>
-        <img className='thumbnail-img' src={ThumbnailImg} alt='ThumbnailImg' />
+      <Thumbnail onClick={handleGoDetail}>
+        <img className='thumbnail-img' src={thumbnail} alt='ThumbnailImg' />
       </Thumbnail>
       <CardInfo>
-        <Title>포스팅 제목</Title>
-        <Desc>
-          포스팅내용 이번에 토이 프로젝트를 진행하며 드롭다운을 구현하던 도중드롭다운 메뉴 외부를 클릭하면 어떻게 드롭다운을 닫을지 고민하다가
-          작성하게 되었다!useRef를 이용해서 DropdownContainer라는 div 엘리먼트에 접근.document에 onCheckClickOutsi이번에 토이 프로젝트를 진행하며
-          드롭다운을 구현하던 도중드롭다운 메뉴 외부를 클릭하면 어떻게 드롭다운을 닫을지 고민하다가 작성하게 되었다!useRef를 이용해서
-          DropdownContainer라는 div 엘리먼트에 접근.document에 onCheckClickOutsi
-        </Desc>
-        <CreatedAt>2023년 6월 23일</CreatedAt>
+        <Title onClick={handleGoDetail}>{title}</Title>
+        <Desc
+          onClick={handleGoDetail}
+          dangerouslySetInnerHTML={{
+            __html: Dompurify.sanitize(content.replace(/<(\/img|img)([^>]*)>/gi, '')),
+          }}
+        />
+        <CreatedAt>{changeDate(createdAt)}</CreatedAt>
         <WriterInfo>
-          <img src={ProfileImg} alt='profile-icon' className='people-icon'></img>
-          <Writer>
-            by <strong>작성자 닉네임</strong>
+          <img onClick={handleGoBlog} src={profile} alt='profile-icon' className='people-icon'></img>
+          <Writer onClick={handleGoBlog}>
+            by <strong>{nickname}</strong>
           </Writer>
         </WriterInfo>
       </CardInfo>

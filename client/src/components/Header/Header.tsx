@@ -117,7 +117,7 @@ const Header = () => {
   const location = useLocation();
 
   //현재 와있는 블로그 소유자의 닉네임
-  const blogUser: string = location.pathname.slice(1);
+  const blogUser: string = decodeURI(window.location.pathname.slice(1));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [myProfile, setProfile] = useState(profile);
   const navigate = useNavigate();
