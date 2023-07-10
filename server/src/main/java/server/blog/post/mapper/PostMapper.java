@@ -21,6 +21,7 @@ public interface PostMapper {
         PostDto.Response newPost = new PostDto.Response();
         newPost.setUserId(post.getUsers().getUserId());
         newPost.setNickname(post.getUsers().getNickname());
+        newPost.setProfile(post.getUsers().getProfile());
         newPost.setCreatedAt(post.getCreatedAt());
         newPost.setContent(post.getContent());
         newPost.setPostId(post.getPostId());

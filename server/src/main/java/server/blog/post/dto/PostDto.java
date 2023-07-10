@@ -26,6 +26,7 @@ public class PostDto {
     public static class Response{
         private Long userId;
         private String nickname;
+        private String profile;
         private Long postId;
         private String content;
         private List<String> tag;
@@ -38,6 +39,7 @@ public class PostDto {
         public Response(Post post) {
             this.userId = post.getUsers().getUserId();
             this.nickname = post.getUsers().getNickname();
+            this.profile = post.getUsers().getProfile();
             this.postId = post.getPostId();
             this.content = post.getContent();
             this.series = post.getSeries().getSeriesName();

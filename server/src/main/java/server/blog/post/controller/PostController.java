@@ -81,6 +81,7 @@ public class PostController {
         Users users = new Users(); // 새로운 Users 객체 생성
         users.setUserId(currentUser.getUserId());
         users.setNickname(currentUser.getNickname());
+        users.setProfile(currentUser.getProfile());
         post.setUsers(users); // 생성한 Users 객체를 post에 설정
         post.setContent(content);
         post.setTitle(title);
