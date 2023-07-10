@@ -280,7 +280,7 @@ public class PostController {
     // 포스트 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity deleteFeedPost(@PathVariable("postId") @Positive long postId,
-                                         @Valid @RequestBody PostDto.Post requestBody) {
+                                         @Valid @RequestBody PostDto.post requestBody) {
 
         // 액세스 토큰을 사용하여 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
