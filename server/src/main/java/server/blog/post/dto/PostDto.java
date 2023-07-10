@@ -6,7 +6,11 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import server.blog.post.entity.Post;
+import server.blog.tag.dto.TagDto;
+import server.blog.tag.entity.Tag;
 
 @Getter
 public class PostDto {
@@ -36,11 +40,24 @@ public class PostDto {
             this.nickname = post.getUsers().getNickname();
             this.postId = post.getPostId();
             this.content = post.getContent();
-//            this.tag = post.getPostTag();
             this.series = post.getSeries().getSeriesName();
             this.thumbnail = post.getThumbnail();
             this.title = post.getTitle();
             this.createdAt = post.getCreatedAt();
+
+            this.tag = post.getPostTag().stream()
+                    .map(postTag -> {
+                        TagDto.Response tagResponse = new TagDto.Response();
+                        Tag tag = postTag.getTag();
+                        if (tag != null) {
+                            tagResponse.setTagId(tag.getTagId());
+                            tagResponse.setTagName(tag.getTagName());
+                        }
+                        return tagResponse;
+                    })
+                    .filter(tagResponse -> tagResponse.getTagId() != null)
+                    .map(TagDto.Response::getTagName)
+                    .collect(Collectors.toList());
         }
 
     }
