@@ -25,7 +25,7 @@ public class Post extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10000) // 최대 글자 수를 10,000으로 설정
     private String content;
 
 
