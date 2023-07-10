@@ -15,6 +15,7 @@ import server.blog.response.PageConverter;
 import server.blog.search.service.SearchService;
 
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -49,6 +50,17 @@ public class SearchController {
                                                                                         @Positive @RequestParam(value = "size", defaultValue = "10") int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         Page<PostDto.Response> posts = searchService.findPostByContent(content, pageRequest);
+
+        return ResponseEntity.ok(pageConverter.toPageInfo(posts));
+    }
+
+    // tag 검색어와 일치하는 post 조회
+    @GetMapping("/search-by-tags")
+    public ResponseEntity<PageConverter.PageInfo<PostDto.Response>> findPostByTag(@RequestParam List<String> tags,
+                                                                                  @Positive @RequestParam(value = "page", defaultValue = "1") int page,
+                                                                                  @Positive @RequestParam(value = "size", defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        Page<PostDto.Response> posts = searchService.findPostByTags(tags, pageRequest);
 
         return ResponseEntity.ok(pageConverter.toPageInfo(posts));
     }
