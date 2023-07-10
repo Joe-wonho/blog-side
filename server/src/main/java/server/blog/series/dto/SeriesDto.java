@@ -21,6 +21,7 @@ public class SeriesDto {
     public static class detailResponse {
         private Long userId;
         private String nickname;
+        private String title;
         private Long postId;
         private String content;
         private List<String> tag;

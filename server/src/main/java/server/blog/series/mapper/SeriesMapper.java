@@ -60,6 +60,7 @@ public interface SeriesMapper {
                 response.setUserId(post.getUsers().getUserId());
                 response.setNickname(post.getUsers().getNickname());
                 response.setPostId(post.getPostId());
+                response.setTitle(post.getTitle());
                 response.setContent(post.getContent());
                 response.setTag(post.getPostTag().stream()
                         .map(postTag -> postTag.getTag().getTagName())
