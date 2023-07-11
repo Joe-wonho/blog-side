@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import server.blog.post.entity.Post;
 import server.blog.series.entity.Series;
+import server.blog.user.entity.Users;
 
 import java.util.Optional;
 
@@ -14,5 +14,10 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
     Page<Series> findAllByPostsUsersNickname(String nickname, Pageable pageable);
 
     Page<Series> findAllByPostsUsersNicknameAndSeriesName(String nickname, String seriesName, Pageable pageable);
+
+    Optional<Series> findByUsersAndSeriesName(Users users, String seriesName);
+
+    Optional<Series> findBySeriesName(String seriesName);
+
 
 }

@@ -1,5 +1,6 @@
 package server.blog.series.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,5 +30,13 @@ public class SeriesDto {
         private String thumbnail;
         private LocalDateTime createdAt;
 
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Response {
+        private Long seriesId;
+        private String seriesName;
     }
 }
