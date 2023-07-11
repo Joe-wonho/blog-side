@@ -22,6 +22,8 @@ import server.blog.post.repository.PostRepository;
 import server.blog.post.repository.PostTagRepository;
 import server.blog.post.service.PostService;
 import server.blog.response.MultiResponse;
+import server.blog.series.entity.Series;
+import server.blog.series.repository.SeriesRepository;
 import server.blog.tag.dto.TagDto;
 import server.blog.tag.entity.Tag;
 import server.blog.tag.repository.TagRepository;
@@ -51,6 +53,7 @@ public class PostController {
     private final StorageService storageService;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
+    private final SeriesRepository seriesRepository;
 
 
     // 포스트 작성(토큰 인증)
@@ -128,7 +131,10 @@ public class PostController {
                     findPost.setContent(content);
                 }
                 if (seriesName != null) {
-                    findPost.getSeries().setSeriesName(seriesName);
+                    Series series = new Series();
+                    series.setSeriesName(seriesName);
+                    seriesRepository.save(series);
+                    findPost.setSeries(series);
                 }
                 if (title != null) {
                     findPost.setTitle(title);
