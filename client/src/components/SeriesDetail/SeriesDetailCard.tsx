@@ -1,19 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
-import defaultImg from '../../assets/thumbnail.png';
 import Dompurify from 'dompurify';
+import { ServerData } from '../Main/MainList';
+import { changeDate } from '../Common/changeDate';
+import { useNavigate } from 'react-router';
 
 const Title = styled.h2`
   height: 24px;
   font-size: 18px;
   display: flex;
-  align-items: center;
   font-weight: 700;
-  cursor: pointer;
-  margin-bottom: 20px;
-
+  margin-bottom: 10px;
+  span {
+    transition: all 0.1s ease-in-out;
+    cursor: pointer;
+    :hover {
+      color: var(--active);
+      border-bottom: 3px solid var(--active);
+    }
+  }
   @media screen and (min-width: 768px) {
-    height: 36px;
     font-size: 22px;
   }
 `;
@@ -47,7 +53,6 @@ const Box = styled.div`
   flex-direction: column;
   @media screen and (min-width: 768px) {
     margin-left: 10px;
-    align-items: center;
     justify-content: space-between;
   }
 `;
@@ -87,25 +92,40 @@ const Hrtag = styled.div`
     border-bottom: 1.5px solid var(--light-gray-300);
   }
 `;
-const SeriesDetailCard = () => {
+const SeriesDetailCard = ({
+  title,
+  content,
+  createdAt,
+  profile,
+  nickname,
+  postId,
+  series,
+  tag,
+  userId,
+  thumbnail,
+}: ServerData) => {
+  const navigate = useNavigate();
+  const handleGoDetail = (e: React.MouseEvent<HTMLImageElement | HTMLHeadingElement>) => {
+    e.preventDefault();
+    navigate(`/${nickname}/${postId}`);
+  };
   return (
     <>
-      <Title>글제목</Title>
-      {/* <Title onClick={handleGoDetail}>{title}</Title> */}
+      <Title>
+        <span onClick={handleGoDetail}>{title}</span>
+      </Title>
       <PostCardContainer>
         <Thumbnail>
-          <img className='thumbnail-img' src={defaultImg} alt='ThumbnailImg' />
+          <img onClick={handleGoDetail} className='thumbnail-img' src={thumbnail} alt='ThumbnailImg' />
           {/* <img onClick={handleGoDetail} className='thumbnail-img' src={thumbnail} alt='ThumbnailImg' /> */}
         </Thumbnail>
         <Box>
-          <Desc>글 내용</Desc>
-          {/* <Desc
-          dangerouslySetInnerHTML={{
-            __html: Dompurify.sanitize(content.replace(/<(\/img|img)([^>]*)>/gi, '')),
-          }}
-        /> */}
-          <CreatedAt>작성날짜</CreatedAt>
-          {/* <CreatedAt>{changeDate(createdAt)}</CreatedAt> */}
+          <Desc
+            dangerouslySetInnerHTML={{
+              __html: Dompurify.sanitize(content.replace(/<(\/img|img)([^>]*)>/gi, '')),
+            }}
+          />
+          <CreatedAt>{changeDate(createdAt)}</CreatedAt>
         </Box>
       </PostCardContainer>
       <Hrtag />

@@ -46,6 +46,7 @@ const SeriesDetail = () => {
   useEffect(() => {
     axios.get(`${API}${pathName}?page=1&size=16`).then((res) => {
       console.log(res.data.post);
+      setServerData(res.data.post);
     });
   }, []);
   return (
@@ -55,9 +56,25 @@ const SeriesDetail = () => {
         <p>{seriesName}</p>
       </SeriesName>
       <BtnArea></BtnArea>
-      <SeriesDetailCard></SeriesDetailCard>
-      <SeriesDetailCard></SeriesDetailCard>
-      <SeriesDetailCard></SeriesDetailCard>
+      {serverData.length !== 0
+        ? serverData.map((el) => {
+            return (
+              <SeriesDetailCard
+                title={el.title}
+                content={el.content}
+                createdAt={el.createdAt}
+                nickname={el.nickname}
+                postId={el.postId}
+                series={el.series}
+                tag={el.tag}
+                profile={el.profile}
+                userId={el.userId}
+                thumbnail={el.thumbnail}
+                key={el.postId}
+              ></SeriesDetailCard>
+            );
+          })
+        : null}
     </SeriesDetailContainer>
   );
 };
