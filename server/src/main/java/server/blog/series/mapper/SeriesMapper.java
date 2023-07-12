@@ -37,20 +37,8 @@ public interface SeriesMapper {
                 }
             }
 
+            response.setCount((response.getCount() != null ? response.getCount() : 0) + posts.size());
             seriesMap.put(seriesName, response);
-        }
-
-        // 게시글 수 카운트
-        for (SeriesDto.allResponse response : seriesMap.values()) {
-            Long count = 0L;
-
-            for (Series series : seriesList) {
-                if (series.getSeriesName().equals(response.getSeriesName())) {
-                    count++;
-                }
-            }
-
-            response.setCount(count);
         }
 
         return new ArrayList<>(seriesMap.values());

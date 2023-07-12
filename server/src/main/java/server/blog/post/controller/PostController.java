@@ -131,10 +131,7 @@ public class PostController {
                     findPost.setContent(content);
                 }
                 if (seriesName != null) {
-                    Series series = new Series();
-                    series.setSeriesName(seriesName);
-                    seriesRepository.save(series);
-                    findPost.setSeries(series);
+                    findPost.getSeries().setSeriesName(seriesName);
                 }
                 if (title != null) {
                     findPost.setTitle(title);

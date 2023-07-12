@@ -59,18 +59,12 @@ public class PostService {
 
 
         if (seriesName != null && !seriesName.isEmpty()) {
-            Optional<Series> existingSeries = seriesRepository.findBySeriesName(seriesName);
-            Series series;
-            if (existingSeries.isPresent()) {
-                series = existingSeries.get();
-            } else {
-                series = new Series();
-                series.setSeriesName(seriesName);
-                series.setUsers(post.getUsers());
-                seriesRepository.save(series);
-            }
-            post.setSeries(series);
-        } else {
+            Series series = new Series();
+            series.setSeriesName(seriesName);
+            seriesRepository.save(series); // Series 엔티티를 먼저 저장
+
+            post.setSeries(series); // 저장된 Series 엔티티를 Post의 series 필드에 설정
+        }else{
             post.setSeries(null);
         }
 
