@@ -1,9 +1,7 @@
 import styled from 'styled-components';
 import Header from '../components/Header/Header';
-import TapComponent from '../components/Myblog/Tap';
-import { useRecoilValue } from 'recoil';
-import { curUser } from '../recoil/signup';
-
+import TapComponent from '../components/Common/Tap';
+import Posts from '../components/Post/Posts';
 const Container = styled.div`
   padding-top: 80px;
   display: flex;
@@ -25,49 +23,14 @@ const PageBody = styled.div`
   flex-direction: column;
 `;
 
-const MyInfo = styled.div`
-  height: 185px;
-  border-bottom: 1px solid var(--light-gray-300);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding-bottom: 30px;
-  .profile {
-    width: 128px;
-    height: 128px;
-    border-radius: 50%;
-  }
-  p {
-    font-size: 1.8rem;
-    font-weight: 500;
-  }
-  @media screen and (max-width: 767px) {
-    height: 152px;
-    .profile {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-    }
-    p {
-      font-size: 1.3rem;
-      font-weight: 500;
-    }
-  }
-`;
-
 const PostPage = () => {
-  const currentUser = useRecoilValue(curUser);
-  const { nickname, profile } = currentUser;
   return (
     <>
       <Header></Header>
       <Container>
         <PageBody>
-          <MyInfo>
-            <img src={profile} alt='profile' className='profile'></img>
-            <p>{nickname}</p>
-          </MyInfo>
           <TapComponent />
+          <Posts></Posts>
         </PageBody>
       </Container>
     </>

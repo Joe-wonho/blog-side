@@ -6,7 +6,7 @@ import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { curUser } from '../../recoil/signup';
 import axios from 'axios';
 import client from '../../api/axios';
-import { dataURItoFile } from '../Common/imgToFile';
+import { profileURItoFile } from '../Common/imgToFile';
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -171,7 +171,7 @@ const UpdateProfile = () => {
     e.preventDefault();
     // setFile();
     const formData = new FormData();
-    formData.append('profile', dataURItoFile());
+    formData.append('profile', profileURItoFile());
 
     client
       .patch(`/user/${form.userId}`, formData, {
@@ -212,7 +212,7 @@ const UpdateProfile = () => {
               {},
               {
                 withCredentials: true,
-              },
+              }
             )
             //리프레시 토큰이 유효해서 액세스 재발급 가능한경우
             .then(async (res) => {

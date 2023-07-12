@@ -5,15 +5,17 @@ import Editor from './Editor';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import SeriesArea from './SeriesArea';
-const WriteContainer = styled.div`
-  display: flex;
+const WriteContainer = styled.div<{ openCheck: boolean }>`
+  /* display: flex; */
+  display: ${({ openCheck }) => (openCheck ? 'none' : 'flex')};
   flex-direction: column;
   padding: 20px;
 `;
-const SubmitContainer = styled.div`
+const SubmitContainer = styled.div<{ openCheck: boolean }>`
   width: 100%;
   height: 60px;
-  display: flex;
+  display: ${({ openCheck }) => (openCheck ? 'none' : 'flex')};
+  /* display: flex; */
   justify-content: end;
   align-items: center;
   gap: 30px;
@@ -59,12 +61,12 @@ const Write = () => {
   };
   return (
     <>
-      <WriteContainer>
+      <WriteContainer openCheck={openCheck}>
         <Title></Title>
         <TagArea></TagArea>
         <Editor />
       </WriteContainer>
-      <SubmitContainer>
+      <SubmitContainer openCheck={openCheck}>
         <CommonBtn
           onClick={() => {
             navigate(-1);

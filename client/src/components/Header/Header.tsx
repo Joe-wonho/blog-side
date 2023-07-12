@@ -113,11 +113,19 @@ const LoginBtn = styled.div`
 const Header = () => {
   const [isLogin, setLogin] = useState(false);
   const currentUser = useRecoilValue(curUser);
-  const { nickname } = currentUser;
-  const location = useLocation();
 
   //현재 와있는 블로그 소유자의 닉네임
-  const blogUser: string = decodeURI(window.location.pathname.slice(1));
+  const pathName: string = decodeURI(window.location.pathname.slice(1));
+  const index: number = pathName.indexOf('/');
+  let blogUser: string = '';
+  if (index < 0) {
+    blogUser = pathName;
+  } else {
+    blogUser = pathName.slice(0, index);
+  }
+  if (pathName === 'mypage') {
+    blogUser = currentUser.nickname;
+  }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [myProfile, setProfile] = useState(profile);
   const navigate = useNavigate();

@@ -17,7 +17,7 @@ const MainListContainer = styled.div`
   }
   @media screen and (min-width: 662px) and (max-width: 1023px) {
     width: 100%;
-    /* justify-content: center; */
+    margin-left: 20px;
   }
   @media screen and (max-width: 661px) {
     width: 96%;
@@ -123,7 +123,7 @@ const MainList = () => {
   return (
     <MainListContainer>
       {serverData.length !== 0
-        ? serverData.map((el, idx) => {
+        ? serverData.map((el) => {
             return (
               <MainCard
                 title={el.title}

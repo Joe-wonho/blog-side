@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import ThumbnailImg from '../../assets/test.png';
+import { ServerData } from '../Main/MainList';
+import Dompurify from 'dompurify';
+import { changeDate } from '../Common/changeDate';
+import { useNavigate } from 'react-router';
 
 const PostCardContainer = styled.div`
   height: 635px;
@@ -22,9 +25,14 @@ const Hrtag = styled.div`
 `;
 const Thumbnail = styled.div`
   margin-bottom: 10px;
+  .thumbnail-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    cursor: pointer;
+  }
   @media screen and (min-width: 768px) {
     height: 402px;
-    background-color: red;
     .thumbnail-img {
       width: 100%;
       height: 100%;
@@ -37,6 +45,8 @@ const Title = styled.h2`
   display: flex;
   align-items: center;
   font-weight: 700;
+  cursor: pointer;
+
   @media screen and (min-width: 768px) {
     height: 36px;
     font-size: 22px;
@@ -99,25 +109,51 @@ const CreatedAt = styled.div`
     height: 21px;
   }
 `;
-const PostCard = () => {
+const PostCard = ({
+  title,
+  content,
+  createdAt,
+  profile,
+  nickname,
+  postId,
+  series,
+  tag,
+  userId,
+  thumbnail,
+}: ServerData) => {
+  const navigate = useNavigate();
+
+  const handleGoDetail = (e: React.MouseEvent<HTMLImageElement | HTMLHeadingElement>) => {
+    e.preventDefault();
+    navigate(`/${nickname}/${postId}`);
+  };
+
   return (
     <>
       <PostCardContainer>
         <Thumbnail>
-          <img className='thumbnail-img' src={ThumbnailImg} alt='ThumbnailImg' />
+          <img onClick={handleGoDetail} className='thumbnail-img' src={thumbnail} alt='ThumbnailImg' />
         </Thumbnail>
-        <Title>포스팅 제목</Title>
-        <Desc>
-          포스팅내용 이번에 토이 프로젝트를 진행하며 드롭다운을 구현하던 도중드롭다운 메뉴 외부를 클릭하면 어떻게 드롭다운을 닫을지 고민하다가
-          작성하게 되었다!useRef를 이용해서 DropdownContainer라는 div 엘리먼트에 접근.document에 onCheckClickOutsi이번에 토이 프로젝트를 진행하며
-          드롭다운을 구현하던 도중드롭다운 메뉴 외부를 클릭하면 어떻게 드롭다운을 닫을지 고민하다가 작성하게 되었다!useRef를 이용해서
-          DropdownContainer라는 div 엘리먼트에 접근.document에 onCheckClickOutsi
-        </Desc>
+        <Title onClick={handleGoDetail}>{title}</Title>
+        <Desc
+          dangerouslySetInnerHTML={{
+            __html: Dompurify.sanitize(content.replace(/<(\/img|img)([^>]*)>/gi, '')),
+          }}
+        />
         <TagBox>
-          <Tag>111</Tag>
-          <Tag>223455</Tag>
+          {tag.length === 0 ? null : (
+            <TagBox>
+              {tag.map((tagItem, index) => {
+                return (
+                  <Tag key={index}>
+                    <div>{tagItem}</div>
+                  </Tag>
+                );
+              })}
+            </TagBox>
+          )}
         </TagBox>
-        <CreatedAt>작성날짜</CreatedAt>
+        <CreatedAt>{changeDate(createdAt)}</CreatedAt>
       </PostCardContainer>
       <Hrtag />
     </>

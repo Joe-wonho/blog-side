@@ -21,9 +21,9 @@ const checkPwdValidation = (password: string, passwordCheck: string) => {
   return [true, '비밀번호가 일치합니다.'];
 };
 const commonValidation = (str: string) => {
-  const regexCommon = /^[a-zA-Zㄱ-힣0-9\s]{1,10}$/;
+  const regexCommon = /^[a-zA-Z0-9_-]{1,16}$/;
   if (!regexCommon.test(str)) {
-    return [false, ''];
+    return [false, '유효한 닉네임을 입력해주세요.'];
   }
   return [true, '유효합니다'];
 };

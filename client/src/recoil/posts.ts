@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 const { persistAtom } = recoilPersist();
 
-export interface Post {
+export interface PostInterface {
   content: string;
   createdAt: string;
   nickname: string;
@@ -16,7 +16,7 @@ export interface Post {
 }
 
 //태그
-export const postsAtom = atom<Post[]>({
+export const postsAtom = atom<PostInterface[]>({
   key: 'posts',
   default: [],
 });

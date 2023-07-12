@@ -2,15 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header/Header';
 import Detail from '../components/Detail/Detail';
-const Box = styled.div`
-  overflow-y: auto;
-`;
+const Box = styled.div``;
 const DetailPageContainer = styled.div`
   width: 768px;
   height: 100%;
   margin: 5rem auto 0;
   display: flex;
   flex-direction: column;
+
   @media screen and (max-width: 799px) {
     margin-top: 2rem;
     width: 100%;

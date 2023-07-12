@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import ThumbnailImg from '../../assets/test.png';
+import { SeriesDataInterface } from './Series';
+import { useNavigate } from 'react-router';
 
 const SeriesCardContainer = styled.div`
   width: 368px;
@@ -13,11 +14,15 @@ const SeriesCardContainer = styled.div`
 `;
 const Thumbnail = styled.div`
   margin-bottom: 10px;
+  .thumbnail-img {
+    aspect-ratio: 16/9;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
   @media screen and (min-width: 768px) {
     height: 195px;
     .thumbnail-img {
-      width: 100%;
-      height: 100%;
       cursor: pointer;
     }
   }
@@ -38,20 +43,26 @@ const CreatedAt = styled.div`
   height: 22px;
   font-size: 15px;
   padding: 10px 0;
+  font-weight: 600;
   @media screen and (min-width: 768px) {
     height: 20px;
     font-size: 15px;
     padding: 8px 0;
   }
 `;
-const SeriesCard = () => {
+
+const SeriesCard = ({ banner, count, seriesName }: SeriesDataInterface) => {
+  const navigate = useNavigate();
+  const handleGoSeriesDetail = () => {
+    navigate(`${seriesName}`);
+  };
   return (
     <SeriesCardContainer>
       <Thumbnail>
-        <img className='thumbnail-img' src={ThumbnailImg} alt='ThumbnailImg' />
+        <img onClick={handleGoSeriesDetail} className='thumbnail-img' src={banner} alt='ThumbnailImg' />
       </Thumbnail>
-      <Title>시리즈 제목</Title>
-      <CreatedAt>작성날짜</CreatedAt>
+      <Title onClick={handleGoSeriesDetail}>{seriesName}</Title>
+      <CreatedAt>{count}개의 포스트</CreatedAt>
     </SeriesCardContainer>
   );
 };

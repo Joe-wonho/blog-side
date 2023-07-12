@@ -1,6 +1,6 @@
 import defaultProfile from '../../assets/profile.png';
 
-export const dataURItoFile = () => {
+export const profileURItoFile = () => {
   const byteString = window.atob(defaultProfile.split(',')[1]);
   const mimeString = defaultProfile.split(',')[0].split(':')[1].split(';')[0];
   const ab = new ArrayBuffer(byteString.length);
@@ -11,5 +11,5 @@ export const dataURItoFile = () => {
   }
 
   const blobFile = new Blob([ab], { type: mimeString });
-  return new File([blobFile], 'default.jpeg');
+  return new File([blobFile], 'defaultProfile.jpeg');
 };

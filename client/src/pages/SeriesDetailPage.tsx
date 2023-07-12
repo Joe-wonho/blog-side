@@ -1,20 +1,20 @@
+import React from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header/Header';
-import TapComponent from '../components/Common/Tap';
-import Series from '../components/SeriesBlog/Series';
-const Container = styled.div`
-  padding-top: 80px;
+import SeriesDetail from '../components/SeriesDetail/SeriesDetail';
+const SeriesDetailPageContainer = styled.div`
+  padding: 80px 20px 0;
   display: flex;
   justify-content: center;
   height: 100%;
+  min-height: 100vh;
   background-color: var(--light-gray-150);
-  min-width: 400px;
+  min-width: 808px;
   @media screen and (max-width: 767px) {
     padding: 40px 10px 0;
+    min-width: 400px;
   }
 `;
-
-//1200 이상일 때 태그 목록 보여주기
 const PageBody = styled.div`
   margin: 0 auto;
   width: 768px;
@@ -23,18 +23,17 @@ const PageBody = styled.div`
   flex-direction: column;
 `;
 
-const SeriesPage = () => {
+const SeriesDetailPage = () => {
   return (
     <>
       <Header></Header>
-      <Container>
+      <SeriesDetailPageContainer>
         <PageBody>
-          <TapComponent />
-          <Series></Series>
+          <SeriesDetail />
         </PageBody>
-      </Container>
+      </SeriesDetailPageContainer>
     </>
   );
 };
 
-export default SeriesPage;
+export default SeriesDetailPage;

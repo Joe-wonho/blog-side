@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { inputsState } from '../../recoil/signup';
 import { useRecoilState, useResetRecoilState } from 'recoil';
 import axios from 'axios';
-import { emailValidation, pwdValidation, checkPwdValidation } from './validation';
-import { dataURItoFile } from '../Common/imgToFile';
+import { emailValidation, pwdValidation, checkPwdValidation, commonValidation } from './validation';
+import { profileURItoFile } from '../Common/imgToFile';
 
 const SignupContainer = styled.div`
   padding: 0 24px;
@@ -85,13 +85,15 @@ const Signup = () => {
     if (file) {
       formData.append('profile', file[0]);
     } else {
-      formData.append('profile', dataURItoFile());
+      formData.append('profile', profileURItoFile());
     }
     if (
       emailValidation(form.email)[0] === false ||
       pwdValidation(form.password)[0] === false ||
-      checkPwdValidation(form.password, form.pwdCheck)[0] === false
+      checkPwdValidation(form.password, form.pwdCheck)[0] === false ||
+      commonValidation(form.nickname)[0] === false
     ) {
+      // 여기서 분기처리하기
       alert('올바른 정보를 입력해주세요');
     } else {
       //이부분에서 서버와 통신하면 된다.

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { GrFormPrevious, GrFormNext } from 'react-icons/gr';
+import { TagInterface } from './Posts';
 const TagContainer = styled.div`
   position: absolute;
   display: flex;
@@ -44,7 +45,7 @@ const TagList = styled.ul`
   @media screen and (max-width: 767px) {
     gap: 12px;
     scroll-behavior: smooth;
-    overflow-x: scroll;
+    overflow-x: auto;
     height: 47px;
     width: 100%;
     ::-webkit-scrollbar {
@@ -90,8 +91,8 @@ const TagLi = styled.li`
   }
 
   @media screen and (max-width: 767px) {
-    height: 22px;
-    padding: 2px 8px;
+    height: 26px;
+    padding: 3px 8px 5px 7px;
   }
 
   @media screen and (min-width: 1170px) {
@@ -115,26 +116,11 @@ const NextBtn = styled.button`
   }
 `;
 
-const test: string[] = [
-  '전체보기',
-  '1123번 태그',
-  '2번 태그',
-  '3번 태그',
-  '전체보기',
-  '1123번 태그',
-  '2번 태그',
-  '3번 태그',
-  '55555555',
-  '1123번 태그',
-  '2번 태그',
-  '3번 태그',
-  '888888',
-  '1123번 태그',
-  '2번 태그',
-  '3번 태그',
-];
+export interface TagProps {
+  tag: TagInterface[];
+}
 
-const Tag = () => {
+const Tag = ({ tag }: TagProps) => {
   //원래 overflow 되기 전 ul의 길이
   const [width, setWidth] = useState(0); // 1077 그떄그때 변함
   const tagRef = useRef<HTMLUListElement>(null);
@@ -173,12 +159,13 @@ const Tag = () => {
       </PrevBtn>
 
       <TagList ref={tagRef} className='middle'>
-        {test.length === 0 ? (
-          <TagLi className='bottom'>전체보기</TagLi>
-        ) : (
-          test.map((el, idx) => {
-            return <TagLi key={idx}>{el}</TagLi>;
-          })
+        {tag.length === 0 ? null : (
+          <>
+            <TagLi className='bottom'>전체보기</TagLi>
+            {tag.map((el, idx) => {
+              return <TagLi key={idx}>{el.tagName}</TagLi>;
+            })}
+          </>
         )}
       </TagList>
       <NextBtn onClick={nextClick}>

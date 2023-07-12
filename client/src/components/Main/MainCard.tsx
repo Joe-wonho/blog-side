@@ -21,7 +21,6 @@ const MainCardContainer = styled.div`
 
   @media screen and (min-width: 662px) and (max-width: 1023px) {
     width: 48%;
-    margin: 0 auto;
   }
   @media screen and (max-width: 661px) {
     width: 100%;
@@ -32,7 +31,7 @@ const Thumbnail = styled.div`
   /* margin-bottom: 3px; */
   .thumbnail-img {
     width: 100%;
-    max-height: 250px;
+    aspect-ratio: 16/9;
     object-fit: cover;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -60,7 +59,15 @@ const Title = styled.h4`
   align-items: center;
   font-weight: 500;
   height: 24px;
+  line-height: 24px;
   font-size: 16px;
+  white-space: pre-line;
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   cursor: pointer;
   @media screen and (min-width: 1024px) {
     font-weight: 600;

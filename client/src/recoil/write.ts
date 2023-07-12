@@ -25,7 +25,7 @@ export const contentAtom = atom<string>({
 //시리즈 목록
 export const seriesListAtom = atom<string[]>({
   key: 'seriesList',
-  default: ['시리즈 더미', 'GOOD!'],
+  default: [],
 });
 //썸네일 이미지
 export const thumbnailImgAtom = atom<FileList | null>({

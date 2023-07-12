@@ -3,7 +3,7 @@ import ImgInput from './ImgInput';
 import { inputsState } from '../../recoil/signup';
 import { useRecoilState } from 'recoil';
 import { FileUpload } from './Signup';
-import { emailValidation, pwdValidation, checkPwdValidation } from './validation';
+import { emailValidation, pwdValidation, checkPwdValidation, commonValidation } from './validation';
 import axios from 'axios';
 
 const SignupFormContainer = styled.form`
@@ -71,7 +71,6 @@ const ValidDesc = styled.p`
   color: rgb(109, 109, 109);
   &.false-input {
     color: rgb(253, 91, 21);
-  
   }
 `;
 
@@ -106,7 +105,14 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
     <SignupFormContainer>
       <label htmlFor='email'>이메일</label>
       <div className='input-box'>
-        <input type='email' id='email' name='email' value={email} onChange={onChange} placeholder='your@email.com'></input>
+        <input
+          type='email'
+          id='email'
+          name='email'
+          value={email}
+          onChange={onChange}
+          placeholder='your@email.com'
+        ></input>
         <HrTag className='hrtag' />
         <EmailCheck onClick={onCheckEmail}>중복확인</EmailCheck>
       </div>
@@ -115,7 +121,14 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
 
       <label htmlFor='password'>비밀번호</label>
       <div className='input-box'>
-        <input type='password' id='password' name='password' value={password} onChange={onChange} placeholder='영문+숫자+특수문자 최소 8자리'></input>
+        <input
+          type='password'
+          id='password'
+          name='password'
+          value={password}
+          onChange={onChange}
+          placeholder='영문+숫자+특수문자 최소 8자리'
+        ></input>
         <HrTag className='hrtag' />
       </div>
       {pwdValidation(password)[0] ? null : <ValidDesc className='false-input'>{pwdValidation(password)[1]}</ValidDesc>}
@@ -123,10 +136,19 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
 
       <label htmlFor='password-check'>비밀번호 확인</label>
       <div className='input-box'>
-        <input type='password' id='password-check' name='pwdCheck' placeholder='비밀번호 확인' value={pwdCheck} onChange={onChange}></input>
+        <input
+          type='password'
+          id='password-check'
+          name='pwdCheck'
+          placeholder='비밀번호 확인'
+          value={pwdCheck}
+          onChange={onChange}
+        ></input>
         <HrTag className='hrtag' />
       </div>
-      {checkPwdValidation(password, pwdCheck)[0] ? null : <ValidDesc className='false-input'>{checkPwdValidation(password, pwdCheck)[1]}</ValidDesc>}
+      {checkPwdValidation(password, pwdCheck)[0] ? null : (
+        <ValidDesc className='false-input'>{checkPwdValidation(password, pwdCheck)[1]}</ValidDesc>
+      )}
       <hr />
 
       <label htmlFor='name'>이름</label>
@@ -139,9 +161,19 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
 
       <label htmlFor='nickname'>닉네임</label>
       <div className='input-box'>
-        <input type='text' id='nickname' name='nickname' value={nickname} onChange={onChange} placeholder='닉네임'></input>
+        <input
+          type='text'
+          id='nickname'
+          name='nickname'
+          value={nickname}
+          onChange={onChange}
+          placeholder='영문, 숫자, _, - 만 가능'
+        ></input>
         <HrTag className='hrtag' />
       </div>
+      {commonValidation(nickname)[0] ? null : (
+        <ValidDesc className='false-input'>{commonValidation(nickname)[1]}</ValidDesc>
+      )}
       <hr />
 
       <ImgInput file={file} setFile={setFile}></ImgInput>
