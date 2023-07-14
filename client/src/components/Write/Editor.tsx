@@ -24,7 +24,6 @@ const Editor = () => {
     input.onchange = async () => {
       const file = input.files;
       if (file !== null) {
-        console.log(file[0]);
         formData.append('img', file[0]);
         try {
           const res = await axios.post('http://localhost:8080/uploadImg', formData, {

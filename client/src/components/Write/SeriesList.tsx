@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import styled, { css } from 'styled-components';
 import { BiListPlus } from 'react-icons/bi';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -121,6 +122,8 @@ const SeriesList = () => {
   const handleSeriesName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSeriesName(e.currentTarget.value);
   };
+
+  const { postId } = useParams();
 
   //새로운 시리즈 추가
   const handleClickAddSeries = (e: React.MouseEvent<HTMLButtonElement>) => {

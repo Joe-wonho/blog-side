@@ -92,7 +92,7 @@ const Dropdown = () => {
     client.post(`/signout`).then((res) => {
       clearCurUser();
       window.localStorage.removeItem('accessToken');
-      navigate('/login');
+      window.location.href = '/login';
     });
   };
 

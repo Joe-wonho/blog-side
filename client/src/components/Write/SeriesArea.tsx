@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled, { css } from 'styled-components';
-import { BiListPlus } from 'react-icons/bi';
 import { CommonBtn } from './Write';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { curUser } from '../../recoil/signup';
 import { selectedTap } from '../../recoil/tab';
 import { thumbnailURItoFile } from '../Common/tumbnailTofile';
+import { useParams } from 'react-router';
 import {
   titleAtom,
   tagAtom,
   contentAtom,
   thumbnailImgAtom,
   selectedSeriesAtom,
+  thumbnailUrlAtom,
   seriesListAtom,
 } from '../../recoil/write';
 import SeriesList from './SeriesList';
@@ -83,9 +84,10 @@ const SeriesArea = ({ openCheck, setCheck }: SeriesAreaProps) => {
   const [tag, setTag] = useRecoilState(tagAtom);
   const [content, setContent] = useRecoilState(contentAtom);
   const [thumbnailImg, setThumbnailImg] = useRecoilState(thumbnailImgAtom);
-
+  const clearThumbnailUrl = useResetRecoilState(thumbnailUrlAtom);
   const clearSelectedTap = useResetRecoilState(selectedTap);
 
+  const { postId } = useParams();
   // 출간하기 버튼 클릭
   const handleSubmit = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -108,27 +110,42 @@ const SeriesArea = ({ openCheck, setCheck }: SeriesAreaProps) => {
       formData.append('series', selectedSeries);
     }
     if (thumbnailImg) {
-      formData.append('thumbnail', thumbnailImg[0]);
+      formData.append('thumbnail', thumbnailImg);
     } else {
       formData.append('thumbnail', thumbnailURItoFile());
     }
-    for (const pair of formData.entries()) {
-      console.log(`${pair[0]}, ${pair[1]}`);
+    console.log(postId);
+    if (postId) {
+      client
+        .patch(`/${postId}`, formData, {
+          headers: { 'content-type': 'multipart/form-data' },
+        })
+        .then(() => {
+          setTitle('');
+          setTag([]);
+          setContent('');
+          setThumbnailImg(null);
+          setSelectedSeries('');
+          clearSelectedTap();
+          clearThumbnailUrl();
+          navigate(`/${userInfo.nickname}`);
+        });
+    } else {
+      client
+        .post('/post', formData, {
+          headers: { 'content-type': 'multipart/form-data' },
+        })
+        .then(() => {
+          setTitle('');
+          setTag([]);
+          setContent('');
+          setThumbnailImg(null);
+          setSelectedSeries('');
+          clearSelectedTap();
+          clearThumbnailUrl();
+          navigate(`/${userInfo.nickname}`);
+        });
     }
-    client
-      .post('/post', formData, {
-        headers: { 'content-type': 'multipart/form-data' },
-      })
-      .then((res) => {
-        console.log(res);
-        setTitle('');
-        setTag([]);
-        setContent('');
-        setThumbnailImg(null);
-        setSelectedSeries('');
-        clearSelectedTap();
-        navigate(`/${userInfo.nickname}`);
-      });
   };
 
   return (

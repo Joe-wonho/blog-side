@@ -3,12 +3,23 @@ import styled, { css } from 'styled-components';
 import { TagAreaContainer, TagItem, TagBox } from '../Write/TagArea';
 import Viewer from './Viewer';
 import axios from 'axios';
+import client from '../../api/axios';
 import { PostInterface } from '../../recoil/posts';
 import { changeDate } from '../Common/changeDate';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { curUser } from '../../recoil/signup';
 import { useNavigate } from 'react-router';
-
+import DeleteModal from '../Common/DeleteModal';
+import {
+  titleAtom,
+  tagAtom,
+  contentAtom,
+  thumbnailImgAtom,
+  selectedSeriesAtom,
+  thumbnailUrlAtom,
+  seriesListAtom,
+} from '../../recoil/write';
+import { useParams } from 'react-router';
 const DetailContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -149,8 +160,20 @@ const Detail = () => {
   //현재 사용자면 수정 삭제 가능
   const isMe = useRecoilValue(curUser);
 
+  //모달 관리
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  // 포스트 수정관리
+  const [title, setTitle] = useRecoilState(titleAtom);
+  const [tag, setTag] = useRecoilState(tagAtom);
+  const [content, setContent] = useRecoilState(contentAtom);
+  const [thumbnailImg, setThumbnailImg] = useRecoilState(thumbnailImgAtom);
+  const [selectedSeries, setSelectedSeries] = useRecoilState(selectedSeriesAtom);
+  const [thumbnailUrl, setThumbnailUrl] = useRecoilState(thumbnailUrlAtom);
+
   //axios 로 받아온 디테일 페이지 요소
   const [data, setData] = useState<PostInterface>();
+  const { postId } = useParams();
   //axios 요청 주소
   const pathName: string = decodeURI(window.location.pathname.slice(1));
   const index: number = pathName.indexOf('/');
@@ -170,12 +193,51 @@ const Detail = () => {
           setSeriesList2(changeList2);
         });
     });
-  }, [pathName]);
+  }, [postId]);
 
   const handleGoBlog = () => {
     if (data) {
       navigate(`/${data.nickname}`);
     }
+  };
+
+  const deletePosting = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setModalIsOpen(true);
+  };
+
+  const editPosting = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (data) {
+      setTitle(data.title);
+      setContent(data.content);
+      //섬네일 이미지처리
+      if (data.thumbnail !== '' && data.thumbnail) {
+        setThumbnailUrl(decodeURI(data.thumbnail));
+        const fileName = decodeURI(data.thumbnail).split('/').pop();
+        const ext = fileName?.split('.')[1];
+        const metadata = { type: `image/${ext}` };
+        console.log(fileName);
+        console.log(ext);
+        const response = await fetch(`${decodeURI(data.thumbnail)}`);
+        const blob = await response.blob();
+        // console.log(blob);
+        const urlToFile = new File([blob], fileName!, metadata);
+        if (urlToFile) {
+          setThumbnailImg(urlToFile);
+        }
+      }
+      if (data.tag) {
+        setTag(data.tag);
+      }
+      if (data.series) {
+        setSelectedSeries(data.series);
+      }
+    } else {
+      alert('수정할 데이터가 없습니다');
+      return;
+    }
+    navigate(`/write/${postId}`);
   };
   return (
     <DetailContainer>
@@ -185,8 +247,8 @@ const Detail = () => {
           <EditBtnGrop>
             {isMe.nickname === curPageNickname ? (
               <>
-                <CommonBtn>수정</CommonBtn>
-                <CommonBtn>삭제</CommonBtn>
+                <CommonBtn onClick={editPosting}>수정</CommonBtn>
+                <CommonBtn onClick={deletePosting}>삭제</CommonBtn>
               </>
             ) : null}
           </EditBtnGrop>
@@ -250,6 +312,14 @@ const Detail = () => {
             <p onClick={handleGoBlog}>{data.nickname}</p>
           </WriterInfo>
         </>
+      )}
+      {data && (
+        <DeleteModal
+          postId={data.postId}
+          curUserId={isMe.userId}
+          modalIsOpen={modalIsOpen}
+          setModalIsOpen={setModalIsOpen}
+        />
       )}
     </DetailContainer>
   );

@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Mypage from './pages/Mypage';
 import DetailPage from './pages/DetailPage';
+import EditPostPage from './pages/EditPostPage';
 import SeriesDetailPage from './pages/SeriesDetailPage';
 import KaKaoLoginPage from './components/Login/KaKaoLogin';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -30,6 +31,7 @@ const App: React.FC = () => {
               <Route path='/login' element={<LoginPage />}></Route>
               <Route path='/signup' element={<SignupPage />}></Route>
               <Route path='/write' element={<WritePage />}></Route>
+              <Route path='/write/:postId' element={<WritePage />}></Route>
               <Route path='/mypage' element={<Mypage />}></Route>
               <Route path='/oauth/callback/kakao' element={<KaKaoLoginPage />} />
             </Routes>

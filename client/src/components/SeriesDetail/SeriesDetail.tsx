@@ -46,7 +46,7 @@ const SeriesDetail = () => {
   useEffect(() => {
     axios.get(`${API}${pathName}?page=1&size=16`).then((res) => {
       console.log(res.data.post);
-      setServerData(res.data.post);
+      setServerData(res.data.post.reverse());
     });
   }, []);
   return (

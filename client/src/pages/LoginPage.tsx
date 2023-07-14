@@ -8,13 +8,10 @@ import Login from '../components/Login/Login';
 const LoginPageContainer = styled.div`
   padding: 60px 0 20px;
   background-color: var(--light-gray-100);
-  height: 100vh;
   @media screen and (min-width: 768px) {
-    height: 100vh;
   }
   @media screen and (max-width: 767px) {
     padding: 60px 0 0;
-    /* height: 100vh; */
     background-color: var(--white-100);
   }
 `;

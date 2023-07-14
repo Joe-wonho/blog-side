@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
-import { thumbnailImgAtom } from '../../recoil/write';
+import { thumbnailImgAtom, thumbnailUrlAtom } from '../../recoil/write';
 import { Desc } from './SeriesArea';
 import { BsFillCameraFill, BsTrash3Fill } from 'react-icons/bs';
 import defaultThumbnail from '../../assets/thumbnail.png';
+import { thumbnailURItoFile } from '../Common/tumbnailTofile';
 
 const SeriesImgContainer = styled.div`
   input {
@@ -49,16 +50,15 @@ const Preview = styled.div`
 const SeriesImg = () => {
   const imgRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useRecoilState(thumbnailImgAtom);
-  const [fileURL, setFileURL] = useState<string>('');
-
+  const [fileURL, setFileURL] = useRecoilState(thumbnailUrlAtom);
+  //여기서 수정할 때도 처리하기 fileURL 과 file을 수정버튼 누르면 받아와야 한다.
   const onChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFile(e.target.files);
+      setFile(e.target.files[0]);
       const newFileURL = URL.createObjectURL(e.target.files[0]);
       setFileURL(newFileURL);
     }
   };
-
   const onRemoveImg = (): void => {
     URL.revokeObjectURL(fileURL);
     setFileURL('');
