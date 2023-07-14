@@ -86,6 +86,23 @@ const TagLi = styled.li`
   cursor: pointer;
   flex-shrink: 0;
   height: 29px;
+  p {
+    transition: transform 0.4s ease-in-out;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    span {
+      font-size: 12px;
+      margin-left: 5px;
+    }
+    &.active {
+      font-weight: 700;
+      transform: scale(1.1, 1.1);
+      span {
+        transform: scale(1.1, 1.1);
+      }
+    }
+  }
   :hover {
     color: var(--active);
   }
@@ -100,6 +117,18 @@ const TagLi = styled.li`
     color: var(--dark-blue-800);
     padding: 0;
     display: block;
+    p {
+      display: inline-block;
+      &.active {
+        transform: translateX(20%);
+        justify-content: center;
+        border-radius: 4px;
+        font-weight: 700;
+        background-color: rgba(82, 95, 255, 0.8);
+        color: white;
+        padding: 2px 4px;
+      }
+    }
   }
 `;
 
@@ -118,9 +147,11 @@ const NextBtn = styled.button`
 
 export interface TagProps {
   tag: TagInterface[];
+  selectedTag: string;
+  setSelectedTag: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Tag = ({ tag }: TagProps) => {
+const Tag = ({ tag, selectedTag, setSelectedTag }: TagProps) => {
   //원래 overflow 되기 전 ul의 길이
   const [width, setWidth] = useState(0); // 1077 그떄그때 변함
   const tagRef = useRef<HTMLUListElement>(null);
@@ -150,7 +181,6 @@ const Tag = ({ tag }: TagProps) => {
       }
     }
   };
-
   return (
     <TagContainer className='top'>
       <div className='title'>태그 목록</div>
@@ -159,11 +189,37 @@ const Tag = ({ tag }: TagProps) => {
       </PrevBtn>
 
       <TagList ref={tagRef} className='middle'>
-        {tag.length === 0 ? null : (
+        {tag.length === 0 ? (
+          <TagLi
+            onClick={() => {
+              setSelectedTag('');
+            }}
+          >
+            <p className={selectedTag === '' ? 'active' : ''}>전체보기</p>
+          </TagLi>
+        ) : (
           <>
-            <TagLi className='bottom'>전체보기</TagLi>
+            <TagLi
+              onClick={() => {
+                setSelectedTag('');
+              }}
+            >
+              <p className={selectedTag === '' ? 'active' : ''}>전체보기</p>
+            </TagLi>
             {tag.map((el, idx) => {
-              return <TagLi key={idx}>{el.tagName}</TagLi>;
+              return (
+                <TagLi
+                  onClick={() => {
+                    setSelectedTag(el.tagName);
+                  }}
+                  key={idx}
+                >
+                  <p className={selectedTag === el.tagName ? 'active' : ''}>
+                    {el.tagName}
+                    <span>({el.count})</span>
+                  </p>
+                </TagLi>
+              );
             })}
           </>
         )}

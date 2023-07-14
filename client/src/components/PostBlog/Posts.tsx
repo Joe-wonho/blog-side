@@ -26,22 +26,33 @@ const Posts = () => {
   //axios 로 받아온 해당 블로그 페이지 요소
   const [serverData, setServerData] = useState<ServerData[]>([]);
   const [tagData, setTagData] = useState<TagInterface[]>([]);
-
+  const [selectedTag, setSelectedTag] = useState('');
   useEffect(() => {
     axios.get(`${API}/tag/${nickname}`).then((res) => {
       setTagData(res.data);
     });
   }, []);
 
+  //여기서 태그에 선택에 따라 처리하기
   useEffect(() => {
-    axios.get(`${API}/${nickname}?page=1&size=16`).then((res) => {
-      setServerData(res.data.data.reverse());
-    });
-  }, []);
+    if (selectedTag === '') {
+      axios.get(`${API}/${nickname}?page=1&size=16`).then((res) => {
+        console.log(res.data.data);
+        setServerData(res.data.data.reverse());
+      });
+    } else {
+      axios.get(`${API}/tag/${nickname}/${selectedTag}?page=1&size=16`).then((res) => {
+        console.log(res.data.data);
+        setServerData(res.data.data.reverse());
+      });
+    }
+  }, [selectedTag]);
 
   return (
     <PostsContainer>
-      {tagData.length !== 0 ? <Tag tag={tagData}></Tag> : null}
+      {tagData.length !== 0 ? (
+        <Tag tag={tagData} selectedTag={selectedTag} setSelectedTag={setSelectedTag}></Tag>
+      ) : null}
       {serverData.length !== 0
         ? serverData.map((el) => {
             return (
