@@ -77,7 +77,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         cookie1.setHttpOnly(true);
         cookie1.setPath("/");
         cookie1.setMaxAge(3600);
-        cookie1.setDomain("localhost");
+        cookie1.setDomain("ec2-3-39-222-90.ap-northeast-2.compute.amazonaws.com");
+//        cookie1.setDomain("localhost");
         response.addCookie(cookie1);
 
         Long expiration = (long) cookie1.getMaxAge(); // cookie1 만료 시간
