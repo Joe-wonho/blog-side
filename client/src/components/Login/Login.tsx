@@ -139,7 +139,6 @@ const Login = () => {
     if (emailValidation(loginForm.email)[0] === false || pwdValidation(loginForm.password)[0] === false) {
       alert('올바른 정보를 입력해주세요');
     } else {
-      //  이부분에서 서버와 통신하면 된다.
       try {
         await axios
           .post(
@@ -148,7 +147,6 @@ const Login = () => {
             { withCredentials: true }
           )
           .then((res) => {
-            // setUserToken(res.headers.authorization);
             window.localStorage.setItem('accessToken', res.headers.authorization);
             axios
               .get('http://localhost:8080/user', {
