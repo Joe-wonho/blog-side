@@ -9,6 +9,7 @@ const PostsContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 100vh;
 `;
 const API = `${process.env.REACT_APP_API_URL}`;
 

@@ -82,7 +82,7 @@ const MyInfo = () => {
           clearCurUser();
           window.localStorage.removeItem('accessToken');
           alert('탈퇴 되었습니다.');
-          navigate('/login');
+          // navigate('/login');
         });
       });
   };

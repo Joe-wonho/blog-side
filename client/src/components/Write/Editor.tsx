@@ -30,6 +30,8 @@ const Editor = () => {
             headers: { 'content-type': 'multipart/form-data' },
           });
           url = res.data[0];
+          // 커서의 위치를 알고 해당 위치에 이미지 태그를 넣어주는 코드
+          // 해당 DOM의 데이터가 필요하기에 useRef를 사용한다.
           const range = QuillRef.current?.getEditor().getSelection()?.index;
           if (range !== null && range !== undefined) {
             let quill = QuillRef.current?.getEditor();

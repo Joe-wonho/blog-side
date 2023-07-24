@@ -57,12 +57,18 @@ const SeriesImg = () => {
       setFile(e.target.files[0]);
       const newFileURL = URL.createObjectURL(e.target.files[0]);
       setFileURL(newFileURL);
+      if (imgRef.current) {
+        imgRef.current.value = '';
+      }
     }
   };
   const onRemoveImg = (): void => {
     URL.revokeObjectURL(fileURL);
     setFileURL('');
     setFile(null);
+    if (imgRef.current) {
+      imgRef.current.value = '';
+    }
   };
 
   return (

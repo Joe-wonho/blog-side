@@ -88,7 +88,6 @@ const TagArea = () => {
   };
 
   const deleteTagItem = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // console.dir(e.currentTarget.parentElement);
     const deleteTagItem = e.currentTarget.parentElement as Node;
     if (deleteTagItem.firstChild) {
       const dItem = deleteTagItem.firstChild.textContent;

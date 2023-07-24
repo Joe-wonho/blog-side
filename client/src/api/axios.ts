@@ -34,11 +34,12 @@ client.interceptors.response.use(
       } catch (error) {
         window.localStorage.removeItem('accessToken');
         window.localStorage.removeItem('recoil-persist');
-        alert('토큰이 만료되었습니다. 다시 로그인해 주세요');
+        alert('토큰이 만료되었습니다.');
         window.location.href = `http://localhost:3000/login`;
       }
     }
-    return Promise.reject(error);
+    return;
+    // return Promise.reject(error);
   }
 );
 

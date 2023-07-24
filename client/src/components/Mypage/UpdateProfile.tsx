@@ -164,6 +164,12 @@ const UpdateProfile = () => {
       .then((res) => {
         setForm({ ...form, profile: res.data.profile });
         setProfile(res.data.profile);
+        if (imgRef.current) {
+          imgRef.current.value = '';
+        }
+      })
+      .catch(() => {
+        console.log('refresh에러');
       });
   };
 
@@ -180,6 +186,9 @@ const UpdateProfile = () => {
       .then((res) => {
         setForm({ ...form, profile: res.data.profile });
         setProfile(res.data.profile);
+        if (imgRef.current) {
+          imgRef.current.value = '';
+        }
       });
   };
 

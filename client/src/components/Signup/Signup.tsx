@@ -93,10 +93,8 @@ const Signup = () => {
       checkPwdValidation(form.password, form.pwdCheck)[0] === false ||
       commonValidation(form.nickname)[0] === false
     ) {
-      // 여기서 분기처리하기
       alert('올바른 정보를 입력해주세요');
     } else {
-      //이부분에서 서버와 통신하면 된다.
       try {
         await axios.post('http://localhost:8080/signup', formData, {
           headers: { 'content-type': 'multipart/form-data' },
