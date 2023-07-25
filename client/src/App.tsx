@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Mypage from './pages/Mypage';
 import DetailPage from './pages/DetailPage';
-import EditPostPage from './pages/EditPostPage';
+import NotFoundPage from './pages/NotFoundPage';
 import SeriesDetailPage from './pages/SeriesDetailPage';
 import KaKaoLoginPage from './components/Login/KaKaoLogin';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -34,6 +34,7 @@ const App: React.FC = () => {
               <Route path='/write/:postId' element={<WritePage />}></Route>
               <Route path='/mypage' element={<Mypage />}></Route>
               <Route path='/oauth/callback/kakao' element={<KaKaoLoginPage />} />
+              <Route path='/*' element={<NotFoundPage />} />
             </Routes>
           </BrowserRouter>
         </RecoilRoot>

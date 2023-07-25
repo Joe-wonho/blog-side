@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { postsAtom } from '../../recoil/posts';
+import ErrorPage from '../../pages/ErrorPage';
 import styled from 'styled-components';
 import axios from 'axios';
 import MainCard from './MainCard';
@@ -106,7 +107,9 @@ export interface ServerData {
 }
 
 const MainList = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   //최초에 서버에서 불러온 포스트리스트
   const [serverData, setServerData] = useState<ServerData[]>([]);
   const [posts, setPosts] = useRecoilState(postsAtom);
@@ -114,12 +117,30 @@ const MainList = () => {
   // const [postData, setPostData] = useState([]);
   // console.log(serverData);
   useEffect(() => {
-    axios.get(`${API}?page=1&size=16`).then((res) => {
-      setServerData(res.data.data);
-      setPosts(res.data.data);
-      console.log('유스이펙트실행');
-    });
+    setLoading(true);
+    axios
+      .get(`${API}?page=1&size=16`)
+      .then((res) => {
+        setServerData(res.data.data);
+        setPosts(res.data.data);
+      })
+      .catch((e) => {
+        setError(e.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
+  if (loading) {
+    return (
+      <MainListContainer>
+        <div>로딩중</div>
+      </MainListContainer>
+    );
+  }
+  if (error !== '') {
+    return <ErrorPage error={error}></ErrorPage>;
+  }
   return (
     <MainListContainer>
       {serverData.length !== 0
