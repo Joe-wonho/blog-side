@@ -1,0 +1,18 @@
+.ql-size-30 {
+  /* .ql-size span[data-value="huge"]::before { */
+  font-size: 30px !important;
+}
+.ql-size-24 {
+  /* .ql-size span[data-value="huge"]::before { */
+  font-size: 25px !important;
+}
+.ql-size-18 {
+  /* .ql-size span[data-value="huge"]::before { */
+  font-size: 18px !important;
+}
+.ql-container {
+  font-size: 18px;
+}
+.ql-toolbar.ql-snow {
+  min-width: 430px;
+}

@@ -1,14 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import Login from '../components/Login/Login';
-// import { useParams, useLocation } from 'react-router';
-// interface LoginPageProps {
-// }
+import Signup from '../components/Signup/Signup';
 
-const LoginPageContainer = styled.div`
-  padding: 60px 0 20px;
+const SignupPageContainer = styled.div`
+  padding: 30px 0 20px;
   background-color: var(--light-gray-100);
   @media screen and (min-width: 768px) {
+    height: auto;
   }
   @media screen and (max-width: 767px) {
     padding: 60px 0 0;
@@ -16,13 +14,13 @@ const LoginPageContainer = styled.div`
   }
 `;
 
-const LoginPageBox = styled.div`
+const SignupPageBox = styled.div`
   background-color: var(--white-100);
   display: flex;
   flex-direction: column;
   @media screen and (min-width: 768px) {
     width: 494px;
-    height: 756px;
+    /* height: 100%; */
     margin: 0 auto;
     border: 1px solid var(--light-gray-100);
     border-radius: 1rem;
@@ -56,18 +54,17 @@ const Logo = styled.div`
     padding-left: 48px;
   }
 `;
-
-const LoginPage = () => {
+const SignupPage = () => {
   return (
-    <LoginPageContainer>
-      <LoginPageBox>
+    <SignupPageContainer>
+      <SignupPageBox>
         <LogoBox>
-          <Logo>LOGIN</Logo>
+          <Logo>SIGN UP</Logo>
         </LogoBox>
-        <Login></Login>
-      </LoginPageBox>
-    </LoginPageContainer>
+        <Signup></Signup>
+      </SignupPageBox>
+    </SignupPageContainer>
   );
 };
 
-export default LoginPage;
+export default SignupPage;

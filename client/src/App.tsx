@@ -1,43 +1,44 @@
 import React from 'react';
-import Header from './components/Header/Header';
-import Footer from './components/Footer';
+// import Footer from './components/Footer';
 import MainPage from './pages/MainPage';
+import PostPage from './pages/PostPage';
+import WritePage from './pages/WritePage';
+import SeriesPage from './pages/SeriesPage';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import Mypage from './pages/Mypage';
+import DetailPage from './pages/DetailPage';
+import NotFoundPage from './pages/NotFoundPage';
+import SeriesDetailPage from './pages/SeriesDetailPage';
+import KaKaoLoginPage from './components/Login/KaKaoLogin';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { RecoilRoot } from 'recoil';
+import { CookiesProvider } from 'react-cookie';
 
-// import Hello from './components/Hello';
-// import Counter from './components/Counter';
-// import MyForm from './components/MyForm';
 //1024px기준
 const App: React.FC = () => {
-  //     console.log(`${name} says hello`);
-  //   };
-
-  //   const onSubmit = (form: { name: string; description: string }) => {
-  //     console.log(form);
-  //   };
-  //   return (
-  //     <>
-  //       <Hello name="First" onClick={onClick}></Hello>
-  //       <hr />
-  //       <h1>카운터 예제</h1>
-  //       <Counter />
-  //       <hr />
-
-  //       <h1>Form 예제</h1>
-  //       <MyForm onSubmit={onSubmit}></MyForm>
-  //     </>
-  //   );}
   return (
     <>
-      <BrowserRouter>
-        <Header></Header>
-        <Routes>
-          <Route path='/' element={<MainPage />}></Route>
-          <Route path='/login' element={<LoginPage />}></Route>
-        </Routes>
-      </BrowserRouter>
-      <Footer></Footer>
+      <CookiesProvider>
+        <RecoilRoot>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/' element={<MainPage />}></Route>
+              <Route path='/:nickname' element={<PostPage />}></Route>
+              <Route path='/:nickname/series' element={<SeriesPage />}></Route>
+              <Route path='/:nickname/series/:seriesName' element={<SeriesDetailPage />}></Route>
+              <Route path='/:nickname/:postId' element={<DetailPage />}></Route>
+              <Route path='/login' element={<LoginPage />}></Route>
+              <Route path='/signup' element={<SignupPage />}></Route>
+              <Route path='/write' element={<WritePage />}></Route>
+              <Route path='/write/:postId' element={<WritePage />}></Route>
+              <Route path='/mypage' element={<Mypage />}></Route>
+              <Route path='/oauth/callback/kakao' element={<KaKaoLoginPage />} />
+              <Route path='/*' element={<NotFoundPage />} />
+            </Routes>
+          </BrowserRouter>
+        </RecoilRoot>
+      </CookiesProvider>
     </>
   );
 };
