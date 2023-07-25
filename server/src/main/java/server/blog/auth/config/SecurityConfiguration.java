@@ -76,7 +76,7 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://ec2-3-39-222-90.ap-northeast-2.compute.amazonaws.com:8080", "http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://ec2-43-201-50-129.ap-northeast-2.compute.amazonaws.com:8080", "http://localhost:3000"));
 //        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH","DELETE")); // 해당 HTTP 메서드에 대한 통신 허용
 
 //        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://localhost:8080"));
