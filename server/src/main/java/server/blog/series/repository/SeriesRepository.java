@@ -15,9 +15,5 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
 
     Page<Series> findAllByPostsUsersNicknameAndSeriesName(String nickname, String seriesName, Pageable pageable);
 
-    Optional<Series> findByUsersAndSeriesName(Users users, String seriesName);
-
-    Optional<Series> findBySeriesName(String seriesName);
-
 
 }

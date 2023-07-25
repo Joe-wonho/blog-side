@@ -3,7 +3,6 @@ package server.blog.post.mapper;
 import org.mapstruct.Mapper;
 import server.blog.post.dto.PostDto;
 import server.blog.post.entity.Post;
-import server.blog.post.entity.PostTag;
 import server.blog.tag.dto.TagDto;
 import server.blog.tag.entity.Tag;
 
@@ -48,35 +47,6 @@ public interface PostMapper {
 
         return newPost;
     }
-
-
-//    (기존 코드)
-//    default PostDto.Response postToPostResponseDto(Post post){
-//        PostDto.Response newPost = new PostDto.Response();
-//        newPost.setUserId(post.getUsers().getUserId());
-//        newPost.setNickname(post.getUsers().getNickname());
-//        newPost.setCreatedAt(post.getCreatedAt());
-//        newPost.setContent(post.getContent());
-//        newPost.setPostId(post.getPostId());
-//        newPost.setThumbnail(post.getThumbnail());
-//        if (post.getSeries() != null) {
-//            newPost.setSeries(post.getSeries().getSeriesName());
-//        }
-//
-//        // 태그 정보 추가
-//        List<TagDto.Response> tagResponses = post.getPostTag().stream()
-//                .map(postTag -> {
-//                    TagDto.Response tagResponse = new TagDto.Response();
-//                    Tag tag = postTag.getTag();
-//                    tagResponse.setTagId(tag.getTagId());
-//                    tagResponse.setTagName(tag.getTagName());
-//                    return tagResponse;
-//                })
-//                .collect(Collectors.toList());
-//        newPost.setTag(tagResponses.stream().map(TagDto.Response::getTagName).collect(Collectors.toList()));
-//
-//        return newPost;
-//    }
 
 
 

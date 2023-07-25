@@ -32,11 +32,4 @@ public class SeriesDto {
 
     }
 
-//    @Data
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class Response {
-//        private Long seriesId;
-//        private String seriesName;
-//    }
 }
