@@ -82,7 +82,7 @@ const MyInfo = () => {
           clearCurUser();
           window.localStorage.removeItem('accessToken');
           alert('탈퇴 되었습니다.');
-          // navigate('/login');
+          window.location.href = '/login';
         });
       });
   };
@@ -103,7 +103,7 @@ const MyInfo = () => {
       <InfoContainer>
         <InfoDiv>
           <div className='title'>제목</div>
-          <div className='title-desc'>{`${nickname}.log 여기 수정버튼 작동 아직 안됨 API 없음`}</div>
+          <div className='title-desc'>{`${nickname}.log `}</div>
           <button onClick={handleModify} className='title-modify'>
             수정
           </button>

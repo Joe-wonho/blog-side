@@ -1,12 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import Login from '../components/Login/Login';
-// import { useParams, useLocation } from 'react-router';
-// interface LoginPageProps {
-// }
 
 const LoginPageContainer = styled.div`
   padding: 60px 0 20px;
+  height: 100vh;
   background-color: var(--light-gray-100);
   @media screen and (min-width: 768px) {
   }

@@ -57,14 +57,14 @@ const Preview = styled.div`
 const ImgInput = ({ file, setFile }: FileUpload) => {
   const imgRef = useRef<HTMLInputElement>(null);
   const [fileURL, setFileURL] = useState<string>('');
-
+  console.log(file);
   const onChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && imgRef.current) {
       URL.revokeObjectURL(fileURL);
       setFile(e.target.files);
       const newFileURL = URL.createObjectURL(e.target.files[0]);
       setFileURL(newFileURL);
-      imgRef.current.value = '';
+      // imgRef.current.value = '';
     }
   };
   const onRemoveImg = (): void => {

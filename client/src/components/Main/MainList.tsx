@@ -5,7 +5,7 @@ import ErrorPage from '../../pages/ErrorPage';
 import styled from 'styled-components';
 import axios from 'axios';
 import MainCard from './MainCard';
-
+import MainSkeleton from './MainSkeleton';
 const MainListContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -107,17 +107,17 @@ export interface ServerData {
 }
 
 const MainList = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   //최초에 서버에서 불러온 포스트리스트
   const [serverData, setServerData] = useState<ServerData[]>([]);
   const [posts, setPosts] = useRecoilState(postsAtom);
-  //포스트리스트의 변경을 감지해서 useEffect의 의존성 배열을 위한 것
-  // const [postData, setPostData] = useState([]);
-  // console.log(serverData);
+
   useEffect(() => {
-    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
     axios
       .get(`${API}?page=1&size=16`)
       .then((res) => {
@@ -126,15 +126,19 @@ const MainList = () => {
       })
       .catch((e) => {
         setError(e.message);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, []);
   if (loading) {
     return (
       <MainListContainer>
-        <div>로딩중</div>
+        <MainSkeleton />
+        <MainSkeleton />
+        <MainSkeleton />
+        <MainSkeleton />
+        <MainSkeleton />
+        <MainSkeleton />
+        <MainSkeleton />
+        <MainSkeleton />
       </MainListContainer>
     );
   }
