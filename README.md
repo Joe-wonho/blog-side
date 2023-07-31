@@ -92,7 +92,7 @@
 
 |                     공통                      |                                                                             Front End                                                                             |                                                                                                   Back End                                                                                                    |
 | :-------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| **`Discord`**<br>**`Github`**<br>**`Notion`** | **`TypeScript`**<br>**`React`**<br>**`React-Router`**<br>**`Recoil`**<br>**`Styled-Components`**<br>**`Axios`**<br>**`ESLint`**<br>**`Prettier`**<br>**`AWS S3`** | **`Java`**<br>**`JPA`**<br>**`Intellijidea`**<br>**`Spring-MVC`**<br>**`Spring-Boot`**<br>**`Spring-Security`**<br>**`Gradle`**<br>**`JWT`**<br>**`AmazoneC2`**<br>**`Mysql`**<br>**`H2`**<br>**`Redis`**<br> |
+| **`Discord`**<br>**`Github`**<br>**`Notion`** | **`TypeScript`**<br>**`React`**<br>**`React-Router`**<br>**`Recoil`**<br>**`Styled-Components`**<br>**`Axios`**<br>**`ESLint`**<br>**`Prettier`**<br>**`AWS S3`** <br>**`react-quill`** | **`Java`**<br>**`JPA`**<br>**`Intellijidea`**<br>**`Spring-MVC`**<br>**`Spring-Boot`**<br>**`Spring-Security`**<br>**`Gradle`**<br>**`JWT`**<br>**`AmazoneC2`**<br>**`Mysql`**<br>**`H2`**<br>**`Redis`**<br> |
 
 <br>
 
