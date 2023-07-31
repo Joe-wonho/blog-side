@@ -11,6 +11,8 @@ const MainCardContainer = styled.div`
   height: auto;
   /* background-color: var(--gray-blue-200); */
   background-color: var(--light-gray-200);
+  box-shadow: inset 1px 1px 0px 0px rgba(170, 200, 167, 0.5), 1px 1px 2px 0px rgba(0, 0, 0, 0.1),
+    4px 4px 5px 0px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   @media screen and (min-width: 1024px) {
     transition: transform 0.3s ease-in-out;
@@ -141,7 +143,6 @@ const MainCard = ({
   userId,
   thumbnail,
 }: ServerData) => {
-  // const changeContent = content.replace(/<(\/img|img)([^>]*)>/gi, '').replace(/<(\/br|br)([^>]*)>/gi, '');
   const navigate = useNavigate();
 
   const handleGoDetail = (e: React.MouseEvent<HTMLDivElement | HTMLHeadingElement | HTMLParagraphElement>) => {

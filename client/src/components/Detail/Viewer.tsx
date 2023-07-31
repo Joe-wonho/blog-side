@@ -7,6 +7,7 @@ const ViewerContainer = styled.div`
   min-height: 230px;
   white-space: normal;
   word-break: break-all;
+  line-height: 20px;
 `;
 
 interface ViewerProps {
