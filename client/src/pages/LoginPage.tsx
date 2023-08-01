@@ -4,7 +4,7 @@ import Login from '../components/Login/Login';
 
 const LoginPageContainer = styled.div`
   padding: 60px 0 20px;
-  height: 100vh;
+  height: 100%;
   background-color: var(--light-gray-100);
   @media screen and (min-width: 768px) {
   }

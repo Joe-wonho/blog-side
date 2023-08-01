@@ -6,6 +6,7 @@ import { useRecoilState } from 'recoil';
 import { selectedTap } from '../../recoil/tab';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
+import ErrorPage from '../../pages/ErrorPage';
 const MyInfo = styled.div`
   height: 185px;
   border-bottom: 1px solid var(--light-gray-300);
@@ -103,12 +104,18 @@ const Tap = () => {
   const [writerInfo, setWriterInfo] = useState<WriterInterface>();
   const navigate = useNavigate();
   const { nickname } = useParams();
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    axios.get(`${API}/check/${nickname}`).then((res) => {
-      setWriterInfo({ nickname: res.data.nickname, profile: res.data.profile });
-      // setSelected('post');
-    });
+    axios
+      .get(`${API}/check/${nickname}`)
+      .then((res) => {
+        setWriterInfo({ nickname: res.data.nickname, profile: res.data.profile });
+        // setSelected('post');
+      })
+      .catch((e) => {
+        setError(e.message);
+      });
   }, []);
 
   const handleSelect = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -123,6 +130,9 @@ const Tap = () => {
       }
     }
   };
+  if (error !== '') {
+    return <ErrorPage error={error}></ErrorPage>;
+  }
   return (
     <>
       <MyInfo>

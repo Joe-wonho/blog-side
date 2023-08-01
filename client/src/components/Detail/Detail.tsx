@@ -4,6 +4,7 @@ import { TagAreaContainer, TagItem, TagBox } from '../Write/TagArea';
 import Viewer from './Viewer';
 import axios from 'axios';
 import client from '../../api/axios';
+import { dummyData } from '../Common/dummyData';
 import { PostInterface } from '../../recoil/posts';
 import { changeDate } from '../Common/changeDate';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -170,6 +171,7 @@ const Detail = () => {
   const [thumbnailImg, setThumbnailImg] = useRecoilState(thumbnailImgAtom);
   const [selectedSeries, setSelectedSeries] = useRecoilState(selectedSeriesAtom);
   const [thumbnailUrl, setThumbnailUrl] = useRecoilState(thumbnailUrlAtom);
+  const [error, setError] = useState('');
 
   //axios 로 받아온 디테일 페이지 요소
   const [data, setData] = useState<PostInterface>();
@@ -180,19 +182,25 @@ const Detail = () => {
   //현재 페이지의 닉네임과 현재 로그인한 유저를 비교하기 위한 변수 가져오기
   const curPageNickname: string = pathName.slice(0, index);
   useEffect(() => {
-    axios.get(`${API}/${pathName}`).then((res) => {
-      setData(res.data);
-      // 시리즈 가져오기
-      axios
-        .get(`${API}/${res.data.nickname}/series/${decodeURIComponent(res.data.series)}?page=1&size=16`)
-        .then((res) => {
-          const changeList2: SeriesListInterface[] = [];
-          res.data.post.map((el: PostInterface) => {
-            changeList2.push({ title: el.title, postId: el.postId });
+    axios
+      .get(`${API}/${pathName}`)
+      .then((res) => {
+        setData(res.data);
+
+        // 시리즈 가져오기
+        axios
+          .get(`${API}/${res.data.nickname}/series/${decodeURIComponent(res.data.series)}?page=1&size=16`)
+          .then((res) => {
+            const changeList2: SeriesListInterface[] = [];
+            res.data.post.map((el: PostInterface) => {
+              changeList2.push({ title: el.title, postId: el.postId });
+            });
+            setSeriesList2(changeList2);
           });
-          setSeriesList2(changeList2);
-        });
-    });
+      })
+      .catch((e) => {
+        setError(e.message);
+      });
   }, [postId]);
 
   const handleGoBlog = () => {
@@ -239,6 +247,103 @@ const Detail = () => {
     }
     navigate(`/write/${postId}`);
   };
+
+  const detailPost = dummyData.filter((el) => {
+    let strPostId: string = String(el.postId);
+    return strPostId === postId;
+  });
+
+  const detailsl = dummyData.filter((el) => {
+    return detailPost[0].series === el.series && detailPost[0].nickname === el.nickname;
+  });
+
+  if (error !== '') {
+    return (
+      <DetailContainer>
+        {detailPost[0] && (
+          <>
+            <PostTitle> {detailPost[0].title}</PostTitle>
+            <EditBtnGrop>
+              {isMe.nickname === curPageNickname ? (
+                <>
+                  <CommonBtn onClick={editPosting}>수정</CommonBtn>
+                  <CommonBtn onClick={deletePosting}>삭제</CommonBtn>
+                </>
+              ) : null}
+            </EditBtnGrop>
+
+            <WriterName>
+              <p className='writer-name'>{detailPost[0].nickname}</p>
+              <div className='divider'>•</div>
+              <p>{changeDate(detailPost[0].createdAt)}</p>
+            </WriterName>
+            <TagSection>
+              {tag.length === 0 ? null : (
+                <TagBox>
+                  {detailPost[0].tag.map((tagItem, index) => {
+                    return (
+                      <TagItem key={index}>
+                        <div>{tagItem}</div>
+                      </TagItem>
+                    );
+                  })}
+                </TagBox>
+              )}
+            </TagSection>
+            {detailPost[0].series && (
+              <>
+                <SeriesSection open={openSeries}>
+                  <div className='series-title'>{detailPost[0].series}</div>
+                  <div
+                    onClick={() => {
+                      setSeries(!openSeries);
+                    }}
+                    className='list-toggle'
+                  >
+                    <span>▾</span> 목록보기
+                  </div>
+                </SeriesSection>
+                <SeriesList open={openSeries}>
+                  <SeriesUl>
+                    {detailsl &&
+                      detailsl.map((el, idx) => {
+                        return (
+                          <SeriesItem
+                            onClick={() => {
+                              navigate(`/${detailPost[0].nickname}/${el.postId}`);
+                            }}
+                            className={el.title === detailPost[0].title ? 'active' : ''}
+                            key={idx}
+                            // onClick={handleClickSelectSerires}
+                          >
+                            {idx + 1}.&nbsp;{el.title}
+                          </SeriesItem>
+                        );
+                      })}
+                  </SeriesUl>
+                </SeriesList>
+              </>
+            )}
+
+            <Viewer content={detailPost[0].content}></Viewer>
+            <WriterInfo>
+              <img onClick={handleGoBlog} src={detailPost[0].profile} alt='profile' className='profile'></img>
+              <p onClick={handleGoBlog}>{detailPost[0].nickname}</p>
+            </WriterInfo>
+          </>
+        )}
+        {data && (
+          <DeleteModal
+            postId={data.postId}
+            curUserId={isMe.userId}
+            modalIsOpen={modalIsOpen}
+            setModalIsOpen={setModalIsOpen}
+          />
+        )}
+      </DetailContainer>
+    );
+  }
+
   return (
     <DetailContainer>
       {data && (
