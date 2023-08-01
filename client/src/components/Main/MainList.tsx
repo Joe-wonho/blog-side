@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import MainCard from './MainCard';
 import MainSkeleton from './MainSkeleton';
+import { dummyData } from '../Common/dummyData';
 const MainListContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -25,73 +26,6 @@ const MainListContainer = styled.div`
   }
 `;
 const API = `${process.env.REACT_APP_API_URL}`;
-const DummyData = [
-  {
-    userId: 1,
-    nickname: '1번 사용자',
-    postId: 100,
-    content:
-      '<p>1번 게시물 내용</p><p><img src="https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%206%202.jpeg"></p><p>잘되네</p>',
-    tag: ['1번', '태그'],
-    series: '시리즈 더미',
-    thumbnail:
-      'https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A9%E1%84%8B%E1%85%B5%E1%84%87%E1%85%A6%E1%86%AF%202.png',
-    title: '1번 제목',
-    createdAt: '2023-07-10T14:04:58.581705',
-  },
-  {
-    userId: 1,
-    nickname: '1번 사용자',
-    postId: 101,
-    content:
-      '<p>1번 게시물 내용</p><p><img src="https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%206%202.jpeg"></p><p>잘되네</p>',
-    tag: ['1번', '태그'],
-    series: '시리즈 더미',
-    thumbnail:
-      'https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A9%E1%84%8B%E1%85%B5%E1%84%87%E1%85%A6%E1%86%AF%202.png',
-    title: '1번 제목',
-    createdAt: '2023-07-10T14:04:58.581705',
-  },
-  {
-    userId: 1,
-    nickname: '1번 사용자',
-    postId: 102,
-    content:
-      '<p>1번 게시물 내용</p><p><img src="https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%206%202.jpeg"></p><p>잘되네</p>',
-    tag: ['1번', '태그'],
-    series: '시리즈 더미',
-    thumbnail:
-      'https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A9%E1%84%8B%E1%85%B5%E1%84%87%E1%85%A6%E1%86%AF%202.png',
-    title: '1번 제목',
-    createdAt: '2023-07-10T14:04:58.581705',
-  },
-  {
-    userId: 1,
-    nickname: '1번 사용자',
-    postId: 103,
-    content:
-      '<p>1번 게시물 내용</p><p><img src="https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%206%202.jpeg"></p><p>잘되네</p>',
-    tag: ['1번', '태그'],
-    series: '시리즈 더미',
-    thumbnail:
-      'https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A9%E1%84%8B%E1%85%B5%E1%84%87%E1%85%A6%E1%86%AF%202.png',
-    title: '1번 제목',
-    createdAt: '2023-07-10T14:04:58.581705',
-  },
-  {
-    userId: 1,
-    nickname: '1번 사용자',
-    postId: 104,
-    content:
-      '<p>1번 게시물 내용</p><p><img src="https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%206%202.jpeg"></p><p>잘되네</p>',
-    tag: ['1번', '태그'],
-    series: '시리즈 더미',
-    thumbnail:
-      'https://blog-side.s3.ap-northeast-2.amazonaws.com/%E1%84%90%E1%85%A9%E1%84%8B%E1%85%B5%E1%84%87%E1%85%A6%E1%86%AF%202.png',
-    title: '1번 제목',
-    createdAt: '2023-07-10T14:04:58.581705',
-  },
-];
 
 export interface ServerData {
   content: string;
@@ -117,7 +51,7 @@ const MainList = () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 2000);
     axios
       .get(`${API}?page=1&size=16`)
       .then((res) => {
@@ -143,7 +77,27 @@ const MainList = () => {
     );
   }
   if (error !== '') {
-    return <ErrorPage error={error}></ErrorPage>;
+    return (
+      <MainListContainer>
+        {dummyData.map((el) => {
+          return (
+            <MainCard
+              title={el.title}
+              content={el.content}
+              createdAt={el.createdAt}
+              nickname={el.nickname}
+              postId={el.postId}
+              series={el.series}
+              tag={el.tag}
+              profile={el.profile}
+              userId={el.userId}
+              thumbnail={el.thumbnail}
+              key={el.postId}
+            ></MainCard>
+          );
+        })}
+      </MainListContainer>
+    );
   }
   return (
     <MainListContainer>
