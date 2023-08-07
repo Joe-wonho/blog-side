@@ -8,7 +8,7 @@
   해당 웹사이트는 벨로그를 모티브로 만들었습니다.
   기본 CRUD 기능을 토대로 지난번 **루미안** 프로젝트 때 아쉬웠던 부분을 보완하기 위해 제작하였습니다.
 
-- 배포 링크 : <a href ="http://lumian.s3-website.ap-northeast-2.amazonaws.com/" target = "_blank" > 주소수정하기 </a>
+- 배포 링크 : <a href ="http://sideblog.s3-website.ap-northeast-2.amazonaws.com/" target = "_blank" > Blog </a>
 
 - 프론트 : [조원호](https://github.com/Joe-wonho)
 
