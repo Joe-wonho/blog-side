@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { postsAtom } from '../../recoil/posts';
-import ErrorPage from '../../pages/ErrorPage';
 import styled from 'styled-components';
 import axios from 'axios';
 import MainCard from './MainCard';

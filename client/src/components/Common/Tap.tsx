@@ -7,6 +7,7 @@ import { selectedTap } from '../../recoil/tab';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import ErrorPage from '../../pages/ErrorPage';
+
 const MyInfo = styled.div`
   height: 185px;
   border-bottom: 1px solid var(--light-gray-300);
