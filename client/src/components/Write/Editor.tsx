@@ -7,6 +7,8 @@ import { useRecoilState } from 'recoil';
 import { contentAtom } from '../../recoil/write';
 import axios, { AxiosError } from 'axios';
 
+const API = `${process.env.REACT_APP_API_URL}`;
+
 const Editor = () => {
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useRecoilState(contentAtom);
@@ -26,7 +28,7 @@ const Editor = () => {
       if (file !== null) {
         formData.append('img', file[0]);
         try {
-          const res = await axios.post('http://localhost:8080/uploadImg', formData, {
+          const res = await axios.post(`${API}/uploadImg`, formData, {
             headers: { 'content-type': 'multipart/form-data' },
           });
           url = res.data[0];

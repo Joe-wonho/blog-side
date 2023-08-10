@@ -122,7 +122,6 @@ const Tap = () => {
   const handleSelect = (e: React.MouseEvent<HTMLDivElement>) => {
     const eventTarget = e.target as HTMLDivElement;
     if (selected !== `${eventTarget.id}`) {
-      console.log(eventTarget.id);
       setSelected(`${eventTarget.id}`);
       if (eventTarget.id === 'post') {
         navigate(`/${nickname}`);

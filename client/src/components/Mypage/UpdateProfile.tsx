@@ -142,6 +142,9 @@ const ProfileInfoBox = styled.div`
     }
   }
 `;
+
+const API = `${process.env.REACT_APP_API_URL}`;
+
 const UpdateProfile = () => {
   // const token = useRecoilValue(accessToken);
   const [form, setForm] = useRecoilState(curUser);
@@ -197,7 +200,7 @@ const UpdateProfile = () => {
     const formData = new FormData();
     formData.append('nickname', nickname);
     axios
-      .patch(`http://localhost:8080/user/${form.userId}`, formData, {
+      .patch(`${API}/user/${form.userId}`, formData, {
         headers: {
           Authorization: token,
         },
@@ -212,12 +215,10 @@ const UpdateProfile = () => {
       .catch(async (err) => {
         //액세스 토큰이 만료된 경우 if 문 처리
         if (err.response.status === 401) {
-          console.log('케치문의 401일 경우');
-          console.log('액세스 토큰이 만료되었고');
           //리프레시 토큰이 유효해서 액세스 재발급 가능한경우
           await axios
             .post(
-              'http://localhost:8080/refresh',
+              `${API}/refresh`,
               {},
               {
                 withCredentials: true,
@@ -225,13 +226,11 @@ const UpdateProfile = () => {
             )
             //리프레시 토큰이 유효해서 액세스 재발급 가능한경우
             .then(async (res) => {
-              console.log('리프레시 토큰이 유효한경우');
-              console.log('액세스토큰 재발급 하기');
               window.localStorage.setItem('accessToken', res.headers.authorization);
               token = window.localStorage.getItem('accessToken');
               //액세스 토큰 재발급 후 다시 원래 요청하기
               await axios
-                .patch(`http://localhost:8080/user/${form.userId}`, formData, {
+                .patch(`${API}/user/${form.userId}`, formData, {
                   headers: {
                     Authorization: token,
                   },
@@ -244,17 +243,14 @@ const UpdateProfile = () => {
             })
             //리프레시 토큰이 유효하지 않아서 액세스 재발급 못할 경우 다시 로그인하게 처리하기
             .catch((err) => {
-              console.log('리프레시 토큰도 만료된경우');
-              console.log('재로그인 요청');
               //모든 로컬스토리지 현재유저, 리프레시 토큰 제거 후 로그인 페이지로 가게하기
               window.localStorage.removeItem('accessToken');
               window.localStorage.removeItem('recoil-persist');
               clearUser();
               alert('재로그인 필요(리프레시 토큰 만료)');
-              window.location.href = 'http://localhost:3000/login';
+              window.location.href = '/login';
             });
         } else {
-          console.log(' 401이 아닌경우');
         }
       });
     // client

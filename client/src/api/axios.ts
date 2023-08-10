@@ -35,7 +35,7 @@ client.interceptors.response.use(
         window.localStorage.removeItem('accessToken');
         window.localStorage.removeItem('recoil-persist');
         alert('토큰이 만료되었습니다.');
-        window.location.href = `http://localhost:3000/login`;
+        window.location.href = `/login`;
       }
     }
     return;

@@ -61,6 +61,7 @@ export interface FileUpload {
   file: FileList | null;
   setFile(file: FileList | null): void;
 }
+const API = `${process.env.REACT_APP_API_URL}`;
 
 const Signup = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -96,7 +97,7 @@ const Signup = () => {
       alert('올바른 정보를 입력해주세요');
     } else {
       try {
-        await axios.post('http://localhost:8080/signup', formData, {
+        await axios.post(`${API}/signup`, formData, {
           headers: { 'content-type': 'multipart/form-data' },
         });
         clearSignupForm();

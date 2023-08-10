@@ -73,6 +73,7 @@ const ValidDesc = styled.p`
     color: rgb(253, 91, 21);
   }
 `;
+const API = `${process.env.REACT_APP_API_URL}`;
 
 const SignupForm = ({ file, setFile }: FileUpload) => {
   const [form, setForm] = useRecoilState(inputsState);
@@ -93,7 +94,7 @@ const SignupForm = ({ file, setFile }: FileUpload) => {
       return;
     }
     try {
-      await axios.post('http://localhost:8080/email', { email: email }).then((res) => {
+      await axios.post(`${API}/email`, { email: email }).then((res) => {
         alert('사용할 수 있는 이메일입니다.');
       });
     } catch {

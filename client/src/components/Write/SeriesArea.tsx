@@ -114,7 +114,6 @@ const SeriesArea = ({ openCheck, setCheck }: SeriesAreaProps) => {
     } else {
       formData.append('thumbnail', thumbnailURItoFile());
     }
-    console.log(postId);
     if (postId) {
       client
         .patch(`/${postId}`, formData, {

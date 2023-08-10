@@ -38,12 +38,10 @@ const Posts = () => {
   useEffect(() => {
     if (selectedTag === '') {
       axios.get(`${API}/${nickname}?page=1&size=16`).then((res) => {
-        console.log(res.data.data);
         setServerData(res.data.data.reverse());
       });
     } else {
       axios.get(`${API}/tag/${nickname}/${selectedTag}?page=1&size=16`).then((res) => {
-        console.log(res.data.data);
         setServerData(res.data.data.reverse());
       });
     }

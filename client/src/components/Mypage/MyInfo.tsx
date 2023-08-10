@@ -74,9 +74,7 @@ const MyInfo = () => {
     e.preventDefault();
     await client
       .delete(`/user/${userId}`)
-      .then((res) => {
-        console.log(res);
-      })
+      .then((res) => {})
       .then(() => {
         client.post(`/signout`).then((res) => {
           clearCurUser();

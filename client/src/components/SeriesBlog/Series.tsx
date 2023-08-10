@@ -27,7 +27,6 @@ const Series = () => {
 
   useEffect(() => {
     axios.get(`${API}/${nickname}/series?page=1&size=16`).then((res) => {
-      console.log(res.data);
       setServerData(res.data.data);
     });
   }, []);

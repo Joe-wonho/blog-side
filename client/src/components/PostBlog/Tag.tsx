@@ -171,13 +171,9 @@ const Tag = ({ tag, selectedTag, setSelectedTag }: TagProps) => {
   };
   const nextClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (tagRef.current) {
-      // console.log('수행전');
-      // console.log(viewWidth);
       if (viewWidth.current + 682 < width) {
         viewWidth.current += 682;
         tagRef.current.scrollLeft += 682;
-        // console.log('수행후');
-        // console.log(viewWidth);
       }
     }
   };

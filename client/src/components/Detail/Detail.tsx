@@ -9,7 +9,7 @@ import { PostInterface } from '../../recoil/posts';
 import { changeDate } from '../Common/changeDate';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { curUser } from '../../recoil/signup';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation, useParams } from 'react-router';
 import DeleteModal from '../Common/DeleteModal';
 import {
   titleAtom,
@@ -20,7 +20,6 @@ import {
   thumbnailUrlAtom,
   seriesListAtom,
 } from '../../recoil/write';
-import { useParams } from 'react-router';
 const DetailContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -181,12 +180,14 @@ const Detail = () => {
   const index: number = pathName.indexOf('/');
   //현재 페이지의 닉네임과 현재 로그인한 유저를 비교하기 위한 변수 가져오기
   const curPageNickname: string = pathName.slice(0, index);
+
+  const location = useLocation();
+
   useEffect(() => {
     axios
       .get(`${API}/${pathName}`)
       .then((res) => {
         setData(res.data);
-
         // 시리즈 가져오기
         axios
           .get(`${API}/${res.data.nickname}/series/${decodeURIComponent(res.data.series)}?page=1&size=16`)
@@ -225,11 +226,8 @@ const Detail = () => {
         const fileName = decodeURI(data.thumbnail).split('/').pop();
         const ext = fileName?.split('.')[1];
         const metadata = { type: `image/${ext}` };
-        console.log(fileName);
-        console.log(ext);
         const response = await fetch(`${decodeURI(data.thumbnail)}`);
         const blob = await response.blob();
-        // console.log(blob);
         const urlToFile = new File([blob], fileName!, metadata);
         if (urlToFile) {
           setThumbnailImg(urlToFile);
@@ -251,10 +249,6 @@ const Detail = () => {
   const detailPost = dummyData.filter((el) => {
     let strPostId: string = String(el.postId);
     return strPostId === postId;
-  });
-
-  const detailsl = dummyData.filter((el) => {
-    return detailPost[0].series === el.series && detailPost[0].nickname === el.nickname;
   });
 
   if (error !== '') {
@@ -305,21 +299,27 @@ const Detail = () => {
                 </SeriesSection>
                 <SeriesList open={openSeries}>
                   <SeriesUl>
-                    {detailsl &&
-                      detailsl.map((el, idx) => {
-                        return (
-                          <SeriesItem
-                            onClick={() => {
-                              navigate(`/${detailPost[0].nickname}/${el.postId}`);
-                            }}
-                            className={el.title === detailPost[0].title ? 'active' : ''}
-                            key={idx}
-                            // onClick={handleClickSelectSerires}
-                          >
-                            {idx + 1}.&nbsp;{el.title}
-                          </SeriesItem>
-                        );
-                      })}
+                    {dummyData.filter((el) => {
+                      return detailPost[0].series === el.series && detailPost[0].nickname === el.nickname;
+                    }) &&
+                      dummyData
+                        .filter((el) => {
+                          return detailPost[0].series === el.series && detailPost[0].nickname === el.nickname;
+                        })
+                        .map((el, idx) => {
+                          return (
+                            <SeriesItem
+                              onClick={() => {
+                                navigate(`/${detailPost[0].nickname}/${el.postId}`);
+                              }}
+                              className={el.title === detailPost[0].title ? 'active' : ''}
+                              key={idx}
+                              // onClick={handleClickSelectSerires}
+                            >
+                              {idx + 1}.&nbsp;{el.title}
+                            </SeriesItem>
+                          );
+                        })}
                   </SeriesUl>
                 </SeriesList>
               </>

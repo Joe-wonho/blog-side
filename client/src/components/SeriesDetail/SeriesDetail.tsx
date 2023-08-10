@@ -39,13 +39,10 @@ const API = `${process.env.REACT_APP_API_URL}`;
 const SeriesDetail = () => {
   const [serverData, setServerData] = useState<ServerData[]>([]);
   const { seriesName } = useParams();
-  console.log(seriesName);
   const pathName: string = decodeURI(window.location.pathname);
-  console.log(pathName);
 
   useEffect(() => {
     axios.get(`${API}${pathName}?page=1&size=16`).then((res) => {
-      console.log(res.data.post);
       setServerData(res.data.post.reverse());
     });
   }, []);

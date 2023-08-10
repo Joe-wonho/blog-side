@@ -120,6 +120,7 @@ const CustomLink = styled.div`
     }
   }
 `;
+const API = `${process.env.REACT_APP_API_URL}`;
 
 const Login = () => {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
@@ -141,15 +142,11 @@ const Login = () => {
     } else {
       try {
         await axios
-          .post(
-            'http://localhost:8080/login',
-            { email: loginForm.email, password: loginForm.password },
-            { withCredentials: true }
-          )
+          .post(`${API}/login`, { email: loginForm.email, password: loginForm.password }, { withCredentials: true })
           .then((res) => {
             window.localStorage.setItem('accessToken', res.headers.authorization);
             axios
-              .get('http://localhost:8080/user', {
+              .get(`${API}/user`, {
                 headers: {
                   Authorization: res.headers.authorization,
                 },
@@ -183,7 +180,14 @@ const Login = () => {
       <BtnBox>
         <LoginBtn onClick={onClickLogin}>로그인</LoginBtn>
         <CustomLink>
-          <span className='forgot-password'>비밀번호를 잊어버리셨나요?</span>
+          <span
+            onClick={() => {
+              window.location.href = '/login';
+            }}
+            className='forgot-password'
+          >
+            비밀번호를 잊어버리셨나요?
+          </span>
         </CustomLink>
         <SignupBtn onClick={onClickSignup}>회원가입</SignupBtn>
         <div className='or-tag'>혹은</div>
