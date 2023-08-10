@@ -77,9 +77,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         cookie1.setHttpOnly(true);
         cookie1.setPath("/");
         cookie1.setMaxAge(3600);
-        cookie1.setDomain("ec2-43-201-50-129.ap-northeast-2.compute.amazonaws.com");
-//        cookie1.setDomain("localhost");
+        cookie1.setDomain("blogside.site");
+        cookie1.setSecure(true); // Secure 설정 추가 : HTTPS 연결을 통한 요청에서만 쿠키가 전송
+//        cookie1.setValue(cookie1.getValue() + "; SameSite=None"); // SameSite 설정
+
         response.addCookie(cookie1);
+
+
+        //SameSite=None : 크로스 사이트에서도 쿠키가 사용될수 있도록
+        response.setHeader("Set-Cookie", String.format("Refresh=%s; HttpOnly; Path=/; Max-Age=3600; Domain=blogside.site; SameSite=None; Secure", refreshToken));
 
         Long expiration = (long) cookie1.getMaxAge(); // cookie1 만료 시간
 
