@@ -112,7 +112,10 @@ public class UserController {
 
             // 엑세스 토큰 생성
             String accessToken = userService.delegateAccessToken(existingUser);
-            String refreshToken = userService.delegateAccessToken(existingUser);
+//            String refreshToken = userService.delegateAccessToken(existingUser);
+
+            // 리프래쉬 토큰 생성
+            String refreshToken = userService.delegateRefreshToken(existingUser);
 
             // 엑세스 토큰을 응답 헤더에 설정
             response.setHeader("Authorization", "Bearer " + accessToken);
@@ -122,7 +125,8 @@ public class UserController {
             cookie1.setHttpOnly(true);
             cookie1.setPath("/");
             cookie1.setMaxAge(3600); // 쿠키 만료 시간 설정 (초 단위)
-            cookie1.setDomain("localhost");
+            cookie1.setDomain("blogside.site");
+            cookie1.setSecure(true);
             response.addCookie(cookie1);
 
             return new ResponseEntity<>("이미 가입되어 있음", HttpStatus.OK);
