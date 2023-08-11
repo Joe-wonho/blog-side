@@ -146,11 +146,11 @@ public class UserService {
         // 리프래시 토큰 삭제
         if (refreshToken != null) {
             ResponseCookie removeRefreshCookie = ResponseCookie.from("Refresh", refreshToken)
-                    .domain("localhost")
+                    .domain("blogside.site")
                     .path("/")
                     .sameSite("None")
                     .secure(true)
-                    .httpOnly(false)
+                    .httpOnly(true)
                     .maxAge(0)
                     .build();
             response.addHeader("Set-Cookie", removeRefreshCookie.toString());
@@ -221,19 +221,27 @@ public class UserService {
     // 로그아웃
     @Transactional
     public void logout(HttpServletRequest request , HttpServletResponse response) {
+
+        // 클라이언트로부터 전달된 엑세스 토큰 얻어옴
         String accessToken = request.getHeader("Authorization");
         accessToken = accessToken.split(" ")[1]; //  " " (공백)을 기준으로 분리된 단어 중에서 두 번째 단어 추출
 
+        // 추출한 엑세스 토큰 -> 사용자 이메일 값
         String ATKemail = jwtTokenizer.getATKemail(accessToken);
+
+        // Redis 데이터베이스에서 사용자 데이터 삭제
         redisUtils.deleteData(ATKemail);
 
+        // 엑세스 토큰 -> 블랙리스트로 추가 : 해당 토큰 무효화
         Long expiration = jwtTokenizer.getATKExpiration(accessToken);
         redisUtils.setData(accessToken, "blackList", expiration);
 
+        // 쿠키 중 "Refresh" 쿠키 값을 얻어옴
         Cookie[] cookies = request.getCookies();
 
         String refreshToken = "";
 
+        // 쿠키 검사 -> "Refresh" 쿠키 값 찾음.
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("Refresh")) {
@@ -243,14 +251,14 @@ public class UserService {
             }
         }
 
-        // 리프래시 토큰 삭제
+        // 리프래시 토큰 삭제(무효화)
         if (refreshToken != null) {
             ResponseCookie removeRefreshCookie = ResponseCookie.from("Refresh", refreshToken)
-                    .domain("localhost")
+                    .domain("blogside.site")
                     .path("/")
                     .sameSite("None")
                     .secure(true)
-                    .httpOnly(false)
+                    .httpOnly(true)
                     .maxAge(0)
                     .build();
             response.addHeader("Set-Cookie", removeRefreshCookie.toString());
